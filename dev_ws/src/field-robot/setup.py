@@ -13,6 +13,7 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name, glob('launch/*.launch.xml')),
+        ('share/' + package_name, glob('launch/*.launch.py')),
         ('share/' + package_name + '/worlds', glob('worlds/*')),
         ('share/' + package_name + '/models', glob('models/*.xacro')),
         ('share/' + package_name + '/models/world', glob('models/world/*.sdf')),
