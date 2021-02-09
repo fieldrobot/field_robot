@@ -3,4 +3,6 @@
         <arg name="pause" value="true"/>
         <arg name="world" value="$(find-pkg-share field-robot)/worlds/field_with_robot.world"/>
     </include>
+    <include file="$(find-pkg-share field-robot)/robot_state_publisher.launch.xml">
+    </include>
 </launch>
