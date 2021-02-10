@@ -1,7 +1,5 @@
 <?xml version="1.0" ?>
 <robot name="turtlebot3_burger_for_autorace" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:include filename="$(find-pkg-share field_robot)/models/common_properties.xacro"/>
-  <xacro:include filename="$(find-pkg-share field_robot)/models/turtlebot3_burger_for_pumpkin.gazebo.xacro"/>
 
   <link name="base_footprint"/>
 
@@ -15,7 +13,7 @@
     <visual>
       <origin xyz="-0.032 0 0.0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="package://data/simulations/turtlebot3/meshes/bases/burger_base.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="model://tb3/bases/burger_base.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="light_black"/>
     </visual>
@@ -36,6 +34,31 @@
     </inertial>
   </link>
 
+  <link name="wheel_l">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.57 0 0"/>
+      <geometry>
+        <mesh filename="model://tb3/wheels/left_tire.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.033"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="2.8498940e-02" />
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
+               iyy="1.1192413e-05" iyz="-1.4400107e-11"
+               izz="2.0712558e-05" />
+      </inertial>
+  </link>
+
   <joint name="wheel_l_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_l"/>
@@ -43,11 +66,11 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <link name="wheel_l">
+  <link name="wheel_r">
     <visual>
       <origin xyz="0 0 0" rpy="1.57 0 0"/>
       <geometry>
-        <mesh filename="package://data/simulations/turtlebot3/meshes/wheels/left_tire.stl" scale="0.001 0.001 0.001"/>
+        <mesh filename="model://tb3/wheels/right_tire.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="dark"/>
     </visual>
@@ -75,37 +98,6 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <link name="wheel_r">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57 0 0"/>
-      <geometry>
-        <mesh filename="package://data/simulations/turtlebot3/meshes/wheels/right_tire.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="dark"/>
-    </visual>
-
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.018" radius="0.033"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="2.8498940e-02" />
-      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
-               iyy="1.1192413e-05" iyz="-1.4400107e-11"
-               izz="2.0712558e-05" />
-      </inertial>
-  </link>
-
-  <joint name="caster_back_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_back_link"/>
-    <origin xyz="-0.081 0 -0.004" rpy="-1.57 0 0"/>
-  </joint>
-
   <link name="caster_back_link">
     <collision>
       <origin xyz="0 0.001 0" rpy="0 0 0"/>
@@ -123,6 +115,12 @@
     </inertial>
   </link>
 
+  <joint name="caster_back_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_back_link"/>
+    <origin xyz="-0.081 0 -0.004" rpy="-1.57 0 0"/>
+  </joint>
+
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
@@ -130,41 +128,6 @@
   </joint>
 
   <link name="imu_link"/>
-
-  <!-- <origin xyz="-0.032 0 0.172" rpy="0 0 0"/> -->
-<!--S
-  <joint name="scan_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="base_scan"/>
-	<origin xyz="0.06 0 0.03" rpy="0 0 0"/>
-  </joint>
-
-  <link name="base_scan">
-    <visual>
-      <origin xyz="0 0 0.0" rpy="0 0 0"/>
-      <geometry>
-        <mesh filename="package://data/simulations/turtlebot3/meshes/sensors/lds.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="dark"/>
-    </visual>
-
-    <collision>
-      <origin xyz="0.015 0 -0.0065" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.0315" radius="0.055"/>
-      </geometry>
-    </collision>
-  </link>
--->
-<!--
-    <inertial>
-      <mass value="0.114" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.001" iyz="0.0"
-               izz="0.001" />
-    </inertial>
--->
 
   <joint name="camera_joint" type="fixed">
 	<origin xyz="-0.07 0 0.65" rpy="0 0.9 0"/>
@@ -201,37 +164,6 @@
     <child link="camera_optical"/>
   </joint>
   <link name="camera_optical"/>
-
-  <!--<joint name="camera_post_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="camera_post"/>
-    <origin xyz="-0.08 0 0.39" rpy="0 0 0"/>
-  </joint>
-
-  <link name="camera_post">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.5" radius="0.003"/>
-      </geometry>
-      <material name="dark"/>
-    </visual>
-
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <cylinder length="0.5" radius="0.003"/>
-      </geometry>
-    </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="2.8498940e-02" />
-      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
-               iyy="1.1192413e-05" iyz="-1.4400107e-11"
-               izz="2.0712558e-05" />
-      </inertial>
-  </link>-->
 
 
 
