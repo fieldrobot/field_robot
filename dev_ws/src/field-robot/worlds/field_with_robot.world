@@ -47,7 +47,7 @@
 
     <include>
       <name>world</name>
-      <pose>1.0 1.0 1.0 1.0 1.0 1.0</pose>
+      <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
       <uri>model://world</uri>
     </include>
 
