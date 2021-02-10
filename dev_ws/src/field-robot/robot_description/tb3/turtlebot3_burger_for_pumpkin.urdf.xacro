@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <robot name="turtlebot3_burger_for_autorace" xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:include filename="$(find-pkg-share field-robot)/models/common_properties.xacro"/>
-  <xacro:include filename="$(find-pkg-share field-robot)/models/turtlebot3_burger_for_pumpkin.gazebo.xacro"/>
+  <xacro:include filename="$(find-pkg-share field_robot)/models/common_properties.xacro"/>
+  <xacro:include filename="$(find-pkg-share field_robot)/models/turtlebot3_burger_for_pumpkin.gazebo.xacro"/>
 
   <link name="base_footprint"/>
 

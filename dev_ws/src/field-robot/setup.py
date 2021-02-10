@@ -2,7 +2,7 @@ import os
 from glob import glob
 from setuptools import setup
 
-package_name = 'field-robot'
+package_name = 'field_robot'
 
 setup(
     name=package_name,
@@ -32,11 +32,12 @@ setup(
     zip_safe=True,
     maintainer='Simon Sure',
     maintainer_email='info@simonsure.com',
-    description='This is the ROS2 code for the field-robot made mainly by Simon Sure and Erwin Kose.',
+    description='This is the ROS2 code for the field_robot made mainly by Simon Sure and Erwin Kose.',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'spawner = field_robot.robot_spawner:main',
         ],
     },
 )

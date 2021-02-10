@@ -33,7 +33,7 @@ def generate_launch_description():
     print('urdf_file_name : {}'.format(urdf_file_name))
 
     urdf = os.path.join(
-        get_package_share_directory('field-robot'), 'robot_description', 'tb3', urdf_file_name)
+        get_package_share_directory('field_robot'), 'robot_description', 'tb3', urdf_file_name)
 
     return LaunchDescription([
         DeclareLaunchArgument(

@@ -8,7 +8,7 @@ from launch.substitutions import LaunchConfiguration
 
 
 def generate_launch_description():
-    world = os.path.join(get_package_share_directory('field-robot'), 'worlds', 'field_with_robot.world')
+    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'field_with_robot.world')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     return LaunchDescription([
@@ -21,7 +21,7 @@ def generate_launch_description():
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field-robot'), 'robot_state_publisher.launch.py')
+                os.path.join(get_package_share_directory('field_robot'), 'robot_state_publisher.launch.py')
             ),
         ),
     ])

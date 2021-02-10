@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>field-robot</name>
+  <name>field_robot</name>
   <version>0.0.1</version>
-  <description>This is the ROS2 code for the field-robot made mainly by Simon Sure and Erwin Kose.</description>
+  <description>This is the ROS2 code for the field_robot made mainly by Simon Sure and Erwin Kose.</description>
   <maintainer email="info@simonsure.com">Simon Sure</maintainer>
   <license>TODO: License declaration</license>
 
