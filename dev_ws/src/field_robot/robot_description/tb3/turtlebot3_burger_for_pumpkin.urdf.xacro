@@ -1,6 +1,150 @@
 <?xml version="1.0" ?>
 <robot name="turtlebot3_burger_for_autorace" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <xacro:arg name="laser_visual" default="true"/>
+  <xacro:arg name="camera_visual" default="true"/>
+
+  <!-- Init colour -->  
+  <material name="black">
+      <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="dark">
+    <color rgba="0.3 0.3 0.3 1.0"/>
+  </material>
+
+  <material name="light_black">
+    <color rgba="0.4 0.4 0.4 1.0"/>
+  </material>
+
+  <material name="blue">
+    <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+
+  <material name="green">
+    <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+
+  <material name="orange">
+    <color rgba="${255/255} ${108/255} ${10/255} 1.0"/>
+  </material>
+
+  <material name="brown">
+    <color rgba="${222/255} ${207/255} ${195/255} 1.0"/>
+  </material>
+
+  <material name="red">
+    <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+
+  <material name="white">
+    <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+
+  <gazebo reference="base_link">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+
+  <gazebo reference="wheel_l">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="wheel_r">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
+    <fdir1>1 0 0</fdir1>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo reference="caster_back_link">
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>1000000.0</kp>
+    <kd>100.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+    <material>Gazebo/FlatBlack</material>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="turtlebot3_burger_controller" filename="libgazebo_ros_diff_drive.so">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometrySource>odom</odometrySource>
+      <publishOdomTF>true</publishOdomTF>
+      <robotBaseFrame>base_footprint</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishTf>true</publishTf>
+      <publishWheelJointState>false</publishWheelJointState>
+      <legacyMode>false</legacyMode>
+      <updateRate>30</updateRate>
+      <left_joint>wheel_l_joint</left_joint>
+      <right_joint>wheel_r_joint</right_joint>
+      <wheel_separation>0.160</wheel_separation>
+      <wheel_diameter>0.066</wheel_diameter>
+      <wheelAcceleration>1</wheelAcceleration>
+      <wheelTorque>10</wheelTorque>
+      <rosDebugLevel>na</rosDebugLevel>
+    </plugin>
+  </gazebo>
+
+  <!--link : https://www.raspberrypi.org/documentation/hardware/camera/-->
+  <gazebo reference="camera_rgb_frame">
+    <sensor type="camera" name="PiCamera">
+      <always_on>true</always_on>
+		<!-- visualize wird oben auf true/false gesetzt -->
+      <visualize>true</visualize>
+      <camera>
+		  <!-- The horizontal field of view of the camera in radians -->
+			<!-- Pi Fisheye Diagonal: 160 degree (while other normal cameras are typically 72 degree) -->
+          <!-- <horizontal_fov>1.085595</horizontal_fov> -->
+          <horizontal_fov>1.2</horizontal_fov>
+          <image>
+              <width>420</width>
+              <height>240</height>
+              <format>R8G8B8</format>
+          </image>
+		 <!-- Distance in meters from the pose of the sensor to the closest point on the near clip plane -->
+          <clip>
+              <near>0.03</near>
+              <far>1.5</far>
+          </clip>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>1.0</updateRate>
+        <cameraName>camera</cameraName>
+        <frameName>camera_optical</frameName>
+        <imageTopicName>image</imageTopicName>
+        <cameraInfoTopicName>camerainfo</cameraInfoTopicName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- ENDE ENDE ENDE ENDE-->
+
   <link name="base_footprint"/>
 
   <joint name="base_joint" type="fixed">
@@ -120,14 +264,6 @@
     <child link="caster_back_link"/>
     <origin xyz="-0.081 0 -0.004" rpy="-1.57 0 0"/>
   </joint>
-
-  <joint name="imu_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="imu_link"/>
-    <origin xyz="-0.032 0 0.068" rpy="0 0 0"/>
-  </joint>
-
-  <link name="imu_link"/>
 
   <joint name="camera_joint" type="fixed">
 	<origin xyz="-0.07 0 0.65" rpy="0 0.9 0"/>
