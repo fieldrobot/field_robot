@@ -28,7 +28,6 @@ def main():
     request = SpawnEntity.Request()
     request.name = 'robot'
     request.xml = open(sdf_file_path, 'r').read()
-    request.robot_namespace = 'robot'
     request.initial_pose.position.x = float(0)
     request.initial_pose.position.y = float(0)
     request.initial_pose.position.z = float(0)
