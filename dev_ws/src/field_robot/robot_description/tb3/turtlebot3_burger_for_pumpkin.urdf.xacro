@@ -1,9 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="turtlebot3_burger_for_autorace" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:arg name="laser_visual" default="true"/>
-  <xacro:arg name="camera_visual" default="true"/>
-
   <!-- Init colour -->  
   <material name="black">
       <color rgba="0.0 0.0 0.0 1.0"/>
@@ -30,11 +27,11 @@
   </material>
 
   <material name="orange">
-    <color rgba="${255/255} ${108/255} ${10/255} 1.0"/>
+    <color rgba="1.0 0.42 0.04 1.0"/>
   </material>
 
   <material name="brown">
-    <color rgba="${222/255} ${207/255} ${195/255} 1.0"/>
+    <color rgba="1.0 0.81 0.76 1.0"/>
   </material>
 
   <material name="red">
@@ -105,34 +102,32 @@
   </gazebo>
 
   <!--link : https://www.raspberrypi.org/documentation/hardware/camera/-->
-  <gazebo reference="camera_rgb_frame">
-    <sensor type="camera" name="PiCamera">
-      <always_on>true</always_on>
-		<!-- visualize wird oben auf true/false gesetzt -->
-      <visualize>true</visualize>
-      <camera>
-		  <!-- The horizontal field of view of the camera in radians -->
-			<!-- Pi Fisheye Diagonal: 160 degree (while other normal cameras are typically 72 degree) -->
-          <!-- <horizontal_fov>1.085595</horizontal_fov> -->
-          <horizontal_fov>1.2</horizontal_fov>
-          <image>
-              <width>420</width>
-              <height>240</height>
-              <format>R8G8B8</format>
-          </image>
-		 <!-- Distance in meters from the pose of the sensor to the closest point on the near clip plane -->
-          <clip>
-              <near>0.03</near>
-              <far>1.5</far>
-          </clip>
+  <gazebo reference="camera">
+    <sensor type="camera" name="cam">
+      <update_rate>10</update_rate>
+      <camera name="head">
+        <!-- The horizontal field of view of the camera in radians -->
+        <!-- Pi Fisheye Diagonal: 160 degree (while other normal cameras are typically 72 degree) -->
+        <!-- <horizontal_fov>1.085595</horizontal_fov> -->
+        <horizontal_fov>1.2</horizontal_fov>
+        <image>
+          <width>420</width>
+          <height>240</height>
+          <format>R8G8B8</format>
+        </image>
+        <!-- Distance in meters from the pose of the sensor to the closest point on the near clip plane -->
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
       </camera>
       <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
         <alwaysOn>true</alwaysOn>
-        <updateRate>1.0</updateRate>
+        <updateRate>10.0</updateRate>
         <cameraName>camera</cameraName>
-        <frameName>camera_optical</frameName>
+        <frameName>camera</frameName>
         <imageTopicName>image</imageTopicName>
-        <cameraInfoTopicName>camerainfo</cameraInfoTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
         <hackBaseline>0.07</hackBaseline>
         <distortionK1>0.0</distortionK1>
         <distortionK2>0.0</distortionK2>
@@ -266,7 +261,7 @@
   </joint>
 
   <joint name="camera_joint" type="fixed">
-	<origin xyz="-0.07 0 0.65" rpy="0 0.9 0"/>
+	  <origin xyz="-0.07 0 0.65" rpy="0 0.9 0"/>
     <parent link="base_link"/>
     <child link="camera"/>
   </joint>
@@ -286,21 +281,5 @@
       </geometry>
     </collision>
   </link>
-
-  <joint name="camera_rgb_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="camera"/>
-    <child link="camera_rgb_frame"/>
-  </joint>
-  <link name="camera_rgb_frame"/>
-
-  <joint name="camera_optical" type="fixed">
-    <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-    <parent link="camera_rgb_frame"/>
-    <child link="camera_optical"/>
-  </joint>
-  <link name="camera_optical"/>
-
-
 
 </robot>
