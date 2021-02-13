@@ -1,5 +1,0 @@
-<launch>
-    <node pkg="robot_state_publisher" exec="robot_state_publisher" name="robot_state_publisher" output="screen">
-        <param name="robot_description" value="[$(find-pkg-share field-robot)/robot_description/turtlebot3_burger.urdf]"/>
-    </node>
-</launch>

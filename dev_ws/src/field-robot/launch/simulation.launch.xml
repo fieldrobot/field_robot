@@ -1,8 +1,0 @@
-<launch>
-    <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
-        <arg name="pause" value="false"/>
-        <arg name="world" value="$(find-pkg-share field-robot)/worlds/field_with_robot.world"/>
-    </include>
-    <include file="$(find-pkg-share field-robot)/robot_state_publisher.launch.py">
-    </include>
-</launch>
