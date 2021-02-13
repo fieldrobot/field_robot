@@ -31,7 +31,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'spawner = field_robot.robot_spawner:main',
+            'robot_spawner = field_robot.robot_spawner:main',
+            'point_cloud2_from_camera.py = field_robot.point_cloud2_from_camera:main',
         ],
     },
 )
