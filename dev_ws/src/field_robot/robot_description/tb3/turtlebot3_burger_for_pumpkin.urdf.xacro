@@ -224,7 +224,7 @@
       <joint_name>wheel_l_joint</joint_name>
       <joint_name>wheel_r_joint</joint_name>
     </plugin>
-    <plugin name="turtlebot3_burger_controller" filename="libgazebo_ros_diff_drive.so">
+    <plugin name="tfield_robot_diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
       <odometry_frame>odom</odometry_frame>
       <odometrySource>odom</odometrySource>
       <publishOdomTF>true</publishOdomTF>
@@ -242,8 +242,9 @@
       <rosDebugLevel>na</rosDebugLevel>
 
       <ros>
-        <argument>cmd_vel:=custom_cmd_vel</argument>
-        <argument>odom:=custom_odom</argument>
+        <namespace>field_robot</namespace>
+        <argument>cmd_vel:=cmd_vel</argument>
+        <argument>odom:=odom</argument>
       </ros>
 
     </plugin>
@@ -273,15 +274,15 @@
           <center>0.5 0.5</center>
         </distortion>
       </camera>
-      <plugin name="plugin_name" filename="libgazebo_ros_camera.so">
+      <plugin name="gazebo_cam_plugin" filename="libgazebo_ros_camera.so">
 
         <ros>
-          <namespace>custom_ns</namespace>
-          <argument>image_raw:=custom_img</argument>
-          <argument>camera_info:=custom_info</argument>
+          <namespace>field_robot</namespace>
+          <argument>image_raw:=image</argument>
+          <argument>camera_info:=camera_info</argument>
         </ros>
 
-        <camera_name>custom_camera</camera_name>
+        <camera_name>gazebo_cam</camera_name>
         <frame_name>camera_link</frame_name>
         <hack_baseline>0.07</hack_baseline>
       </plugin>

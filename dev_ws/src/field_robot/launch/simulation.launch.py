@@ -5,6 +5,7 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -14,14 +15,20 @@ def generate_launch_description():
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory('field_robot'), 'robot_state_publisher.launch.py')
+            ),
+        ),
+
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
             ),
             launch_arguments={'world': world}.items(),
         ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'robot_state_publisher.launch.py')
-            ),
+        Node(
+            package='field_robot',
+            executable='spawner',
+            name='robot_spawner'
         ),
     ])
