@@ -28,7 +28,7 @@ def generate_launch_description():
 
         Node(
             package='field_robot',
-            executable='spawner',
+            executable='robot_spawner',
             name='robot_spawner'
         ),
     ])
