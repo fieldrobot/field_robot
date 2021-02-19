@@ -4,6 +4,7 @@ import cv_bridge
 import numpy
 import sys
 from sys import exit
+import time
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy
@@ -13,9 +14,6 @@ import tf2_ros
 
 from ament_index_python.packages import get_package_share_directory
 from gazebo_msgs.srv import SpawnEntity
-from sensor_msgs.msg import Image
-from sensor_msgs.msg import PointCloud2
-from skimage import measure
 from timeit import default_timer as timer
 from nav_msgs.msg import Odometry
 import std_msgs.msg
@@ -37,10 +35,16 @@ class PointCloud2FromCamera(Node):
         self.width = 420
 
         # publisher and subscriber definition
-        self.tfBuffer = tf2_ros.Buffer()
-        self.tfListener = tf2_ros.TransformListener(self.tfBuffer, node=) #Hiermit kann ich die Transformationen zwischen den einzelnene Frames abfragen.
-        self.tfListener.waitForTransform(self.goalFrame, self.cameraFrame, rospy.Time(0), rospy.Duration(3)) #Hier wird gewartet, bis ich Transformationen empfangen kann. Ansonsten kommt eine Fehlermeldung in der Art von: noch nicht
+        self.tf2Buffer = tf2_ros.Buffer()
+        self.tf2Listener = tf2_ros.TransformListener(buffer=self.tf2Buffer, node=self)
+        #self.tfListener = tf2_ros.TransformListener(self.tfBuffer) #Hiermit kann ich die Transformationen zwischen den einzelnene Frames abfragen.
+        #self.tfListener.waitForTransform(self.goalFrame, self.cameraFrame, rospy.Time(0), rospy.Duration(3)) #Hier wird gewartet, bis ich Transformationen empfangen kann. Ansonsten kommt eine Fehlermeldung in der Art von: noch nicht
         #self.pub = rospy.Publisher(self.pointCloudTopic, PointCloud2, queue_size=10) #Hiermit wird nachher die PointCloud2 publiziert
+        time.sleep(2)
+        ##TEST##
+        transform_result = self.tf2Buffer.lookup_transform(self.goalFrame, self.cameraFrame, self.get_clock().now())
+        print(transform_result)
+        ##TEST END##
 
         #qos_profile = QoSProfile()
         #qos_profile.reliability = QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_SYSTEM_DEFAULT
@@ -102,7 +106,8 @@ class PointCloud2FromCamera(Node):
 
         for singleBlob in blobsMes:
             #Hier werden die Transformationsaenerung und Rotationsaenderungen von dem Kamera-Frame zum Roboter-Frame berechnet. Die Funktion ist von ROS gegeben.
-            (transform_from_cam, rotation_from_cam) = self.tfListener.lookupTransform(self.goalFrame, self.cameraFrame, rospy.Time(0))
+            transform_result = self.tf2Buffer.lookupTransform()
+            #(transform_from_cam, rotation_from_cam) = self.tfListener.lookupTransform(self.goalFrame, self.cameraFrame, rospy.Time(0))
             #Ergebnis: Pixel-Bild-Koordinate in ROS-Koordinate (in m) ungewandelt (Beschreibung siehe bei der Funktion9
             cam_coordinate_unrotated = self.pixel_to_point(singleBlob[0], singleBlob[1])
             #aus der einfachen 3D-Koordinate, die bisher keinerlei Drehungen der Kamera beruecksichtigt, wird hier nun eine neue Koordinate generiert, die die Drehung beruecksichtigt.
