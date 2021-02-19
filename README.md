@@ -6,6 +6,3 @@ Also you will need to run 'colcon build' at least once to build to package. Then
 
 
 gazebo_ros is necessary
-
-To build and launch the Main Workspace, just run this command:
-> bash buildAndLaunchMainWorkspace.sh
