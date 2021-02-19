@@ -13,8 +13,8 @@ from rclpy.qos import QoSProfile
 import tf2_ros
 
 from ament_index_python.packages import get_package_share_directory
-from gazebo_msgs.srv import SpawnEntity
 from timeit import default_timer as timer
+from sensor_msgs.msg import Image
 from nav_msgs.msg import Odometry
 import std_msgs.msg
 
@@ -36,7 +36,7 @@ class PointCloud2FromCamera(Node):
 
         # publisher and subscriber definition
         self.tf2Buffer = tf2_ros.Buffer()
-        self.tf2Listener = tf2_ros.TransformListener(buffer=self.tf2Buffer, node=self)
+        self.tf2Listener = tf2_ros.TransformListener(self.tf2Buffer)
         #self.tfListener = tf2_ros.TransformListener(self.tfBuffer) #Hiermit kann ich die Transformationen zwischen den einzelnene Frames abfragen.
         #self.tfListener.waitForTransform(self.goalFrame, self.cameraFrame, rospy.Time(0), rospy.Duration(3)) #Hier wird gewartet, bis ich Transformationen empfangen kann. Ansonsten kommt eine Fehlermeldung in der Art von: noch nicht
         #self.pub = rospy.Publisher(self.pointCloudTopic, PointCloud2, queue_size=10) #Hiermit wird nachher die PointCloud2 publiziert
