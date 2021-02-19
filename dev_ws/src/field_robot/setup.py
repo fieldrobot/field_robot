@@ -32,7 +32,6 @@ setup(
     entry_points={
         'console_scripts': [
             'robot_spawner = field_robot.robot_spawner:main',
-            'point_cloud2_from_camera = field_robot.point_cloud2_from_camera:main',
         ],
     },
 )
