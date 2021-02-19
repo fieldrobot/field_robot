@@ -31,7 +31,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'spawner = field_robot.robot_spawner:main',
+            'robot_spawner = field_robot.robot_spawner:main',
         ],
     },
 )

@@ -224,28 +224,35 @@
       <joint_name>wheel_l_joint</joint_name>
       <joint_name>wheel_r_joint</joint_name>
     </plugin>
-    <plugin name="tfield_robot_diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
-      <odometry_frame>odom</odometry_frame>
-      <odometrySource>odom</odometrySource>
+  </gazebo>
+  <gazebo>
+    <plugin name="field_robot_diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <!--<odometrySource>odom</odometrySource>
       <publishOdomTF>true</publishOdomTF>
       <robotBaseFrame>base_footprint</robotBaseFrame>
       <publishWheelTF>false</publishWheelTF>
       <publishTf>true</publishTf>
-      <legacyMode>false</legacyMode>
-      <update_rate>30</update_rate>
-      <left_joint>wheel_l_joint</left_joint>
-      <right_joint>wheel_r_joint</right_joint>
-      <wheel_separation>0.160</wheel_separation>
-      <wheel_diameter>0.066</wheel_diameter>
-      <max_wheel_acceleration>1</max_wheel_acceleration>
-      <max_wheel_torque>10</max_wheel_torque>
-      <rosDebugLevel>na</rosDebugLevel>
+      <legacyMode>false</legacyMode>-->
 
       <ros>
         <namespace>field_robot</namespace>
         <argument>cmd_vel:=cmd_vel</argument>
         <argument>odom:=odom</argument>
       </ros>
+
+      <update_rate>30</update_rate>
+      <left_joint>wheel_l_joint</left_joint>
+      <right_joint>wheel_r_joint</right_joint>
+      <wheel_separation>0.160</wheel_separation>
+      <wheel_diameter>0.066</wheel_diameter>
+      <odometry_frame>odom</odometry_frame>
+
+      <!-- NEWCOMERS -->
+      <publish_odom_tf>true</publish_odom_tf>
+
+      <max_wheel_acceleration>1</max_wheel_acceleration>
+      <max_wheel_torque>10</max_wheel_torque>
+      <!--<rosDebugLevel>na</rosDebugLevel>-->
 
     </plugin>
   </gazebo>
@@ -288,5 +295,18 @@
       </plugin>
     </sensor>
   </gazebo>
+
+  <!--<gazebo>
+    <plugin name="gaezbo_ros_p3d" filename="libgazebo_ros_p3d.so">
+      <ros>
+        <namespace>field_robot</namespace>
+        <argument>odom:=odom</argument>
+      </ros>
+
+      <frame_name>world</frame_name>
+      <body_name>base_footprint</body_name>
+      <update_rate>30</update_rate>
+    </plugin>
+  </gazebo>-->
 
 </robot>

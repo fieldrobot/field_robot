@@ -15,20 +15,20 @@ def generate_launch_description():
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'robot_state_publisher.launch.py')
-            ),
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
             ),
             launch_arguments={'world': world}.items(),
         ),
 
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory('field_robot'), 'robot_state_publisher.launch.py')
+            ),
+        ),
+
         Node(
             package='field_robot',
-            executable='spawner',
+            executable='robot_spawner',
             name='robot_spawner'
         ),
     ])
