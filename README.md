@@ -6,3 +6,9 @@ Also you will need to run 'colcon build' at least once to build to package. Then
 
 
 gazebo_ros is necessary
+
+## Branches
+- Jeder arbeitet nur in seinem **EIGENEN** Branch.
+- Es wird möglichst kleinschrittig committed.
+- Namen müssen eindeutig und im _Snake Case_ (Bsp.: name_vorname) vergeben werden. 
+- Merges werden **NUR** nach Absprache (bz  w. Korrektur durch eine andere Person) durchgeführt.
