@@ -74,6 +74,14 @@
     <origin xyz="0.0 0.0 0.010" rpy="0 0 0"/>
   </joint>
 
+  <link name="scanner_link"/>
+
+  <joint name="scanner_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="scanner_link"/>
+    <origin xyz="0.0 0.0 0.25" rpy="0 0 0"/>
+  </joint>
+
   <link name="wheel_l">
     <visual>
       <origin xyz="0 0 0" rpy="1.57 0 0"/>
@@ -292,6 +300,43 @@
         <camera_name>gazebo_cam</camera_name>
         <frame_name>camera_link</frame_name>
         <hack_baseline>0.07</hack_baseline>
+      </plugin>
+    </sensor>
+  </gazebo>
+  
+  <gazebo reference="scanner_link">
+    <sensor name="laser_scanner" type="ray">
+      <always_on>true</always_on>
+      <visualize>true</visualize>
+      <pose>0 0 0 0 0 0</pose>
+      <update_rate>5</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1.000000</resolution>
+            <min_angle>0.000000</min_angle>
+            <max_angle>6.280000</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.120000</min>
+          <max>3.5</max>
+          <resolution>0.015000</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="tb3_laserscanner" filename="libgazebo_ros_ray_sensor.so">
+        <ros>
+          <namespace>field_robot</namespace>
+          <remapping>~/out:=scan</remapping>
+        </ros>
+        <output_type>sensor_msgs/LaserScan</output_type>
+        <frame_name>scanner_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>
