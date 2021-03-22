@@ -38,14 +38,14 @@ void getImuAngle()
   
   adjusted_angular_speed = kalmanX.getRate();
 
-  imuValues.header.frame_id = "odom";
+  /*imuValues.header.frame_id = "odom";
   imuValues.angular_velocity.x = gyroX;
   imuValues.angular_velocity.y = gyroY;
   imuValues.angular_velocity.z = gyroZ;
   imuValues.linear_acceleration.x = accX;
   imuValues.linear_acceleration.y = accY;
   imuValues.linear_acceleration.z = accZ;
-  imuPub.publish(&imuValues);
+  imuPub.publish(&imuValues);*/
 }
  
 void i2c_imu_init(){

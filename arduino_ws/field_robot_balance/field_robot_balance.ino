@@ -7,30 +7,30 @@
 */
 
 #include <ros.h>
-#include <std_msgs/Float64.h>
-#include <sensor_msgs/Imu.h>
-#include <std_msgs/Header.h>
+//#include <std_msgs/Float64.h>
+//#include <sensor_msgs/Imu.h>
+//#include <std_msgs/Header.h>
 #include <Wire.h>
 #include "Kalman.h"
 #include "defs.h"
 
 ros::NodeHandle nh;
 
-void targetAngleCallback(const std_msgs::Float64& msg) {
+/*void targetAngleCallback(const std_msgs::Float64& msg) {
   speed_control_result = msg.data;
-}
+}*/
 
 /*void targetSteerCallback(const std_msgs::Float64& msg) {
   steer_command = msg.data;
 }*/
 
 //std_msgs::Float64 angleValue;
-sensor_msgs::Imu imuValues;
+//sensor_msgs::Imu imuValues;
 //std_msgs::Float64 loopRate;
-ros::Subscriber<std_msgs::Float64> angleSub("targetAngle", &targetAngleCallback);
+//ros::Subscriber<std_msgs::Float64> angleSub("targetAngle", &targetAngleCallback);
 //ros::Subscriber<std_msgs::Float64> steerSub("targetSteer", &targetSteerCallback);
 //ros::Publisher anglePub("angle", &angleValue);
-ros::Publisher imuPub("imuUnadjusted", &imuValues);
+//ros::Publisher imuPub("imuUnadjusted", &imuValues);
 //ros::Publisher loopRatePub("loopRate", &loopRate);
 
 Kalman kalmanX; // Create the Kalman instance
@@ -38,11 +38,11 @@ Kalman kalmanX; // Create the Kalman instance
 //one time setup
 void setup() {
 
-  nh.initNode();
-  nh.subscribe(angleSub);
+  //nh.initNode();
+  //nh.subscribe(angleSub);
   //nh.subscribe(steerSub);
   //nh.advertise(anglePub);
-  nh.advertise(imuPub);
+  //nh.advertise(imuPub);
   //nh.advertise(loopRatePub);
   
   //Serial.begin(SERIAL_BAUD); //initialize serial communication
@@ -86,17 +86,19 @@ void loop() {
 
   }*/
   
-  //estimated_speed = speed_command; // Positive: forward
+  estimated_speed = speed_command; // Positive: forward
   //estimated_speed_filtered = estimated_speed_filtered * 0.9 + (float)estimated_speed * 0.1; // low pass filter on estimated speed
 
   //measured_angular_speed = adjusted_angle - adjusted_angle_old;
   
   // piSpeedControl  
-  //speed_control_result = speedControl(estimated_speed_filtered, throttle);
+  speed_control_result = speedControl(estimated_speed, throttle);
+  //Serial.print("speed_control_result:           "); Serial.print(speed_control_result);
 
   // pidBalanceControl
   speed_command = (int)pidBalanceControl(speed_control_result, adjusted_angle);
-  //Serial.print(adjusted_angle);
+  /*Serial.print("adjusted_angle:           "); Serial.print(adjusted_angle);
+  Serial.print("speed_command:           "); Serial.print(speed_command);*/
      
   // communication with the hoverboard
   //receive feedback form hoverboard (debugging, ...)
@@ -110,6 +112,6 @@ void loop() {
 
   //ENDING
   nh.spinOnce();
-  //Serial.println(); //debug: print every iteration's prints in a new line
+  //Serial.print("         "); Serial.println("END"); //debug: print every iteration's prints in a new line
 
 }

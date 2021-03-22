@@ -20,11 +20,15 @@ float speedControl(double actual_speed, double set_speed)
 {
  
   speed_error = set_speed - actual_speed;
+  /*Serial.print("actual_speed:           "); Serial.print(actual_speed);
+  Serial.print("speed_error:           "); Serial.print(speed_error);*/
 
-  speed_error_cumulated += constrain((speed_error * dt_millisec * 0.00002)/*/10000000*/, -(0.004 * dt_millisec), (0.004 * dt_millisec));
-  speed_error_cumulated = constrain(speed_error_cumulated, -(maximum_speed_error_cumulated), (maximum_speed_error_cumulated));
+  /*speed_error_cumulated += constrain((speed_error * dt_millisec * 0.00002), -(0.004 * dt_millisec), (0.004 * dt_millisec)); //10000000
+  speed_error_cumulated = constrain(speed_error_cumulated, -(maximum_speed_error_cumulated), (maximum_speed_error_cumulated));*/
 
-  speed_control = -(kp_throttle * speed_error) + -(ki_throttle * speed_error_cumulated);
+  //speed_error_cumulated += constrain((speed_error * dt_millisec * 0.00002), (maximum_speed_error_cumulated), (maximum_speed_error_cumulated));
+
+  speed_control -= (kp_throttle * speed_error);// + -(ki_throttle * speed_error_cumulated);
   speed_control = constrain(speed_control, -maximum_speed_control, maximum_speed_control);
 
   return speed_control;

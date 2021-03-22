@@ -4,7 +4,7 @@
 #define SERIAL_BAUD         115200      // [-] Baud rate for built-in Serial (used for the Serial Monitor)interval
 
 //general values
-double throttle = 0;; //unit not defined
+double throttle = 0; //unit not defined
 
 //timer values
 double current_time_microsec; //time is in microseconds
@@ -15,26 +15,26 @@ double old_time_millisec;
 double dt_millisec;
 
 //data from IMU, possibly filtered etc. (angle, angular speed, ...)
-//double angle_offset;
+//double angle_offset; 
 double measured_angle; //°
 double adjusted_angle; //° (filtered and angle-offset adjusted)
 double adjusted_angle_old;
 double measured_angular_speed; //unit not identifiable
 double adjusted_angular_speed; //ggf.: °/s
 double adjusted_angular_speed_old;
-double angle_offset = 179.84;
+double angle_offset = 179.30;//179.00;
 int16_t accX, accY, accZ; //six values received from imu-sensor
 int16_t gyroX, gyroY, gyroZ;
 int16_t temp;
 
 //speed control
-double kp_throttle = 0.0025;
+double kp_throttle = 0.0000001;
 double ki_throttle = 1;//420;
 double speed_error_cumulated = 0;
 double speed_error = 0;
 double speed_error_old = 0;
 double speed_control;
-double maximum_speed_control = 60;
+double maximum_speed_control = 5;
 double maximum_speed_error_cumulated = 1;
 double speed_control_result;
 
