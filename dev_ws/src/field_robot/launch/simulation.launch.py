@@ -9,7 +9,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'field_with_robot.world')
+    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'simple_row_level_6.world')
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     return LaunchDescription([
