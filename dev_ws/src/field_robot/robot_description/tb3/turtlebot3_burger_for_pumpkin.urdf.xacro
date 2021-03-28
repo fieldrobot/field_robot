@@ -243,7 +243,7 @@
       <legacyMode>false</legacyMode>-->
 
       <ros>
-        <namespace>field_robot</namespace>
+        <!--<namespace>field_robot</namespace>-->
         <argument>cmd_vel:=cmd_vel</argument>
         <argument>odom:=odom</argument>
       </ros>
