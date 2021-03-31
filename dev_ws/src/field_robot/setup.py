@@ -39,6 +39,7 @@ setup(
     entry_points={
         'console_scripts': [
             'robot_spawner = field_robot.robot_spawner:main',
+            'empty_space_follower = field_robot.empty_space_follower:main',
         ],
     },
 )
