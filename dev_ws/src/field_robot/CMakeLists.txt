@@ -32,6 +32,7 @@ install(DIRECTORY
   models
   robot_description
   worlds
+  config
   DESTINATION share/${PROJECT_NAME}/
 )
 
@@ -51,6 +52,7 @@ ament_python_install_package(${PROJECT_NAME})
 #install python executables
 install(PROGRAMS
   scripts/robot_spawner.py
+  scripts/empty_space_follower.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

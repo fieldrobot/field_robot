@@ -243,7 +243,7 @@
       <legacyMode>false</legacyMode>-->
 
       <ros>
-        <namespace>field_robot</namespace>
+        <!--<namespace>field_robot</namespace>-->
         <argument>cmd_vel:=cmd_vel</argument>
         <argument>odom:=odom</argument>
       </ros>
@@ -307,7 +307,7 @@
   <gazebo reference="scanner_link">
     <sensor name="laser_scanner" type="ray">
       <always_on>true</always_on>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <pose>0 0 0 0 0 0</pose>
       <update_rate>5</update_rate>
       <ray>
