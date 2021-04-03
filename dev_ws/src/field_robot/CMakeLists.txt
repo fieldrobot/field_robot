@@ -59,6 +59,7 @@ ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS
   scripts/robot_spawner.py
   scripts/empty_space_follower.py
+  scripts/empty_space_follower_two.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
