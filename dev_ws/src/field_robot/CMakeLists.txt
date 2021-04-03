@@ -20,6 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 #installing launch files
 install(DIRECTORY
@@ -34,6 +35,11 @@ install(DIRECTORY
   worlds
   config
   DESTINATION share/${PROJECT_NAME}/
+)
+
+#adding action files
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "action/EmptySpaceFollower.action"
 )
 
 #include cpp "include" directories
