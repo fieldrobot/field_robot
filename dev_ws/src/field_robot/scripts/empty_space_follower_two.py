@@ -30,7 +30,7 @@ class EmptySpaceFollowerServer(Node):
         
         self.bridge = cv_bridge.CvBridge()
 
-        self.working = False
+        self.working = True
 
         self.publish = self.create_publisher(Twist, '/cmd_vel', 10)
 
@@ -116,7 +116,7 @@ class EmptySpaceFollowerServer(Node):
 
         #preparing the message to be send
         twist_msg = Twist()
-        twist_msg.linear.x = 0.5
+        twist_msg.linear.x = 0.2
         twist_msg.linear.y = 0.0
         twist_msg.linear.z = 0.0
         twist_msg.angular.x = 0.0
@@ -125,7 +125,7 @@ class EmptySpaceFollowerServer(Node):
 
         #targets/configuaration
         linear_target = 0.2
-        angular_d = 0.005
+        angular_d = 0.002
         linear_d = 1
 
         #p-control
