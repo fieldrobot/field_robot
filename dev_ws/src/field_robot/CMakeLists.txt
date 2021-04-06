@@ -40,6 +40,7 @@ install(DIRECTORY
 #adding action files
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/EmptySpaceFollower.action"
+  "action/HeadlandTurn.action"
 )
 
 #include cpp "include" directories

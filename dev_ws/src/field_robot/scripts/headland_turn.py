@@ -1,28 +1,22 @@
-import os
-import sys
-
+# importing the client library for python: default for every node
 import rclpy
-from rclpy.action import ActionServer
+# importing the node, necessary to register this script as a node
 from rclpy.node import Node
-from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy, QoSProfile
-import rclpy.time
-from rclpy.duration import Duration
+# importing libraries to keep the aciton server running
+from rclpy.action import ActionServer, CancelResponse # default action server and making canceling possible
+# necessary to execute callbacks at the same time without one blocking the other ones
+from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.executors import MultiThreadedExecutor
 
-from ament_index_python.packages import get_package_share_directory
-
+# importing message and action files to receive and send data via ROS2
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
-import std_msgs.msg
-from field_robot.action import EmptySpaceFollower
+from field_robot.action import HeadlandTurn
 
-import cv2
-import cv_bridge
-import numpy
 import math
 import time
-from timeit import default_timer as timer
 
-class EmptySpaceFollowerServer(Node):
+class HeadlandTurnServer(Node):
     def __init__(self):
         #start node
         super().__init__('headland_turn')
@@ -30,17 +24,18 @@ class EmptySpaceFollowerServer(Node):
 
         self.publish = self.create_publisher(Twist, '/cmd_vel', 10)
 
-        '''self.action_server = ActionServer(
-            self,
-            EmptySpaceFollower,
-            'headland_turn',
-            self.action_callback
-        )'''
+        self.action_server = ActionServer(
+            node=self,
+            action_type=HeadlandTurn,
+            action_name='headland_turn',
+            execute_callback=self.action_callback,
+            callback_group=ReentrantCallbackGroup(),
+            cancel_callback=self.cancel_callback
+        )
 
         self.get_logger().info('initialized')
-        self.action_callback()
 
-    def action_callback(self):#, goal_handle):
+    def action_callback(self, goal_handle):
         self.get_logger().info('Successfully started headland turn')
 
         # setting parameters
@@ -66,11 +61,6 @@ class EmptySpaceFollowerServer(Node):
         # starting movement
         self.publish.publish(twist_msg)
 
-        #actual moving loop
-        while time.perf_counter() < self.end_time:
-            # if canceled, stop motion here and return canceled
-            time.sleep(self.steer_time/20)
-
         # setting up breaking
         twist_msg = Twist()
         twist_msg.linear.x = 0.0
@@ -80,17 +70,30 @@ class EmptySpaceFollowerServer(Node):
         twist_msg.angular.y = 0.0
         twist_msg.angular.z = 0.0
 
+        result = HeadlandTurn.Result()
+
+        #actual moving loop
+        while time.perf_counter() < self.end_time:
+            # if canceled, stop motion here and return canceled
+            if goal_handle.is_cancel_requested:
+                self.publish.publish(twist_msg)
+                goal_handle.canceled()
+                return result
+            time.sleep(self.steer_time/20)
+
         # breaking after turn
         self.publish.publish(twist_msg)
+        goal_handle.succeed()
+        return result
 
-        '''goal_handle.succeed()
-        result = EmptySpaceFollower.Result()
-        return result'''
+    def cancel_callback(self, cancel_requests):
+        return CancelResponse.ACCEPT
 
 def main():
     rclpy.init()
-    follower = EmptySpaceFollowerServer()
-    rclpy.spin(follower)
+    headlandTurn = HeadlandTurnServer()
+    executor = MultiThreadedExecutor()
+    rclpy.spin(headlandTurn, executor=executor)
     rclpy.shutdown()
 
 if __name__ == '__main__':
