@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 # importing the client library for python: default for every node
 import rclpy
 # importing the node, necessary to register this script as a node
