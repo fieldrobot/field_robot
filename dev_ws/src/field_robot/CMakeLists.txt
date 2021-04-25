@@ -22,7 +22,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
-find_package(builtin_interfaces REQUIRED)
+#find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 
@@ -41,36 +41,43 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+#defining message files
+set(msg_files
+
+)
+
+#defining service files
+set(srv_files
+
+)
+
+#defining action files
+set(action_files
+  ${msg_files}
+  ${srv_files}
+  ${action_files}
+)
+
 #adding action files
 rosidl_generate_interfaces(${PROJECT_NAME}
   "action/Emptyspacefollower.action"
+  "action/BTNode.action"
   "action/HeadlandTurn.action"
-  DEPENDENCIES
-    builtin_interfaces
 )
 
 #include cpp "include" directories
 include_directories(include)
 
 #create cpp executables
-#add_executable(navigation src/navigation.cpp)
-add_library(navigation SHARED
+add_executable(navigation
   src/navigation.cpp)
-target_include_directories(navigation PRIVATE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-target_compile_definitions(navigation
-  PRIVATE "ACTION_TUTORIALS_CPP_BUILDING_DLL")
 ament_target_dependencies(navigation
   rclcpp
   rclcpp_action
   behaviortree_cpp_v3)
-#rclcpp_components_register_node(navigation PLUGIN "field_robot::FibonacciActionClient" EXECUTABLE fibonacci_action_client)
-install(TARGETS
-    navigation
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin)
+
+rosidl_target_interfaces(navigation
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 #install cpp executables
 install(TARGETS
@@ -80,6 +87,9 @@ install(TARGETS
 
 #install python modules
 ament_python_install_package(${PROJECT_NAME})
+
+#export messages
+ament_export_dependencies(rosidl_default_runtime)
 
 #install python executables
 install(PROGRAMS
