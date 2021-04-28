@@ -28,7 +28,6 @@ class ROSNode : public rclcpp::Node
 
         void set_action(std::string pNodeName)
         {
-            std::cout << pNodeName << std::endl;
             this->nodeName = pNodeName;
             this->client_ptr_ = rclcpp_action::create_client<BTNode>(this, this->nodeName);
         }
@@ -49,16 +48,20 @@ class ROSNode : public rclcpp::Node
             auto send_goal_options = rclcpp_action::Client<BTNode>::SendGoalOptions();
             send_goal_options.goal_response_callback = std::bind(&ROSNode::goal_response_callback, this, _1);
             send_goal_options.result_callback = std::bind(&ROSNode::result_callback, this, _1);
-            this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
+            auto goal_handle_future = this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
+
+            this->goal_handle = goal_handle_future.get();
         }
 
         void cancel_goal()
         {
             //this->client_ptr_->async_cancel_goal(GoalHandleBTNode);
+            auto cancel_result_future = client_ptr_->async_cancel_goal(this->goal_handle);
         }
     
     private:
         rclcpp_action::Client<BTNode>::SharedPtr client_ptr_;
+        GoalHandleBTNode::SharedPtr goal_handle;
         std::string nodeName;
 
         void goal_response_callback(std::shared_future<GoalHandleBTNode::SharedPtr> future)
@@ -89,21 +92,16 @@ class ROSNode : public rclcpp::Node
             this->endedTask = true;
         }
 
-        /*void cancel_callback(rclcpp::CancelResponse::SharedPtr response)
-        {
-        }*/
-
 };
 
 namespace Nodes
 {
 
-    class EmptySpaceFollowerClientNode : public BT::AsyncActionNode
+    class BTRosActionNode : public BT::AsyncActionNode
     {
         public:
-            explicit EmptySpaceFollowerClientNode(const std::string& name, const BT::NodeConfiguration& config) : BT::AsyncActionNode(name, config)
+            explicit BTRosActionNode(const std::string& name, const BT::NodeConfiguration& config) : BT::AsyncActionNode(name, config)
             {
-                //auto node = std::make_shared<ROSNode>();
             }
 
             static BT::PortsList providedPorts()
@@ -116,6 +114,10 @@ namespace Nodes
 
             BT::NodeStatus tick() override
             {
+                std::cout << "rostick" << std::endl;
+                this->haltRequested = false;
+                this->canceled = false;
+
                 BT::Optional<std::string> msg = getInput<std::string>("action");
                 if (!msg)
                 {
@@ -123,21 +125,23 @@ namespace Nodes
                                         msg.error() );
                 }
 
-                this->haltRequested = false;
-
+                rclcpp::init(0, {});
                 auto node = std::make_shared<ROSNode>();
+
                 node->set_action(msg.value());
                 node->send_goal();
                 while (!node->endedTask)
                 {
                     rclcpp::spin_some(node);
-                    if (this->haltRequested)
+                    if (this->haltRequested && !this->canceled)
                     {
                         node->cancel_goal();
-                        return BT::NodeStatus::SUCCESS;
+                        this->canceled = true;
                     }
                     
                 }
+
+                rclcpp::shutdown();
 
                 return BT::NodeStatus::SUCCESS;
             }
@@ -149,12 +153,13 @@ namespace Nodes
         
         private:
             bool haltRequested;
+            bool canceled;
 
     };
 
 }
 
-/*namespace DummyNodes
+namespace DummyNodes
 {
 
     BT::NodeStatus CheckBattery()
@@ -199,9 +204,9 @@ namespace Nodes
             }
     };
 
-} // end namespace*/
+} // end namespace
 
-/*using namespace BT;
+using namespace BT;
 
 static const char* xml_text = R"(
 
@@ -210,6 +215,7 @@ static const char* xml_text = R"(
      <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <CheckBattery   name="battery_ok"/>
+            <BTRosActionNode action="empty_space_follower"/>
             <ApproachObject name="krank"/>
         </Sequence>
      </BehaviorTree>
@@ -217,13 +223,16 @@ static const char* xml_text = R"(
  </root>
  )";
 
-int main()
+int main(int argc, char **argv)
 {
+    rclcpp::init(argc, argv);
+
     BehaviorTreeFactory factory;
 
     using namespace DummyNodes;
 
     factory.registerNodeType<ApproachObject>("ApproachObject");
+    factory.registerNodeType<Nodes::BTRosActionNode>("BTRosActionNode");
 
     factory.registerSimpleCondition("CheckBattery", std::bind(CheckBattery));
 
@@ -231,16 +240,7 @@ int main()
 
     tree.tickRoot();
 
-    return 0;
-}*/
-
-int main(int argc, char **argv)
-{
-    rclcpp::init(argc, argv);
-    /*auto node = std::make_shared<ROSNode>();
-    node->set_action("nodine");
-    node->send_goal();
-    rclcpp::spin(node);*/
     rclcpp::shutdown();
+
     return 0;
 }
