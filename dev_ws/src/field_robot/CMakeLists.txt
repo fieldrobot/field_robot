@@ -48,21 +48,21 @@ set(msg_files
 
 #defining service files
 set(srv_files
-
+  "service/BTNode.srv"
 )
 
 #defining action files
 set(action_files
-  ${msg_files}
-  ${srv_files}
-  ${action_files}
+  "action/Emptyspacefollower.action"
+  "action/BTNode.action"
+  "action/HeadlandTurn.action"
 )
 
 #adding action files
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/Emptyspacefollower.action"
-  "action/BTNode.action"
-  "action/HeadlandTurn.action"
+  ${msg_files}
+  ${srv_files}
+  ${action_files}
 )
 
 #include cpp "include" directories
@@ -96,6 +96,7 @@ install(PROGRAMS
   scripts/robot_spawner.py
   scripts/empty_space_follower_two.py
   scripts/headland_turn.py
+  scripts/service_in_row.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

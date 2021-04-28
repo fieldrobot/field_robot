@@ -24,7 +24,7 @@ from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolic
 # importing message and action files to receive and send data via ROS2
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
-from field_robot.action import Emptyspacefollower
+from field_robot.action import BTNode
 
 # class handling everything concerning empty space following
 class EmptyspacefollowerServer(Node):
@@ -50,7 +50,7 @@ class EmptyspacefollowerServer(Node):
         # registering the action server, defining its callbacks and declaring it's callback group (necessary for parallel execution)
         self.action_server = ActionServer(
             node=self, # the node (this class) to associate with
-            action_type=Emptyspacefollower, # action message type
+            action_type=BTNode, # action message type
             action_name='empty_space_follower', # action name
             execute_callback=self.action_callback, # the callback called when action server request accepted (by default: all are accepted)
             callback_group=ReentrantCallbackGroup(), # making parallel execution possible by multithreading
@@ -83,7 +83,7 @@ class EmptyspacefollowerServer(Node):
         self.working = True
         self.get_logger().info('Successfully initiated navigation')
         # returning the result of the action message file is mandatory
-        result = Emptyspacefollower.Result()
+        result = BTNode.Result()
         # checks constantly whether there there is a request that the execution is canceled and navigation is stopped
         while True:
             time.sleep(0.2) # to reduce computational needs: pause

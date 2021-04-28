@@ -1,11 +1,15 @@
 #include <functional>
 #include <future>
+#include <chrono>
+#include <cinttypes>
 #include <memory>
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
 
 #include "field_robot/action/bt_node.hpp"
+#include "field_robot/srv/bt_node.hpp"
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
@@ -14,7 +18,7 @@
 #include "behaviortree_cpp_v3/behavior_tree.h"
 #include "behaviortree_cpp_v3/bt_factory.h"
 
-class ROSNode : public rclcpp::Node
+class ROSActionNode : public rclcpp::Node
 {
     public:
         using BTNode = field_robot::action::BTNode;
@@ -22,32 +26,33 @@ class ROSNode : public rclcpp::Node
         bool endedTask;
         bool failure = false;
 
-        ROSNode() : Node("behavior_tree_node")
+        ROSActionNode(const std::string & node_name) : Node(node_name)
         {
         }
 
         void set_action(std::string pNodeName)
         {
-            this->nodeName = pNodeName;
-            this->client_ptr_ = rclcpp_action::create_client<BTNode>(this, this->nodeName);
+            std::cout << pNodeName << std::endl;
+            this->client_ptr_ = rclcpp_action::create_client<BTNode>(this, pNodeName);
         }
 
         void send_goal()
         {
-            using namespace std::placeholders;
+            //using namespace std::placeholders;
 
             this->endedTask = false;
 
+            sleep(2);
+
             if (!this->client_ptr_->wait_for_action_server()) {
-            RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
-            rclcpp::shutdown();
+                RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
             }
 
             auto goal_msg = BTNode::Goal();
 
             auto send_goal_options = rclcpp_action::Client<BTNode>::SendGoalOptions();
-            send_goal_options.goal_response_callback = std::bind(&ROSNode::goal_response_callback, this, _1);
-            send_goal_options.result_callback = std::bind(&ROSNode::result_callback, this, _1);
+            send_goal_options.goal_response_callback = std::bind(&ROSActionNode::goal_response_callback, this, std::placeholders::_1);
+            send_goal_options.result_callback = std::bind(&ROSActionNode::result_callback, this, std::placeholders::_1);
             auto goal_handle_future = this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
 
             this->goal_handle = goal_handle_future.get();
@@ -62,7 +67,6 @@ class ROSNode : public rclcpp::Node
     private:
         rclcpp_action::Client<BTNode>::SharedPtr client_ptr_;
         GoalHandleBTNode::SharedPtr goal_handle;
-        std::string nodeName;
 
         void goal_response_callback(std::shared_future<GoalHandleBTNode::SharedPtr> future)
         {
@@ -126,13 +130,14 @@ namespace Nodes
                 }
 
                 rclcpp::init(0, {});
-                auto node = std::make_shared<ROSNode>();
+                auto node = std::make_shared<ROSActionNode>(this->name());
 
                 node->set_action(msg.value());
                 node->send_goal();
                 while (!node->endedTask)
                 {
                     rclcpp::spin_some(node);
+                    std::cout << "spinning" << std::endl;
                     if (this->haltRequested && !this->canceled)
                     {
                         node->cancel_goal();
@@ -155,6 +160,58 @@ namespace Nodes
             bool haltRequested;
             bool canceled;
 
+    };
+
+    class BTRosServiceNode : public BT::SyncActionNode
+    {
+        public:
+            explicit BTRosServiceNode(const std::string& name) : BT::SyncActionNode(name, {})
+            {
+            }
+
+            static BT::PortsList providedPorts()
+            {
+                return
+                {
+                    BT::InputPort<std::string>("service")
+                };
+            }
+
+            BT::NodeStatus tick() override
+            {
+                rclcpp::init(0, {});
+                
+                BT::Optional<std::string> msg = getInput<std::string>("service");
+                if (!msg)
+                {
+                    throw BT::RuntimeError("missing required input [message]: ", 
+                                        msg.error() );
+                }
+
+                std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared(this->name());
+                rclcpp::Client<field_robot::srv::BTNode>::SharedPtr client = node->create_client<field_robot::srv::BTNode>(msg.value());
+
+                auto request = std::make_shared<field_robot::srv::BTNode::Request>();
+
+                while (!client->wait_for_service())
+                {
+                }
+
+                auto result = client->async_send_request(request);     
+
+                if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
+                {
+                    if (result.get()->confirm)
+                    {
+                        rclcpp::shutdown();
+                        return BT::NodeStatus::SUCCESS;
+                    }
+                }
+                rclcpp::shutdown();
+                return BT::NodeStatus::FAILURE;
+            }
+
+        private:
     };
 
 }
@@ -215,7 +272,7 @@ static const char* xml_text = R"(
      <BehaviorTree ID="MainTree">
         <Sequence name="root_sequence">
             <CheckBattery   name="battery_ok"/>
-            <BTRosActionNode action="empty_space_follower"/>
+            <BTRosActionNode action="/empty_space_follower"/>
             <ApproachObject name="krank"/>
         </Sequence>
      </BehaviorTree>
@@ -238,6 +295,8 @@ int main(int argc, char **argv)
 
     auto tree = factory.createTreeFromText(xml_text);
 
+    tree.tickRoot();
+    //SleepMS(150);
     tree.tickRoot();
 
     rclcpp::shutdown();
