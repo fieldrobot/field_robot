@@ -13,7 +13,7 @@ from rclpy.executors import MultiThreadedExecutor
 # importing message and action files to receive and send data via ROS2
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
-from field_robot.action import HeadlandTurn
+from field_robot.action import BTNode
 
 import math
 import time
@@ -28,7 +28,7 @@ class HeadlandTurnServer(Node):
 
         self.action_server = ActionServer(
             node=self,
-            action_type=HeadlandTurn,
+            action_type=BTNode,
             action_name='headland_turn',
             execute_callback=self.action_callback,
             callback_group=ReentrantCallbackGroup(),
@@ -59,7 +59,7 @@ class HeadlandTurnServer(Node):
         twist_msg.angular.z = self.direction * self.angular_vel
 
         # setting up the timer
-        self.end_time = time.perf_counter() + self.steer_time
+        self.end_time = time.perf_counter() + self.steer_time - 0.5
         # starting movement
         self.publish.publish(twist_msg)
 
@@ -72,7 +72,7 @@ class HeadlandTurnServer(Node):
         twist_msg.angular.y = 0.0
         twist_msg.angular.z = 0.0
 
-        result = HeadlandTurn.Result()
+        result = BTNode.Result()
 
         #actual moving loop
         while time.perf_counter() < self.end_time:
@@ -86,6 +86,7 @@ class HeadlandTurnServer(Node):
         # breaking after turn
         self.publish.publish(twist_msg)
         goal_handle.succeed()
+        print('returning success')
         return result
 
     def cancel_callback(self, cancel_requests):

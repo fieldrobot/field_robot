@@ -23,6 +23,7 @@ class ROSActionNode : public rclcpp::Node
     public:
         using BTNode = field_robot::action::BTNode;
         using GoalHandleBTNode = rclcpp_action::ClientGoalHandle<BTNode>;
+        std::shared_future<GoalHandleBTNode::SharedPtr> goal_handle_future;
         bool endedTask;
         bool failure = false;
 
@@ -32,17 +33,12 @@ class ROSActionNode : public rclcpp::Node
 
         void set_action(std::string pNodeName)
         {
-            std::cout << pNodeName << std::endl;
             this->client_ptr_ = rclcpp_action::create_client<BTNode>(this, pNodeName);
         }
 
         void send_goal()
         {
-            //using namespace std::placeholders;
-
             this->endedTask = false;
-
-            sleep(2);
 
             if (!this->client_ptr_->wait_for_action_server()) {
                 RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
@@ -53,20 +49,19 @@ class ROSActionNode : public rclcpp::Node
             auto send_goal_options = rclcpp_action::Client<BTNode>::SendGoalOptions();
             send_goal_options.goal_response_callback = std::bind(&ROSActionNode::goal_response_callback, this, std::placeholders::_1);
             send_goal_options.result_callback = std::bind(&ROSActionNode::result_callback, this, std::placeholders::_1);
-            auto goal_handle_future = this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
-
-            this->goal_handle = goal_handle_future.get();
+            this->goal_handle_future = this->client_ptr_->async_send_goal(goal_msg, send_goal_options);
         }
 
         void cancel_goal()
         {
             //this->client_ptr_->async_cancel_goal(GoalHandleBTNode);
-            auto cancel_result_future = client_ptr_->async_cancel_goal(this->goal_handle);
+            auto goal_handle = this->goal_handle_future.get();
+            auto cancel_result_future = client_ptr_->async_cancel_goal(goal_handle);
         }
     
     private:
         rclcpp_action::Client<BTNode>::SharedPtr client_ptr_;
-        GoalHandleBTNode::SharedPtr goal_handle;
+        //GoalHandleBTNode::SharedPtr goal_handle;
 
         void goal_response_callback(std::shared_future<GoalHandleBTNode::SharedPtr> future)
         {
@@ -82,18 +77,21 @@ class ROSActionNode : public rclcpp::Node
         {
             switch (result.code) {
             case rclcpp_action::ResultCode::SUCCEEDED:
+                this->endedTask = true;
                 break;
             case rclcpp_action::ResultCode::ABORTED:
                 RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
+                this->endedTask = true;
                 return;
             case rclcpp_action::ResultCode::CANCELED:
                 RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
+                this->endedTask = true;
                 return;
             default:
                 RCLCPP_ERROR(this->get_logger(), "Unknown result code");
+                this->endedTask = true;
                 return;
             }
-            this->endedTask = true;
         }
 
 };
@@ -104,8 +102,20 @@ namespace Nodes
     class BTRosActionNode : public BT::AsyncActionNode
     {
         public:
+            std::shared_ptr<ROSActionNode> node;
+
             explicit BTRosActionNode(const std::string& name, const BT::NodeConfiguration& config) : BT::AsyncActionNode(name, config)
             {
+                //rclcpp::init(0, {});
+
+                BT::Optional<std::string> msg = getInput<std::string>("action");
+                if (!msg)
+                {
+                    throw BT::RuntimeError("missing required input [message]: ", 
+                                        msg.error() );
+                }
+                this->node = std::make_shared<ROSActionNode>(this->name());
+                this->node->set_action(msg.value());
             }
 
             static BT::PortsList providedPorts()
@@ -118,41 +128,37 @@ namespace Nodes
 
             BT::NodeStatus tick() override
             {
-                std::cout << "rostick" << std::endl;
+                std::cout << "ticking " << this->name() << std::endl;
+                setStatus(BT::NodeStatus::RUNNING);
                 this->haltRequested = false;
                 this->canceled = false;
+                //auto node = std::make_shared<ROSActionNode>(this->name());
 
-                BT::Optional<std::string> msg = getInput<std::string>("action");
-                if (!msg)
-                {
-                    throw BT::RuntimeError("missing required input [message]: ", 
-                                        msg.error() );
-                }
-
-                rclcpp::init(0, {});
-                auto node = std::make_shared<ROSActionNode>(this->name());
-
-                node->set_action(msg.value());
-                node->send_goal();
-                while (!node->endedTask)
+                //this->node->set_action(msg.value());
+                this->node->send_goal();
+                rclcpp::spin_until_future_complete(node, this->node->goal_handle_future);
+                std::cout << "hier" << std::endl;
+                while (!this->node->endedTask)
                 {
                     rclcpp::spin_some(node);
-                    std::cout << "spinning" << std::endl;
                     if (this->haltRequested && !this->canceled)
                     {
-                        node->cancel_goal();
+                        std::cout << "canceling/halting" << std::endl;
+                        this->node->cancel_goal();
                         this->canceled = true;
                     }
                     
                 }
 
-                rclcpp::shutdown();
+                //rclcpp::shutdown();
 
                 return BT::NodeStatus::SUCCESS;
             }
 
             void halt() override
             {
+
+                std::cout << "halting" << std::endl;
                 this->haltRequested = true;
             }
         
@@ -165,8 +171,22 @@ namespace Nodes
     class BTRosServiceNode : public BT::SyncActionNode
     {
         public:
-            explicit BTRosServiceNode(const std::string& name) : BT::SyncActionNode(name, {})
+            std::shared_ptr<rclcpp::Node> node;
+            std::shared_ptr<field_robot::srv::BTNode::Request> request;
+            rclcpp::Client<field_robot::srv::BTNode>::SharedPtr client;
+
+            explicit BTRosServiceNode(const std::string& name, const BT::NodeConfiguration& config) : BT::SyncActionNode(name, config)
             {
+                //rclcpp::init(0, {});
+                BT::Optional<std::string> msg = getInput<std::string>("service");
+                if (!msg)
+                {
+                    throw BT::RuntimeError("missing required input [message]: ", 
+                                        msg.error() );
+                }
+                this->node = rclcpp::Node::make_shared(this->name());
+                this->client = this->node->create_client<field_robot::srv::BTNode>(msg.value());
+                this->client->wait_for_service();
             }
 
             static BT::PortsList providedPorts()
@@ -179,89 +199,60 @@ namespace Nodes
 
             BT::NodeStatus tick() override
             {
-                rclcpp::init(0, {});
-                
-                BT::Optional<std::string> msg = getInput<std::string>("service");
+                //std::cout << "ticking " << this->name() << std::endl;
+                setStatus(BT::NodeStatus::RUNNING);
+
+                //rclcpp::Client<field_robot::srv::BTNode>::SharedPtr client = this->node->create_client<field_robot::srv::BTNode>(msg.value());
+
+                this->request = std::make_shared<field_robot::srv::BTNode::Request>();
+
+                auto result = this->client->async_send_request(request);     
+
+                if (rclcpp::spin_until_future_complete(this->node, result) == rclcpp::FutureReturnCode::SUCCESS)
+                {
+                    if (result.get()->confirm)
+                    {
+                        //rclcpp::shutdown();
+                        std::cout << "in row " << std::endl;
+                        return BT::NodeStatus::SUCCESS;
+                    }
+                }
+                //rclcpp::shutdown();
+                //std::cout << "not in row " << std::endl;
+                return BT::NodeStatus::FAILURE;
+            }
+    };
+
+    class BTRosSleepNode : public BT::SyncActionNode
+    {
+        public:
+            explicit BTRosSleepNode(const std::string& name, const BT::NodeConfiguration& config) : BT::SyncActionNode(name, config)
+            {
+            }
+
+            static BT::PortsList providedPorts()
+            {
+                return {
+                    BT::InputPort<int>("duration")
+                };
+            }
+
+            BT::NodeStatus tick() override
+            {
+                std::cout << "ticking " << this->name() << std::endl;
+                BT::Optional<int> msg = getInput<int>("duration");
                 if (!msg)
                 {
                     throw BT::RuntimeError("missing required input [message]: ", 
                                         msg.error() );
                 }
-
-                std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared(this->name());
-                rclcpp::Client<field_robot::srv::BTNode>::SharedPtr client = node->create_client<field_robot::srv::BTNode>(msg.value());
-
-                auto request = std::make_shared<field_robot::srv::BTNode::Request>();
-
-                while (!client->wait_for_service())
-                {
-                }
-
-                auto result = client->async_send_request(request);     
-
-                if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS)
-                {
-                    if (result.get()->confirm)
-                    {
-                        rclcpp::shutdown();
-                        return BT::NodeStatus::SUCCESS;
-                    }
-                }
-                rclcpp::shutdown();
-                return BT::NodeStatus::FAILURE;
+                sleep(msg.value());
+                return BT::NodeStatus::SUCCESS;
             }
 
-        private:
     };
 
 }
-
-namespace DummyNodes
-{
-
-    BT::NodeStatus CheckBattery()
-    {
-        std::cout << "[ Battery: OK ]" << std::endl;
-        return BT::NodeStatus::SUCCESS;
-    }
-
-    class ApproachObject : public BT::SyncActionNode
-    {
-        public:
-            ApproachObject(const std::string& name) :
-                BT::SyncActionNode(name, {})
-            {
-            }
-
-            // You must override the virtual function tick()
-            BT::NodeStatus tick() override
-            {
-                std::cout << "ApproachObject: " << this->name() << std::endl;
-                return BT::NodeStatus::SUCCESS;
-            }
-    };
-
-    // Example of custom SyncActionNode (synchronous action)
-    // with an input port.
-    class SaySomething : public BT::SyncActionNode
-    {
-        public:
-            SaySomething(const std::string& name, const BT::NodeConfiguration& config)
-            : BT::SyncActionNode(name, config)
-            {
-            }
-
-            // You must override the virtual function tick()
-            BT::NodeStatus tick() override;
-
-            // It is mandatory to define this static method.
-            static BT::PortsList providedPorts()
-            {
-                return{ BT::InputPort<std::string>("message") };
-            }
-    };
-
-} // end namespace
 
 using namespace BT;
 
@@ -270,15 +261,38 @@ static const char* xml_text = R"(
  <root main_tree_to_execute = "MainTree" >
 
      <BehaviorTree ID="MainTree">
-        <Sequence name="root_sequence">
-            <CheckBattery   name="battery_ok"/>
-            <BTRosActionNode action="/empty_space_follower"/>
-            <ApproachObject name="krank"/>
+        <Sequence>
+            <ReactiveFallback>
+                <Inverter>
+                    <BTRosServiceNode name="bt_service_in_row" service="/service_in_row"/>
+                </Inverter>
+                <BTRosActionNode name="bt_action_empty_space_follower" action="/empty_space_follower"/>
+            </ReactiveFallback>
+            <BTRosSleepNode duration="2"/>
+            <BTRosActionNode name="bt_headland_turn" action="/headland_turn"/>
         </Sequence>
      </BehaviorTree>
 
  </root>
  )";
+
+ /*
+ 
+  <root main_tree_to_execute = "MainTree" >
+
+     <BehaviorTree ID="MainTree">
+        <Sequence>
+            <ReactiveFallback>
+                <BTRosServiceNode name="bt_service_in_row" service="/service_in_row"/>
+                <BTRosActionNode name="bt_action_empty_space_follower" action="/empty_space_follower"/>
+            </ReactiveFallback>
+            <BTRosActionNode name="bt_headland_turn" action="/headland_turn"/>
+        </Sequence>
+     </BehaviorTree>
+
+ </root>
+ 
+ */
 
 int main(int argc, char **argv)
 {
@@ -286,18 +300,17 @@ int main(int argc, char **argv)
 
     BehaviorTreeFactory factory;
 
-    using namespace DummyNodes;
-
-    factory.registerNodeType<ApproachObject>("ApproachObject");
     factory.registerNodeType<Nodes::BTRosActionNode>("BTRosActionNode");
-
-    factory.registerSimpleCondition("CheckBattery", std::bind(CheckBattery));
+    factory.registerNodeType<Nodes::BTRosServiceNode>("BTRosServiceNode");
+    factory.registerNodeType<Nodes::BTRosSleepNode>("BTRosSleepNode");
 
     auto tree = factory.createTreeFromText(xml_text);
 
-    tree.tickRoot();
-    //SleepMS(150);
-    tree.tickRoot();
+    while (true)
+    {
+        sleep(0.1);
+        tree.tickRoot();
+    }
 
     rclcpp::shutdown();
 
