@@ -86,16 +86,16 @@ class EmptyspacefollowerServer(Node):
         result = BTNode.Result()
         # checks constantly whether there there is a request that the execution is canceled and navigation is stopped
         while True:
-            time.sleep(0.2) # to reduce computational needs: pause
+            time.sleep(0.1) # to reduce computational needs: pause
             # is executed if navigaiton is to be stopped/cancelled
             if goal_handle.is_cancel_requested:
                 # setting the working variable to that no cmd_vel commands are published any more
                 self.working = False
-                time.sleep(0.2)
+                #time.sleep(0.2)
 
                 # publishing 0 values for all aspects so that the robot stops
-                twist_msg = Twist()
-                self.publish.publish(twist_msg)
+                #twist_msg = Twist()
+                #self.publish.publish(twist_msg)
 
                 # confirming cancel
                 goal_handle.canceled()

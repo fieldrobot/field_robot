@@ -137,13 +137,12 @@ namespace Nodes
                 //this->node->set_action(msg.value());
                 this->node->send_goal();
                 rclcpp::spin_until_future_complete(node, this->node->goal_handle_future);
-                std::cout << "hier" << std::endl;
                 while (!this->node->endedTask)
                 {
                     rclcpp::spin_some(node);
                     if (this->haltRequested && !this->canceled)
                     {
-                        std::cout << "canceling/halting" << std::endl;
+                        //std::cout << "canceling/halting" << std::endl;
                         this->node->cancel_goal();
                         this->canceled = true;
                     }
@@ -152,6 +151,14 @@ namespace Nodes
 
                 //rclcpp::shutdown();
 
+                if (this->canceled)
+                {
+                    std::cout << this->name() << " returns failure" << std::endl;
+                    return BT::NodeStatus::FAILURE;
+                }
+                
+
+                std::cout << this->name() << " returns success" << std::endl;
                 return BT::NodeStatus::SUCCESS;
             }
 
@@ -199,7 +206,7 @@ namespace Nodes
 
             BT::NodeStatus tick() override
             {
-                //std::cout << "ticking " << this->name() << std::endl;
+                std::cout << "ticking " << this->name() << std::endl;
                 setStatus(BT::NodeStatus::RUNNING);
 
                 //rclcpp::Client<field_robot::srv::BTNode>::SharedPtr client = this->node->create_client<field_robot::srv::BTNode>(msg.value());
@@ -212,14 +219,13 @@ namespace Nodes
                 {
                     if (result.get()->confirm)
                     {
-                        //rclcpp::shutdown();
-                        std::cout << "in row " << std::endl;
-                        return BT::NodeStatus::SUCCESS;
+                        std::cout << this->name() << " returns failure" << std::endl;
+                        return BT::NodeStatus::FAILURE;
                     }
                 }
                 //rclcpp::shutdown();
-                //std::cout << "not in row " << std::endl;
-                return BT::NodeStatus::FAILURE;
+                std::cout << this->name() << " returns success" << std::endl;
+                return BT::NodeStatus::SUCCESS;
             }
     };
 
@@ -263,12 +269,9 @@ static const char* xml_text = R"(
      <BehaviorTree ID="MainTree">
         <Sequence>
             <ReactiveFallback>
-                <Inverter>
-                    <BTRosServiceNode name="bt_service_in_row" service="/service_in_row"/>
-                </Inverter>
+                <BTRosServiceNode name="bt_service_in_row" service="/service_in_row"/>
                 <BTRosActionNode name="bt_action_empty_space_follower" action="/empty_space_follower"/>
             </ReactiveFallback>
-            <BTRosSleepNode duration="2"/>
             <BTRosActionNode name="bt_headland_turn" action="/headland_turn"/>
         </Sequence>
      </BehaviorTree>

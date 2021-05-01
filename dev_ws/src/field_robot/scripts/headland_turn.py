@@ -42,7 +42,7 @@ class HeadlandTurnServer(Node):
 
         # setting parameters
         self.linear_vel = 0.2 # m/s
-        self.row_width = 0.7 # meters
+        self.row_width = 0.75 # meters
         self.direction = -1 # 1: turn to left row &&& -1: turn to right row
 
         # calculating additional values
@@ -59,32 +59,33 @@ class HeadlandTurnServer(Node):
         twist_msg.angular.z = self.direction * self.angular_vel
 
         # setting up the timer
-        self.end_time = time.perf_counter() + self.steer_time - 0.5
+        self.end_time = time.perf_counter() + self.steer_time - 0.6
         # starting movement
         self.publish.publish(twist_msg)
 
         # setting up breaking
-        twist_msg = Twist()
-        twist_msg.linear.x = 0.0
-        twist_msg.linear.y = 0.0
-        twist_msg.linear.z = 0.0
-        twist_msg.angular.x = 0.0
-        twist_msg.angular.y = 0.0
-        twist_msg.angular.z = 0.0
+        twist_msg_h = Twist()
+        twist_msg_h.linear.x = self.linear_vel
+        twist_msg_h.linear.y = 0.0
+        twist_msg_h.linear.z = 0.0
+        twist_msg_h.angular.x = 0.0
+        twist_msg_h.angular.y = 0.0
+        twist_msg_h.angular.z = 0.0
 
         result = BTNode.Result()
 
         #actual moving loop
         while time.perf_counter() < self.end_time:
             # if canceled, stop motion here and return canceled
+            self.publish.publish(twist_msg)
             if goal_handle.is_cancel_requested:
-                self.publish.publish(twist_msg)
+                self.publish.publish(twist_msg_h)
                 goal_handle.canceled()
                 return result
             time.sleep(self.steer_time/20)
 
         # breaking after turn
-        self.publish.publish(twist_msg)
+        self.publish.publish(twist_msg_h)
         goal_handle.succeed()
         print('returning success')
         return result
