@@ -1,15 +1,21 @@
+#!/usr/bin/python3
+
 import os
 import sys
+
 import rclpy
 from rclpy.action import ActionServer
 from rclpy.node import Node
 from rclpy.qos import QoSDurabilityPolicy, QoSHistoryPolicy, QoSReliabilityPolicy, QoSProfile
 import rclpy.time
 from rclpy.duration import Duration
+
 from ament_index_python.packages import get_package_share_directory
+
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 import std_msgs.msg
+from field_robot.action import EmptySpaceFollower
 
 import cv2
 import cv_bridge
@@ -18,12 +24,25 @@ import math
 from time import sleep
 from timeit import default_timer as timer
 
-class Follower(Node):
+class EmptySpaceFollowerServer(Node):
     def __init__(self):
         #start node
         super().__init__('empty_space_follower')
+        self.get_logger().info('starting...')
         #node = rclpy.create_node("empty_space_follower")
         self.bridge = cv_bridge.CvBridge()
+
+        self.working = False
+        self.i_error_sum = 0
+
+        self.publish = self.create_publisher(Twist, '/cmd_vel', 10)
+
+        self.action_server = ActionServer(
+            self,
+            EmptySpaceFollower,
+            'esf',
+            self.action_callback
+        )
 
         self._qos_profile = QoSProfile(
             history=QoSHistoryPolicy.KEEP_ALL
@@ -38,17 +57,30 @@ class Follower(Node):
             callback=self.image_callback,
             qos_profile=self._qos_profile
         )
-        self.publish = self.create_publisher(Twist, '/cmd_vel', 10)
-        print('bu')
+
+        self.get_logger().info('initialized')
+
+    def action_callback(self, goal_handle):
+        self.get_logger().info('Executing goal...')
+        goal_handle.succeed()
+        result = EmptySpaceFollower.Result()
+        return result
 
     def image_callback(self, msg):
+        self.get_logger().info('Calling image callback...')
+        print(msg.header.stamp)
+        '''if self.working == False:
+            self.get_logger().info('Inactive')
+            return'''
+        self.get_logger().info('Starting image processing...')
+
         #start
         # self.start = timer()
         # end_time = timer()
         # time = 1000 * (end_time - self.start)
         # print(time)
-        print('hi')
-        '''sec = msg.header.stamp.secs
+        #print('hi')
+        sec = msg.header.stamp.secs
         time = msg.header.stamp.nsecs
         time = 1000 * sec + time / 1000000
         dt = time - self.time_old
@@ -65,10 +97,12 @@ class Follower(Node):
         # <width>320</width> <height>240</height>
         h, w, d = image.shape
         # Region of interest, kann durch Beschneidung des Bildes oder andere Kameradefinitionen in der xacro erfolgen
-        x1 = 0
-        y1 = h/4
-        x2 = w
-        y2 = h - h/5
+        x1 = int(0)
+        y1 = int(h/4)
+        x2 = int(w)
+        y2 = int(h - h/5)
+        so = slice(y1,y2)
+        st = slice(x1,x2)
         image_cut = image[y1:y2, x1:x2]
         image_center = w/2
         hsv = cv2.cvtColor(image_cut, cv2.COLOR_BGR2HSV)
@@ -156,7 +190,7 @@ class Follower(Node):
             # linear_speed = 0
             self.twist.linear.x = linear_speed
             self.twist.angular.z = control
-        self.cmd_vel_pub.publish(self.twist)
+        # self.cmd_vel_pub.publish(self.twist)
 
         # Mitte des Bildes unten markieren
         cv2.line(image, (image_center, h - 10), (image_center, h), (255, 255, 255), 2)
@@ -164,11 +198,11 @@ class Follower(Node):
         cv2.circle(image, (av_path, h - 20), 5, (255, 255, 255), 2)
         # originales Bild zeigen, andere sind oben auskommentiert
         cv2.imshow("corn rows", image)
-        cv2.waitKey(1)'''
+        cv2.waitKey(1)
 
 def main():
     rclpy.init()
-    follower = Follower()
+    follower = EmptySpaceFollowerServer()
     rclpy.spin(follower)
     rclpy.shutdown()
 
