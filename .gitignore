@@ -1,3 +1,5 @@
 dev_ws/build/
 dev_ws/install/
 dev_ws/log/
+catkin_ws/devel/
+catkin_ws/build/
