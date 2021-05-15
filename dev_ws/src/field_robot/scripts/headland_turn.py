@@ -42,7 +42,7 @@ class HeadlandTurnServer(Node):
 
         # setting parameters
         self.linear_vel = 0.2 # m/s
-        self.row_width = 0.75 # meters
+        self.row_width = 0.65 # meters
         self.direction = -1 # 1: turn to left row &&& -1: turn to right row
 
         # calculating additional values
@@ -59,7 +59,7 @@ class HeadlandTurnServer(Node):
         twist_msg.angular.z = self.direction * self.angular_vel
 
         # setting up the timer
-        self.end_time = time.perf_counter() + self.steer_time - 0.6
+        self.end_time = time.perf_counter() + self.steer_time
         # starting movement
         self.publish.publish(twist_msg)
 

@@ -144,8 +144,27 @@ class EmptyspacefollowerServer(Node):
                 max = streifen
                 streifen = streifen - ((max - min)/2)
 
-        #### calculating the x axis middle of the biggest stripe
-        sm = self.streifen_mitte(streifen, image_dilated)
+        #### testing for too small streifen
+        if streifen < 40:
+            self.get_logger().info('stripe too small')
+            return
+        
+        #### getting streifen borders
+        startStop = self.streifen_mitte(streifen, image_dilated)
+
+        ### testing for too large streifen
+        maxStreifen = 200
+        if streifen > maxStreifen:
+            self.get_logger().info('stripe too big')
+            if startStop[0] == 0 and startStop[1] != w:
+                self.get_logger().info('left on plant')
+                startStop[0] = startStop[1] - maxStreifen
+            elif startStop[1] == w and startStop[0] != 0:
+                self.get_logger().info('right no plant')
+                startStop[1] = startStop[0] + maxStreifen
+
+        #### calculating the x axis middle of the stripe
+        sm = (startStop[0]+startStop[1])/2
 
         #### visualizing that middle
         image_with_point = cv2.circle(image_dilated, (int(sm), 50), 20, (255), -20)
@@ -211,13 +230,17 @@ class EmptyspacefollowerServer(Node):
         image_t = image.T
         for column in image_t:
             if numpy.any(column) and (iterator-start) > streifen:
-                return (iterator + start)/2
+                #return (iterator + start)/2
+                return [start, iterator]
             elif numpy.any(column):
                 start = iterator
             iterator = iterator+1 
-        if (iterator-start) > streifen: return (iterator + start)/2
+        if (iterator-start) > streifen:
+            #return (iterator + start)/2
+            return [start, iterator]
         print('fuck')
-        return iterator/2
+        #return iterator/2
+        return [0, iterator]
 
 def main():
     rclpy.init()
