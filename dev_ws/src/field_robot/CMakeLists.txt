@@ -55,9 +55,7 @@ set(srv_files
 
 #setting action files
 set(action_files
-  "action/Emptyspacefollower.action"
   "action/BTNode.action"
-  "action/HeadlandTurn.action"
 )
 
 #adding defined message, service, and action files to the ros system
