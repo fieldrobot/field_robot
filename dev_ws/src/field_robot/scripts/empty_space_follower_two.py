@@ -3,6 +3,7 @@
 # importing libraries used for computation
 import cv2
 import cv_bridge
+import sys
 import numpy
 
 # necessary to make parallel processes sleeping so that they do not overwork
@@ -38,6 +39,7 @@ class EmptyspacefollowerServer(Node):
         
         # creating the cv birdge for image processing
         self.bridge = cv_bridge.CvBridge()
+        self.twist_msg = Twist()
 
         # this variable is refered to by the image callback and action server and represents the state of the system
         # true: navigaiton is working and cmd_vel is published
@@ -68,7 +70,8 @@ class EmptyspacefollowerServer(Node):
         # subscribing the image and declaring callbacks and the qos profile
         self.subscription = self.create_subscription(
             msg_type=Image, # the message file the received data has
-            topic='field_robot/gazebo_cam/image_raw', # the topic to be subscribed
+            #topic='field_robot/gazebo_cam/image_raw', # the topic to be subscribed
+            topic='front/image_raw', # fre specific
             callback=self.image_callback, # declaring the callback for image processing 
             callback_group=ReentrantCallbackGroup(), # making parallel execution possible my multithreading
             qos_profile=self._qos_profile # the qos profile
@@ -111,25 +114,35 @@ class EmptyspacefollowerServer(Node):
         self.get_logger().info('Calling image callback...')
         if self.working == False:
             self.get_logger().info('Inactive')
-            return
+            #return
         self.get_logger().info('Starting image processing...')
 
         #### image preparation
 
         # convertin image to opencv2
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        cv2.imshow("image", image)
+        image = image[105:-80]
         h, w, d = image.shape
 
         # convertin cv2 image to hsv
         image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         # filtering image for green corn
-        lower_green = numpy.array([30, 100, 0])
-        upper_green = numpy.array([80, 255, 255])
+        lower_green = numpy.array([40, 90, 0])
+        upper_green = numpy.array([90, 255, 200])
         image_filtered = cv2.inRange(image_hsv, lower_green, upper_green)
+        cv2.imshow("image_filtered", image_filtered)
 
+        # eroding image: makes everything less bold -> prepare for flattening
+        image_eroded = cv2.erode(image_filtered, None, iterations=1)
         # dilating image: making everything more bold -> flatten
-        image_dilated = cv2.dilate(image_filtered, None, iterations=8)
+        image_dilated = cv2.dilate(image_eroded, None, iterations=5)
+        cv2.imshow("image_dilated", image_dilated)
+
+        cv2.waitKey(1)
+        return
+        
         
         #### searching the biggenst stripe without any plante
         streifen = 50
@@ -145,15 +158,16 @@ class EmptyspacefollowerServer(Node):
                 streifen = streifen - ((max - min)/2)
 
         #### testing for too small streifen
-        if streifen < 40:
+        if streifen < 80:
             self.get_logger().info('stripe too small')
+            self.publish.publish(self.twist_msg)
             return
         
         #### getting streifen borders
         startStop = self.streifen_mitte(streifen, image_dilated)
 
         ### testing for too large streifen
-        maxStreifen = 200
+        maxStreifen = 300
         if streifen > maxStreifen:
             self.get_logger().info('stripe too big')
             if startStop[0] == 0 and startStop[1] != w:
@@ -168,39 +182,38 @@ class EmptyspacefollowerServer(Node):
 
         #### visualizing that middle
         image_with_point = cv2.circle(image_dilated, (int(sm), 50), 20, (255), -20)
-        #cv2.imshow("kevin", image_with_point)
+        cv2.imshow("kevin", image_with_point)
         
         #### regulating the velocity command
         #calculation the error
         self.error = (w/2)-sm #negative: to far to the left -> right &&&&&&& positive: to far to the right -> left
 
         #preparing the message to be send
-        twist_msg = Twist()
-        twist_msg.linear.x = 0.2
-        twist_msg.linear.y = 0.0
-        twist_msg.linear.z = 0.0
-        twist_msg.angular.x = 0.0
-        twist_msg.angular.y = 0.0
-        twist_msg.angular.z = 0.0
+        self.twist_msg.linear.x = 0.3 # original 0.2
+        self.twist_msg.linear.y = 0.0
+        self.twist_msg.linear.z = 0.0
+        self.twist_msg.angular.x = 0.0
+        self.twist_msg.angular.y = 0.0
+        self.twist_msg.angular.z = 0.0
 
         #targets/configuaration
         # unused so far: linear_target = 0.2
-        angular_d = 0.002
+        #angular_d = 0.002
+        angular_d = 0.002 # for fre only
         # unused so far: linear_d = 1
 
         #p-control
-        twist_msg.angular.z = self.error * angular_d
+        self.twist_msg.angular.z = self.error * angular_d
         #twist_msg.linear.x = linear_target + linear_d / error
 
         # checking whether publishing is still acceptable
-        if self.working == False:
+        '''if self.working == False:
             self.get_logger().info('Stopped publishing due to canceled action.')
-            return
+            return'''
 
         #publishing the velocity commands
-        self.publish.publish(twist_msg)
-
-        #cv2.waitKey(1)
+        print(self.twist_msg.angular.z)
+        self.publish.publish(self.twist_msg)
 
     def mindestens_einmal(self, streifen, image):
         count = 0
