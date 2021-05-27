@@ -109,6 +109,9 @@ class EmptyspacefollowerServer(Node):
     def cancel_callback(self, cancel_requests):
         return CancelResponse.ACCEPT
 
+    def nothing(x):
+        pass
+
     # the image processing/actual navigation
     def image_callback(self, msg):
         self.get_logger().info('Calling image callback...')
@@ -122,15 +125,21 @@ class EmptyspacefollowerServer(Node):
         # convertin image to opencv2
         image = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
         cv2.imshow("image", image)
-        image = image[105:-80]
+        image = image[120:-80, 70:-70]
+        cv2.namedWindow("calibration")
+        cv2.createTrackbar("trackbar one", "calibration", 0, 179, self.nothing)
+        cv2.createTrackbar("trackbar two", "calibration", 0, 255, self.nothing)
+        cv2.createTrackbar("trackbar three", "calibration", 0, 255, self.nothing)
         h, w, d = image.shape
 
         # convertin cv2 image to hsv
         image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        cv2.imshow("hsv_image", image_hsv)
 
         # filtering image for green corn
-        lower_green = numpy.array([40, 90, 0])
-        upper_green = numpy.array([90, 255, 200])
+        #lower_green = numpy.array([50, 130, 0])
+        lower_green = numpy.array([cv2.getTrackbarPos("trackbar one", "calibration"), cv2.getTrackbarPos("trackbar two", "calibration"), cv2.getTrackbarPos("trackbar three", "calibration")])
+        upper_green = numpy.array([100, 255, 150])
         image_filtered = cv2.inRange(image_hsv, lower_green, upper_green)
         cv2.imshow("image_filtered", image_filtered)
 
@@ -138,7 +147,7 @@ class EmptyspacefollowerServer(Node):
         image_eroded = cv2.erode(image_filtered, None, iterations=1)
         # dilating image: making everything more bold -> flatten
         image_dilated = cv2.dilate(image_eroded, None, iterations=5)
-        cv2.imshow("image_dilated", image_dilated)
+        #cv2.imshow("image_dilated", image_dilated)
 
         cv2.waitKey(1)
         return
