@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="config" default="base" />
+  <arg name="config" default="front_flea3" />
   <!-- fix for oneweek project -->
   <arg name="env_runner" value="$(eval 'env_run' if not optenv('OS', 'unknown').lower().startswith('windows') else 'env_run.bat')" />
   <!-- the following seems to work too when in devel space, but not in install_isolated -->

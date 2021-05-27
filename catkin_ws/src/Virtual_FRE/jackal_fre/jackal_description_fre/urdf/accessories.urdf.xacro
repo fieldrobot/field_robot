@@ -54,7 +54,7 @@
   <!-- If enabled, generate the flea3 camera payload with a tilt of 30 degrees. -->
   <xacro:if value="$(optenv JACKAL_FLEA3 0)">
     <xacro:camera_mount prefix="$(optenv JACKAL_FLEA3_MOUNT front)"
-                       tilt="$(optenv JACKAL_FLEA3_TILT 0.5236)"/>
+                       tilt="$(optenv JACKAL_FLEA3_TILT 0.3)"/> <!-- 0.5236)"/> -->
     <joint name="$(optenv JACKAL_FLEA3_MOUNT front)_camera_mount_joint" type="fixed">
       <origin xyz="$(optenv JACKAL_FLEA3_OFFSET 0 0 0)"
               rpy="$(optenv JACKAL_FLEA3_RPY 0 0 0)" />
