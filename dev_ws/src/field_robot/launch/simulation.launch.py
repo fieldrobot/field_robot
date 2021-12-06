@@ -19,7 +19,10 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
             ),
-            launch_arguments={'world': world}.items(),
+            launch_arguments={
+                'world': world,
+                'gui': 'false'
+            }.items(),
         ),
 
         IncludeLaunchDescription(
