@@ -21,7 +21,7 @@ def generate_launch_description():
             ),
             launch_arguments={
                 'world': world,
-                'gui': 'false'
+                'gui': 'true'
             }.items(),
         ),
 
