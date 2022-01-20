@@ -1,14 +1,5 @@
-# field-robot
+Welcome to the Field Robot project!
 
-## setup
-ROS2 Foxy is to be installed and all necessary setup files need to be sourced according to your terminal's instructions.
-Also you will need to run 'colcon build' at least once to build to package. Then you will also have to source the build. Remember to source the ros setup first.
+Please refer to the project documentation at [https://github.com/fieldrobot/field_robot/wiki](https://github.com/fieldrobot/field_robot/wiki) for all information. Guides etc. are available in German and, partly, in English.
 
-
-gazebo_ros is necessary
-
-## Branches
-- Jeder arbeitet nur in seinem **EIGENEN** Branch.
-- Es wird möglichst kleinschrittig committed.
-- Namen müssen eindeutig und im _Snake Case_ (Bsp.: name_vorname) vergeben werden. 
-- Merges werden **NUR** nach Absprache (bz  w. Korrektur durch eine andere Person) durchgeführt.
+All contributors should consider [this guide](https://github.com/fieldrobot/field_robot/wiki/Nutzung-des-Repositories-(Deutsch)) on how to properly use the repository.

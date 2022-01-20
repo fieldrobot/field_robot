@@ -44,7 +44,7 @@
       <real_time>0</real_time>
       <wall_time>0</wall_time>
       <iterations>0</iterations>
-      <!--<model name='ground_plane'>
+      <model name='ground_plane'>
         <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
@@ -53,7 +53,7 @@
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
-      </model>-->
+      </model>
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
