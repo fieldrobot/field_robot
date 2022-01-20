@@ -12,12 +12,11 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
-    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
+                os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
             ),
             launch_arguments={
                 'world': world,
@@ -26,7 +25,7 @@ def generate_launch_description():
             }.items(),
         ),
 
-        IncludeLaunchDescription(
+        '''IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
             ),
@@ -36,5 +35,5 @@ def generate_launch_description():
             package='field_robot',
             executable='robot_spawner.py',
             name='robot_spawner'
-        ),
+        ),'''
     ])
