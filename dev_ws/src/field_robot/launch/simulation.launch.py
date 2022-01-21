@@ -21,19 +21,20 @@ def generate_launch_description():
             launch_arguments={
                 'world': world,
                 'gui': 'true',
+                'debug': 'true',
                 'pause': 'true',
             }.items(),
         ),
-
-        '''IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
-            ),
-        ),
-
+        
         Node(
             package='field_robot',
             executable='robot_spawner.py',
             name='robot_spawner'
-        ),'''
+        ),
     ])
+
+#IncludeLaunchDescription(
+#    PythonLaunchDescriptionSource(
+#        os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
+#    ),
+#),
