@@ -36,7 +36,6 @@ install(DIRECTORY
 #installing directories
 install(DIRECTORY
   models
-  robot_description
   worlds
   config
   DESTINATION share/${PROJECT_NAME}/
