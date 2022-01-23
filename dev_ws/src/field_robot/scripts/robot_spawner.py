@@ -36,7 +36,7 @@ def main():
     position = Point()
     position.x = -1.14
     position.y = -5.95
-    position.z = 0.23
+    position.z = 0.3
     orientation = Quaternion()
     orientation.x = 0.0
     orientation.y = 0.0
