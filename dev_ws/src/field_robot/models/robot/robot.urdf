@@ -78,9 +78,9 @@
     <origin xyz="0.0 0.0 0.2" rpy="0 0 0"/>
   </joint>
 
-  <!--<gazebo reference="base_link">
+  <gazebo reference="base_link">
     <material>Gazebo/DarkGrey</material>
-  </gazebo>-->
+  </gazebo>
 
 
   <!-- WHEEL LEFT -->
@@ -116,16 +116,12 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <!--<gazebo reference="wheel_l">
-    <mu1>0.1</mu1>
-    <mu2>0.1</mu2>
-    <kp>500000.0</kp>
-    <kd>10.0</kd>
-    <minDepth>0.001</minDepth>
-    <maxVel>0.1</maxVel>
-    <fdir1>1 0 0</fdir1>
+  <gazebo reference="wheel_l">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <minDepth>0.01</minDepth>
     <material>Gazebo/FlatBlack</material>
-  </gazebo>-->
+  </gazebo>
 
 
   <!-- WHEEL RIGHT-->
@@ -161,16 +157,12 @@
     <axis xyz="0 0 1"/>
   </joint>
 
-  <!--<gazebo reference="wheel_r">
-    <mu1>0.1</mu1>
-    <mu2>0.1</mu2>
-    <kp>500000.0</kp>
-    <kd>10.0</kd>
-    <minDepth>0.001</minDepth>
-    <maxVel>0.1</maxVel>
-    <fdir1>1 0 0</fdir1>
+  <gazebo reference="wheel_r">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <minDepth>0.01</minDepth>
     <material>Gazebo/FlatBlack</material>
-  </gazebo>-->
+  </gazebo>
 
 
   <!-- CASTER BACK -->
@@ -205,15 +197,12 @@
     <origin xyz="-0.4 0.0 -0.19" rpy="-1.57 0 0"/>
   </joint>
 
-  <!--<gazebo reference="caster_back_link">
-    <mu1>0.1</mu1>
-    <mu2>0.1</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-    <minDepth>0.001</minDepth>
-    <maxVel>1.0</maxVel>
+  <gazebo reference="caster_back_link">
+    <mu1>0.05</mu1>
+    <mu2>0.05</mu2>
+    <minDepth>0.01</minDepth>
     <material>Gazebo/FlatBlack</material>
-  </gazebo>-->
+  </gazebo>
 
 
   <!-- JOINT STATES
