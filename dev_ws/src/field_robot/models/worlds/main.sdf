@@ -15,31 +15,31 @@
       </attenuation>
       <direction>-0.5 0.1 -0.9</direction>
     </light>
-    <gravity>0 0 -9.8</gravity>
-    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
-    <atmosphere type='adiabatic'/>
+    <!--<gravity>0 0 -9.8</gravity>-->
+    <!--<magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>-->
+    <!--<atmosphere type='adiabatic'/>-->
     <physics name='default_physics' default='0' type='ode'>
-      <max_step_size>0.007</max_step_size>
+      <max_step_size>0.01</max_step_size>
       <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>300</real_time_update_rate>
+      <real_time_update_rate>1000</real_time_update_rate>
     </physics>
-    <scene>
+    <!--<scene>
       <ambient>0.4 0.4 0.4 1</ambient>
       <background>0.7 0.7 0.7 1</background>
       <shadows>1</shadows>
-    </scene>
-    <audio>
+    </scene>-->
+    <!--<audio>
       <device>default</device>
-    </audio>
-    <wind/>
-    <spherical_coordinates>
+    </audio>-->
+    <!--<wind/>-->
+    <!--<spherical_coordinates>
       <surface_model>EARTH_WGS84</surface_model>
       <latitude_deg>0</latitude_deg>
       <longitude_deg>0</longitude_deg>
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
-    </spherical_coordinates>
-    <state world_name='default'>
+    </spherical_coordinates>-->
+    <!--<state world_name='default'>
       <sim_time>0</sim_time>
       <real_time>0</real_time>
       <wall_time>0</wall_time>
@@ -57,20 +57,20 @@
       <light name='sun'>
         <pose frame=''>0 0 10 0 -0 0</pose>
       </light>
-    </state>
+    </state>-->
     <model name="heightmap">
       <static>true</static>
       <link name="link">
         <visual name="visual_abcedf">
           <geometry>
             <heightmap>
-              <use_terrain_paging>false</use_terrain_paging>
-              <texture>
+              <!--<use_terrain_paging>false</use_terrain_paging>-->
+              <!--<texture>
                 <diffuse>model://materials/textures/grass_color.jpg</diffuse>
                 <normal>model://materials/textures/grass_normal.jpg</normal>
                 <size>4</size>
-              </texture>
-              <texture>
+              </texture>-->
+              <!--<texture>
                 <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>1</size>
@@ -96,7 +96,7 @@
               <blend>
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
-              </blend>
+              </blend>-->
               <uri>model://virtual_maize_field_heightmap.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
