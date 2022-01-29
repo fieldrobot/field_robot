@@ -106,7 +106,7 @@
       <inertia ixx="4.0675e-02" ixy="0" ixz="0"
                iyy="4.0675e-02" iyz="0"
                izz="8e-02" />
-      </inertial>
+    </inertial>
   </link>
 
   <joint name="wheel_l_joint" type="continuous">
@@ -117,9 +117,12 @@
   </joint>
 
   <gazebo reference="wheel_l">
-    <!--<mu1>0.2</mu1>
-    <mu2>0.2</mu2>-->
-    <minDepth>0.01</minDepth>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
@@ -153,14 +156,17 @@
   <joint name="wheel_r_joint" type="continuous"> <!-- continuous-->
     <parent link="base_link"/>
     <child link="wheel_r"/>
-    <origin xyz="0.0 -0.125 0.0" rpy="1.57 0 0"/>
+    <origin xyz="0.0 -0.125 0.0" rpy="-1.57 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
   <gazebo reference="wheel_r">
-    <!--<mu1>0.2</mu1>
-    <mu2>0.2</mu2>-->
-    <minDepth>0.01</minDepth>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
@@ -198,9 +204,12 @@
   </joint>
 
   <gazebo reference="caster_back_link">
-    <mu1>0.001</mu1>
-    <mu2>0.001</mu2>
-    <minDepth>0.01</minDepth>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <kp>500000.0</kp>
+    <kd>10.0</kd>
+    <minDepth>0.001</minDepth>
+    <maxVel>0.1</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
