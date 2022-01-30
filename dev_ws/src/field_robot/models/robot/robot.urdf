@@ -121,7 +121,7 @@
     <mu2>0.1</mu2>
     <kp>500000.0</kp>
     <kd>10.0</kd>
-    <minDepth>0.001</minDepth>
+    <minDepth>0.0002</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -165,7 +165,7 @@
     <mu2>0.1</mu2>
     <kp>500000.0</kp>
     <kd>10.0</kd>
-    <minDepth>0.001</minDepth>
+    <minDepth>0.0002</minDepth>
     <maxVel>0.1</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
@@ -176,7 +176,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0.0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.02"/>
+        <sphere radius="0.08"/>
       </geometry>
       <material name="dark"/>
     </visual>
@@ -184,7 +184,7 @@
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.02"/>
+        <sphere radius="0.08"/>
       </geometry>
     </collision>
 
@@ -200,16 +200,16 @@
   <joint name="caster_back_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_back_link"/>
-    <origin xyz="-0.4 0.0 -0.19" rpy="-1.57 0 0"/>
+    <origin xyz="-0.4 0.0 -0.12" rpy="-1.57 0 0"/>
   </joint>
 
   <gazebo reference="caster_back_link">
-    <mu1>0.1</mu1>
-    <mu2>0.1</mu2>
+    <mu1>0</mu1>
+    <mu2>0</mu2>
     <kp>500000.0</kp>
     <kd>10.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>0.1</maxVel>
+    <maxVel>1.0</maxVel>
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
