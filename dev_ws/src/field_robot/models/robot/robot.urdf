@@ -117,12 +117,12 @@
   </joint>
 
   <gazebo reference="wheel_l">
-    <mu1>20.0</mu1>
+    <!--<mu1>20.0</mu1>
     <mu2>20.0</mu2>
     <kp>500000.0</kp>
     <kd>10.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>0.02</maxVel>
+    <maxVel>0.02</maxVel>-->
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
@@ -161,12 +161,12 @@
   </joint>
 
   <gazebo reference="wheel_r">
-    <mu1>20.0</mu1>
+    <!--<mu1>20.0</mu1>
     <mu2>20.0</mu2>
     <kp>500000.0</kp>
     <kd>10.0</kd>
     <minDepth>0.001</minDepth>
-    <maxVel>0.02</maxVel>
+    <maxVel>0.02</maxVel>-->
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 
@@ -206,10 +206,10 @@
   <gazebo reference="caster_back_link">
     <mu1>0</mu1>
     <mu2>0</mu2>
-    <kp>500000.0</kp>
+    <!--<kp>500000.0</kp>
     <kd>10.0</kd>
     <minDepth>0.01</minDepth>
-    <maxVel>1.0</maxVel>
+    <maxVel>1.0</maxVel>-->
     <material>Gazebo/FlatBlack</material>
   </gazebo>
 

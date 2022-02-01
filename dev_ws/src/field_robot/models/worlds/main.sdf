@@ -20,9 +20,8 @@
     <!--<magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>-->
     <!--<atmosphere type='adiabatic'/>-->
     <physics name='default_physics' default='0' type='ode'>
-      <max_step_size>0.004</max_step_size>
-      <real_time_factor>1</real_time_factor>
-      <real_time_update_rate>1000</real_time_update_rate>
+      <max_step_size>0.0005</max_step_size>
+      <real_time_update_rate>4000</real_time_update_rate>
     </physics>
     <!--<scene>
       <ambient>0.4 0.4 0.4 1</ambient>
@@ -110,7 +109,7 @@
         <collision name="collision">
           <geometry>
             <heightmap>
-              <uri>model://virtual_maize_field_heightmap.png</uri>
+              <uri>model://virtual_maize_field_heightmap_collision.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
             </heightmap>
