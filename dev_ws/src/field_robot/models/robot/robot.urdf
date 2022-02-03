@@ -343,6 +343,48 @@
     <origin xyz="0.0 -0.15 0.1" rpy="0 0 -1.5708"/>
   </joint>
 
+  <!-- IMU -->
+  <link name="imu_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0.0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.05 0.05 0.05"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="0" />
+      <inertia ixx="0.0" ixy="0.0" ixz="0.0"
+               iyy="0.0" iyz="0.0"
+               izz="0.0" />
+    </inertial>
+  </link>
+
+  <joint name="imu_join" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+
+
+  <!--
+
+    !!!!!
+    GAZEBO SECTION
+    !!!!!
+
+  -->
+
 
   <!-- JOINT STATES -->
   <gazebo>
@@ -394,6 +436,7 @@
   <!-- CAMERA PLUGINS/SENSORS -->
   <gazebo reference="camera_front_link">
     <sensor type="camera" name="camera_front">
+      <always_on>true</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_front">
         <horizontal_fov>2.1</horizontal_fov>
@@ -436,6 +479,7 @@
 
   <gazebo reference="camera_back_link">
     <sensor type="camera" name="camera_back">
+      <always_on>true</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_back">
         <horizontal_fov>2.1</horizontal_fov>
@@ -478,6 +522,7 @@
 
   <gazebo reference="camera_right_link">
     <sensor type="camera" name="camera_right">
+      <always_on>true</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_right">
         <horizontal_fov>2.1</horizontal_fov>
@@ -520,6 +565,7 @@
 
   <gazebo reference="camera_left_link">
     <sensor type="camera" name="camera_left">
+      <always_on>true</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_left">
         <horizontal_fov>2.1</horizontal_fov>
@@ -556,6 +602,23 @@
 
         <camera_name>camera_left</camera_name>
         <frame_name>camera_left_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- IMU -->
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <plugin name="imu" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <namespace>robot/imu</namespace>
+          <argument>out:=out</argument>
+        </ros>
+
+        <frame_name>imu_link</frame_name>
+        <initial_orientation_as_reference>false</initial_orientation_as_reference>
       </plugin>
     </sensor>
   </gazebo>
