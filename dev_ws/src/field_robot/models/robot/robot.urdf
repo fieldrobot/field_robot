@@ -394,7 +394,6 @@
   <!-- CAMERA PLUGINS/SENSORS -->
   <gazebo reference="camera_front_link">
     <sensor type="camera" name="camera_front">
-      <always_on>0</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_front">
         <horizontal_fov>2.1</horizontal_fov>
@@ -405,8 +404,13 @@
         </image>
         <clip>
           <near>0.05</near>
-          <far>30</far>
+          <far>100</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
         <distortion>
           <k1>0.0</k1>
           <k2>0.0</k2>
@@ -426,14 +430,12 @@
 
         <camera_name>camera_front</camera_name>
         <frame_name>camera_front_link</frame_name>
-        <!--<hack_baseline>0.07</hack_baseline>-->
       </plugin>
     </sensor>
   </gazebo>
 
   <gazebo reference="camera_back_link">
     <sensor type="camera" name="camera_back">
-      <always_on>0</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_back">
         <horizontal_fov>2.1</horizontal_fov>
@@ -444,8 +446,13 @@
         </image>
         <clip>
           <near>0.05</near>
-          <far>30</far>
+          <far>100</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
         <distortion>
           <k1>0.0</k1>
           <k2>0.0</k2>
@@ -465,14 +472,12 @@
 
         <camera_name>camera_back</camera_name>
         <frame_name>camera_back_link</frame_name>
-        <!--<hack_baseline>0.07</hack_baseline>-->
       </plugin>
     </sensor>
   </gazebo>
 
   <gazebo reference="camera_right_link">
     <sensor type="camera" name="camera_right">
-      <always_on>0</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_right">
         <horizontal_fov>2.1</horizontal_fov>
@@ -483,8 +488,13 @@
         </image>
         <clip>
           <near>0.05</near>
-          <far>30</far>
+          <far>100</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
         <distortion>
           <k1>0.0</k1>
           <k2>0.0</k2>
@@ -504,14 +514,12 @@
 
         <camera_name>camera_right</camera_name>
         <frame_name>camera_right_link</frame_name>
-        <!--<hack_baseline>0.07</hack_baseline>-->
       </plugin>
     </sensor>
   </gazebo>
 
   <gazebo reference="camera_left_link">
     <sensor type="camera" name="camera_left">
-      <always_on>0</always_on>
       <update_rate>30</update_rate>
       <camera name="camera_left">
         <horizontal_fov>2.1</horizontal_fov>
@@ -522,8 +530,13 @@
         </image>
         <clip>
           <near>0.05</near>
-          <far>30</far>
+          <far>100</far>
         </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
         <distortion>
           <k1>0.0</k1>
           <k2>0.0</k2>
@@ -543,7 +556,6 @@
 
         <camera_name>camera_left</camera_name>
         <frame_name>camera_left_link</frame_name>
-        <!--<hack_baseline>0.07</hack_baseline>-->
       </plugin>
     </sensor>
   </gazebo>
