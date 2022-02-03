@@ -100,7 +100,7 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>-->
-              <uri>model://virtual_maize_field_heightmap.png</uri>
+              <uri>model://heightmaps/virtual_maize_field_heightmap.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
             </heightmap>
@@ -109,7 +109,7 @@
         <collision name="collision">
           <geometry>
             <heightmap>
-              <uri>model://virtual_maize_field_heightmap_collision.png</uri>
+              <uri>model://heightmaps/virtual_maize_field_heightmap_collision.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
             </heightmap>
