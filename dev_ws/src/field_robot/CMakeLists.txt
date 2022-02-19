@@ -96,6 +96,7 @@ install(PROGRAMS
   scripts/empty_space_follower_two.py
   scripts/headland_turn.py
   scripts/service_in_row.py
+  scripts/wheel_odometry.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
