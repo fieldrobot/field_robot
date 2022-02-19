@@ -15,25 +15,14 @@ def generate_launch_description():
 
     return LaunchDescription([
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
-            ),
-            launch_arguments={
-                'world': world,
-                'gui': 'true',
-                'pause': 'true',
-            }.items(),
-        ),
-        
-        Node(
-            package='field_robot',
-            executable='robot_spawner.py',
-            name='robot_spawner'
-        ),
-
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
-            ),
+            Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_filter_node',
+            output='screen',
+            parameters=[
+                os.path.join(get_package_share_directory('field_robot'), 'config/robot_localization_ekf.yaml'),
+                {'use_sim_time': 'true'}
+            ]
         ),
     ])
