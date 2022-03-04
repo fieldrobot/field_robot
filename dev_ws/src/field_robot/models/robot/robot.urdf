@@ -409,16 +409,18 @@
       <ros>
         <namespace>/field_robot</namespace>
         <argument>cmd_vel:=cmd_vel</argument>
-        <argument>odom:=odom</argument>
+        <argument>odom:=wheel_encoders/odom</argument>
       </ros>
+
       <robot_base_frame>base_footprint</robot_base_frame>
       <odometry_frame>odom</odometry_frame>
-      <robot_odometry_frame>odom</robot_odometry_frame>
+      <odometry_source>0</odometry_source>
+      <!--<robot_odometry_frame>wheel_encoders/odom</robot_odometry_frame>-->
 
-      <publish_odom>false</publish_odom>
+      <publish_odom>true</publish_odom>
       <publish_odom_tf>false</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
-      <update_rate>30</update_rate>
+      <update_rate>100</update_rate>
 
       <left_joint>wheel_l_joint</left_joint>
       <right_joint>wheel_r_joint</right_joint>
