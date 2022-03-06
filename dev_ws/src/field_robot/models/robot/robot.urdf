@@ -399,28 +399,24 @@
     </plugin>
 
     <plugin name="field_robot_diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
-      <!--<odometrySource>odom</odometrySource>
-      <publishOdomTF>false</publishOdomTF>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
-      <publishWheelTF>false</publishWheelTF>
-      <publishTf>false</publishTf>
-      <legacyMode>false</legacyMode>-->
+      <update_rate>100</update_rate>
 
       <ros>
         <namespace>/field_robot</namespace>
         <argument>cmd_vel:=cmd_vel</argument>
         <argument>odom:=wheel_encoders/odom</argument>
       </ros>
-
-      <robot_base_frame>base_footprint</robot_base_frame>
-      <odometry_frame>odom</odometry_frame>
-      <odometry_source>0</odometry_source>
-      <!--<robot_odometry_frame>wheel_encoders/odom</robot_odometry_frame>-->
+      <command_topic>cmd_vel</command_topic>
 
       <publish_odom>true</publish_odom>
       <publish_odom_tf>false</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
-      <update_rate>100</update_rate>
+
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <odometry_frame>odom</odometry_frame>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_source>0</odometry_source>
+      <!--<robot_odometry_frame>wheel_encoders/odom</robot_odometry_frame>-->
 
       <left_joint>wheel_l_joint</left_joint>
       <right_joint>wheel_r_joint</right_joint>
@@ -612,15 +608,77 @@
   <gazebo reference="imu_link">
     <sensor name="imu" type="imu">
       <always_on>true</always_on>
-      <update_rate>50</update_rate>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <imu>
+        <orientation>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-3</stddev>
+            </noise>
+          </z>
+        </orientation>
+        <angular_velocity>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>2e-4</stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </x>
+          <y>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </y>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>1.7e-2</stddev>
+            </noise>
+          </z>
+        </linear_acceleration>
+      </imu>
       <plugin name="imu" filename="libgazebo_ros_imu_sensor.so">
-        <ros>
-          <namespace>robot/imu</namespace>
-          <argument>out:=out</argument>
-        </ros>
-
-        <frame_name>imu_link</frame_name>
         <initial_orientation_as_reference>false</initial_orientation_as_reference>
+        <frame_name>imu_link</frame_name>
+        <ros>
+          <namespace>field_robot/imu</namespace>
+          <argument>out:=data</argument>
+        </ros>
       </plugin>
     </sensor>
   </gazebo>
