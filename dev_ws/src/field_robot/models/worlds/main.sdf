@@ -39,40 +39,40 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>-->
-    <!--<state world_name='default'>
+    <state world_name='default'>
       <sim_time>0</sim_time>
       <real_time>0</real_time>
       <wall_time>0</wall_time>
       <iterations>0</iterations>
       <model name='ground_plane'>
         <static>true</static>
-      <pose frame=''>0 0 0 0 -0 0</pose>
+        <pose frame=''>0 0 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
           <static>true</static>
-      <pose frame=''>0 0 0 0 -0 0</pose>
+          <pose frame=''>0 0 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <light name='sun'>
+      <!--<light name='sun'>
         <static>true</static>
       <pose frame=''>0 0 10 0 -0 0</pose>
-      </light>
-    </state>-->
+      </light>-->
+    </state>
     <model name="heightmap">
       <static>true</static>
       <link name="link">
         <visual name="visual_abcedf">
           <geometry>
             <heightmap>
-              <!--<use_terrain_paging>false</use_terrain_paging>-->
-              <!--<texture>
+              <use_terrain_paging>false</use_terrain_paging>
+              <texture>
                 <diffuse>model://materials/textures/grass_color.jpg</diffuse>
                 <normal>model://materials/textures/grass_normal.jpg</normal>
                 <size>4</size>
-              </texture>-->
+              </texture>
               <!--<texture>
                 <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
@@ -87,8 +87,8 @@
                 <diffuse>file://media/materials/textures/fungus_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>1</size>
-              </texture>
-              <blend>
+              </texture>-->
+              <!--<blend>
                 <min_height>0.2</min_height>
                 <fade_dist>0.05</fade_dist>
               </blend>
