@@ -23,6 +23,7 @@ def generate_launch_description():
                 'gui': 'true',
                 'pause': 'true',
                 'debug': 'true',
+                'verbose': 'true',
             }.items(),
         ),
         

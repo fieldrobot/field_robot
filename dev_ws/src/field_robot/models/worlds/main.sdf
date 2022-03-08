@@ -69,8 +69,8 @@
             <heightmap>
               <use_terrain_paging>false</use_terrain_paging>
               <texture>
-                <diffuse>model://materials/textures/grass_color.jpg</diffuse>
-                <normal>model://materials/textures/grass_normal.jpg</normal>
+                <diffuse>model://textures/grass_color.jpg</diffuse>
+                <normal>model://textures/grass_normal.jpg</normal>
                 <size>4</size>
               </texture>
               <!--<texture>
