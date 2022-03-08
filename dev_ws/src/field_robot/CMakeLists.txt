@@ -30,7 +30,7 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 #installing launch files
 install(DIRECTORY
   launch
-  DESTINATION share/${PROJECT_NAME}
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 #installing directories
