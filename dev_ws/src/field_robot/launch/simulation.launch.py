@@ -11,7 +11,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    world = os.path.join(get_package_share_directory('field_robot'), 'models', 'worlds', 'main.world')
+    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
 
     return LaunchDescription([
         IncludeLaunchDescription(
