@@ -67,7 +67,7 @@
         <collision name="heightmap_collision">
           <geometry>
             <heightmap>
-              <uri>media://heightmaps/virtual_maize_field_heightmap_collision.png</uri>
+              <uri>model://heightmaps/virtual_maize_field_heightmap_collision.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
             </heightmap>
@@ -77,19 +77,19 @@
           <geometry>
             <heightmap>
               <use_terrain_paging>false</use_terrain_paging>
-              <!--texture>
-                <diffuse>media://textures/grass_color.png</diffuse>
-                <normal>media://textures/grass_normal.png</normal>
+              <texture>
+                <diffuse>model://textures/grass_color.png</diffuse>
+                <normal>model://textures/grass_normal.png</normal>
                 <size>4</size>
               </texture>
-              <texture>
+              <!--<texture>
                 <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
               <texture>
-                <diffuse>media://textures/grass_color.png</diffuse>
-                <normal>media://textures/grass_normal.png</normal>
+                <diffuse>model://textures/grass_color.png</diffuse>
+                <normal>model://textures/grass_normal.png</normal>
                 <size>4</size>
               </texture>
               <texture>
@@ -108,8 +108,8 @@
               <blend>
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
-              </blend-->
-              <texture>
+              </blend>-->
+              <!--texture>
                 <diffuse>file://media/materials/textures/dirt_diffusespecular.png</diffuse>
                 <normal>file://media/materials/textures/flat_normal.png</normal>
                 <size>1</size>
@@ -131,8 +131,8 @@
               <blend>
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
-              </blend>
-              <uri>media://heightmaps/virtual_maize_field_heightmap.png</uri>
+              </blend-->
+              <uri>model://heightmaps/virtual_maize_field_heightmap.png</uri>
               <size>16.3 16.3 0.4</size>
               <pos>0 0 0</pos>
             </heightmap>
