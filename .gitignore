@@ -3,4 +3,6 @@ dev_ws/install/
 dev_ws/log/
 catkin_ws/devel/
 catkin_ws/build/
+field_robot_mcu/.vscode/
+field_robot_mcu/.pio/
 .DS_Store
