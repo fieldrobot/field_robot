@@ -11,30 +11,31 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'simple_row_level_6.world')
-    pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
+    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
 
     return LaunchDescription([
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(pkg_gazebo_ros, 'launch', 'gazebo.launch.py')
+                os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
             ),
             launch_arguments={
                 'world': world,
                 'gui': 'true',
                 'pause': 'true',
+                'debug': 'true',
+                'verbose': 'true',
             }.items(),
         ),
+        
+        #Node(
+        #    package='field_robot',
+        #    executable='robot_spawner.py',
+        #    name='robot_spawner'
+        #),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
-            ),
-        ),
-
-        Node(
-            package='field_robot',
-            executable='robot_spawner.py',
-            name='robot_spawner'
-        ),
+        #IncludeLaunchDescription(
+        #    PythonLaunchDescriptionSource(
+        #        os.path.join(get_package_share_directory('field_robot'), 'launch', 'robot_state_publisher.launch.py')
+        #    ),
+        #),
     ])

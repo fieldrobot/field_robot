@@ -30,14 +30,14 @@ find_package(behaviortree_cpp_v3 REQUIRED)
 #installing launch files
 install(DIRECTORY
   launch
-  DESTINATION share/${PROJECT_NAME}
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 #installing directories
 install(DIRECTORY
   models
-  robot_description
   worlds
+  media
   config
   DESTINATION share/${PROJECT_NAME}/
 )
@@ -98,6 +98,7 @@ install(PROGRAMS
   scripts/empty_space_follower_two.py
   scripts/headland_turn.py
   scripts/service_in_row.py
+  scripts/wheel_odometry.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

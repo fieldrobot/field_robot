@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
 import os
-import sys
+from tokenize import Pointfloat
 import rclpy
 from ament_index_python.packages import get_package_share_directory
 from gazebo_msgs.srv import SpawnEntity
+from geometry_msgs.msg import Pose, Point, Quaternion
 
 def main():
     """ Main for spwaning turtlebot node """
@@ -24,12 +25,26 @@ def main():
 
     # Get path to the turtlebot3 burgerbot
     sdf_file_path = os.path.join(
-        get_package_share_directory("field_robot"), "robot_description", "tb3", "turtlebot3_burger_for_pumpkin.urdf.xacro")
+        get_package_share_directory("field_robot"), "models", "robot", "robot.urdf")
 
     # Set data for request
     request = SpawnEntity.Request()
     request.name = 'robot'
     request.xml = open(sdf_file_path, 'r').read()
+    request.robot_namespace = 'robot'
+    pose = Pose()
+    position = Point()
+    position.x = -1.14
+    position.y = -5.95
+    position.z = 0.3
+    orientation = Quaternion()
+    orientation.x = 0.0
+    orientation.y = 0.0
+    orientation.z = 0.682
+    orientation.w = 0.732
+    pose.position = position
+    pose.orientation = orientation
+    request.initial_pose = pose
 
     node.get_logger().info("Sending service request to `/spawn_entity`")
     future = client.call_async(request)

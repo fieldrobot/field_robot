@@ -27,24 +27,24 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    urdf_file_name = 'turtlebot3_burger_for_pumpkin.urdf.xacro'
+    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
-    print('urdf_file_name : {}'.format(urdf_file_name))
+    #print('urdf_file_name : {}'.format(urdf_file_name))
 
     urdf = os.path.join(
-        get_package_share_directory('field_robot'), 'robot_description', 'tb3', urdf_file_name)
+        get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
 
     return LaunchDescription([
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value='true',
             description='Use simulation (Gazebo) clock if true'),
 
         Node(
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
+            node_namespace='robot',
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=[urdf]),
