@@ -3,4 +3,6 @@ dev_ws/install/
 dev_ws/log/
 catkin_ws/devel/
 catkin_ws/build/
+mcu_ws/.pio/
+mcu_ws/vscode/
 .DS_Store
