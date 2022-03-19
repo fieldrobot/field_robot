@@ -14,22 +14,17 @@ def generate_launch_description():
     world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
 
     return LaunchDescription([
+        # simulation
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
+                os.path.join(get_package_share_directory('field_robot'), 'launch', 'simulation.launch.py')
             ),
-            launch_arguments={
-                'world': world,
-                'gui': 'true',
-                'pause': 'true',
-                'debug': 'true',
-                'verbose': 'true',
-            }.items(),
         ),
-        
-        Node(
-            package='field_robot',
-            executable='robot_spawner.py',
-            name='robot_spawner'
+
+        #essential operating services
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory('field_robot'), 'launch', 'operating_services.launch.py')
+            ),
         ),
     ])

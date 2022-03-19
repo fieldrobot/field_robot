@@ -11,18 +11,15 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    world = os.path.join(get_package_share_directory('field_robot'), 'models', 'worlds', 'main.sdf')
+    world = os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
 
     return LaunchDescription([
+        # hardware drivers/nodes
+
+        # operating services
         IncludeLaunchDescription(
-            Node(
-            package='robot_localization',
-            executable='ekf_node',
-            name='ekf_filter_node',
-            output='screen',
-            parameters=[
-                os.path.join(get_package_share_directory('field_robot'), 'config/odometry.yaml'),
-                {'use_sim_time': 'true'}
-            ]
+            PythonLaunchDescriptionSource(
+                os.path.join(get_package_share_directory('field_robot'), 'launch', 'operating_services.launch.py')
+            ),
         ),
     ])
