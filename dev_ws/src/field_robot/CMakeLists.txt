@@ -37,7 +37,6 @@ install(DIRECTORY
 install(DIRECTORY
   models
   worlds
-  media
   config
   DESTINATION share/${PROJECT_NAME}/
 )
@@ -50,12 +49,12 @@ set(msg_files
 
 #settings service files
 set(srv_files
-  "service/BTNode.srv"
+  #"service/BTNode.srv"
 )
 
 #setting action files
 set(action_files
-  "action/BTNode.action"
+  #"action/BTNode.action"
 )
 
 #adding defined message, service, and action files to the ros system
