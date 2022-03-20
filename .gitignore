@@ -4,5 +4,9 @@ dev_ws/log/
 catkin_ws/devel/
 catkin_ws/build/
 mcu_ws/.pio/
-mcu_ws/vscode/
+mcu_ws/.vscode/
+mcu_ws/.gitignore
+hoverboard_ws/.pio/
+hoverboard_ws/.vscode/
+hoverboard_ws/.gitignore
 .DS_Store
