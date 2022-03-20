@@ -94,10 +94,7 @@ ament_export_dependencies(rosidl_default_runtime)
 ## installing python executables
 install(PROGRAMS
   scripts/robot_spawner.py
-  scripts/empty_space_follower_two.py
-  scripts/headland_turn.py
-  scripts/service_in_row.py
-  scripts/wheel_odometry.py
+  scripts/image_path_finder_ai.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
