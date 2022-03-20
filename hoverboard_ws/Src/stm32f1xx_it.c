@@ -34,9 +34,8 @@
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx.h"
 #include "stm32f1xx_it.h"
-#include "defines.h"
 #include "config.h"
-#include "util.h"
+#include "hallinterrupts.h"
 
 extern DMA_HandleTypeDef hdma_i2c2_rx;
 extern DMA_HandleTypeDef hdma_i2c2_tx;
@@ -44,12 +43,13 @@ extern I2C_HandleTypeDef hi2c2;
 
 extern DMA_HandleTypeDef hdma_usart2_rx;
 extern DMA_HandleTypeDef hdma_usart2_tx;
+extern TIM_HandleTypeDef htim3;
+
 extern DMA_HandleTypeDef hdma_usart3_rx;
 extern DMA_HandleTypeDef hdma_usart3_tx;
 
 /* USER CODE BEGIN 0 */
-extern UART_HandleTypeDef huart2;
-extern UART_HandleTypeDef huart3;
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -166,14 +166,9 @@ void PendSV_Handler(void) {
 /**
 * @brief This function handles System tick timer.
 */
-#if defined(CONTROL_PPM_LEFT) || defined(CONTROL_PPM_RIGHT)
+#ifdef CONTROL_PPM
 void PPM_SysTick_Callback(void);
 #endif
-
-#if defined(CONTROL_PWM_LEFT) || defined(CONTROL_PWM_RIGHT)
-void PWM_SysTick_Callback(void);
-#endif
-
 void SysTick_Handler(void) {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
@@ -181,17 +176,13 @@ void SysTick_Handler(void) {
   HAL_IncTick();
   HAL_SYSTICK_IRQHandler();
   /* USER CODE BEGIN SysTick_IRQn 1 */
-#if defined(CONTROL_PPM_LEFT) || defined(CONTROL_PPM_RIGHT)
+#ifdef CONTROL_PPM
   PPM_SysTick_Callback();
-#endif
-
-#if defined(CONTROL_PWM_LEFT) || defined(CONTROL_PWM_RIGHT)
-  PWM_SysTick_Callback();
 #endif
   /* USER CODE END SysTick_IRQn 1 */
 }
 
-#ifdef CONTROL_NUNCHUK
+#ifdef CONTROL_NUNCHUCK
 extern I2C_HandleTypeDef hi2c2;
 void I2C1_EV_IRQHandler(void)
 {
@@ -232,51 +223,131 @@ void DMA1_Channel5_IRQHandler(void)
 }
 #endif
 
-#ifdef CONTROL_PPM_LEFT
+#ifdef CONTROL_PPM
 void EXTI3_IRQHandler(void)
 {
-  __HAL_GPIO_EXTI_CLEAR_IT(PPM_PIN);
-  PPM_ISR_Callback();    
-}
-#endif
-#ifdef CONTROL_PPM_RIGHT
-void EXTI15_10_IRQHandler(void)
-{
-  if(__HAL_GPIO_EXTI_GET_IT(PPM_PIN) != RESET) {
-    __HAL_GPIO_EXTI_CLEAR_IT(PPM_PIN);
     PPM_ISR_Callback();
-  }
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_3);
 }
 #endif
 
-#ifdef CONTROL_PWM_LEFT
-void EXTI2_IRQHandler(void)
-{    
-  __HAL_GPIO_EXTI_CLEAR_IT(PWM_PIN_CH1);
-  PWM_ISR_CH1_Callback();
-}
-
-void EXTI3_IRQHandler(void)
+/////////////////////////////////////////////////////////////////////
+// actual IRQ for LEFT pins 5,6,7
+void EXTI9_5_IRQHandler(void)
 {
-  __HAL_GPIO_EXTI_CLEAR_IT(PWM_PIN_CH2);
-  PWM_ISR_CH2_Callback();    
-}
+  unsigned long triggered = 0;
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_9) != RESET)
+  {
+    /* Clear the EXTI line 8 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_9);
+    triggered |= GPIO_PIN_9;
+  }
+
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_8) != RESET)
+  {
+    /* Clear the EXTI line 9 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_8);
+    triggered |= GPIO_PIN_9;
+  }
+
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_7) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_7);
+    triggered |= GPIO_PIN_7;
+  }
+
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_6) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_6);
+    triggered |= GPIO_PIN_6;
+  }
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_5) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_5);
+    triggered |= GPIO_PIN_5;
+  }
+
+#ifdef HALL_INTERRUPTS
+  if (triggered & HALL_PIN_MASK)
+    HallInterruptsInterrupt();
 #endif
-#ifdef CONTROL_PWM_RIGHT
+}
+
+/////////////////////////////////////////////////////////////////////
+// actual IRQ for RIGHT pins 10, 11, 12
 void EXTI15_10_IRQHandler(void)
 {
-  if(__HAL_GPIO_EXTI_GET_IT(PWM_PIN_CH1) != RESET) {
-    __HAL_GPIO_EXTI_CLEAR_IT(PWM_PIN_CH1);
-    PWM_ISR_CH1_Callback();
+  unsigned long triggered = 0;
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_15) != RESET)
+  {
+    /* Clear the EXTI line 8 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_15);
+    triggered |= GPIO_PIN_15;
   }
-  if(__HAL_GPIO_EXTI_GET_IT(PWM_PIN_CH2) != RESET) {
-    __HAL_GPIO_EXTI_CLEAR_IT(PWM_PIN_CH2);
-    PWM_ISR_CH2_Callback();
+
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_14) != RESET)
+  {
+    /* Clear the EXTI line 9 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_14);
+    triggered |= GPIO_PIN_14;
   }
+
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_13) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_13);
+    triggered |= GPIO_PIN_13;
+  }
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_12) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_12);
+    triggered |= GPIO_PIN_12;
+  }
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
+    triggered |= GPIO_PIN_11;
+  }
+  if(__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_10) != RESET)
+  {
+    /* Clear the EXTI line 13 pending bit */
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_10);
+    triggered |= GPIO_PIN_10;
+  }
+
+#ifdef HALL_INTERRUPTS
+  if (triggered & HALL_PIN_MASK)
+    HallInterruptsInterrupt();
+#endif
+}
+// end EXTI
+/////////////////////////////////////////
+// UART interrupts
+
+#if defined(SERIAL_USART2_IT)
+void USART2_IT_IRQ(USART_TypeDef *us);
+
+void USART2_IRQHandler(void){
+    USART2_IT_IRQ(USART2);
 }
 #endif
 
-#if defined(DEBUG_SERIAL_USART2) || defined(CONTROL_SERIAL_USART2) || defined(FEEDBACK_SERIAL_USART2) || defined(SIDEBOARD_SERIAL_USART2)
+#if defined(SERIAL_USART3_IT)
+void USART3_IT_IRQ(USART_TypeDef *us);
+
+void USART3_IRQHandler(void){
+    USART3_IT_IRQ(USART3);
+}
+#endif
+//
+////////////////////////////////////////
+
+#ifdef CONTROL_SERIAL_NAIVE_USART2
 void DMA1_Channel6_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
@@ -303,24 +374,11 @@ void DMA1_Channel7_IRQHandler(void)
 }
 #endif
 
-#if defined(DEBUG_SERIAL_USART3) || defined(CONTROL_SERIAL_USART3) || defined(FEEDBACK_SERIAL_USART3) || defined(SIDEBOARD_SERIAL_USART3)
+
+#ifdef CONTROL_SERIAL_NAIVE_USART3
 /**
-  * @brief This function handles DMA1 channel2 global interrupt.
-  */
-void DMA1_Channel2_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart3_tx);
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMA1 channel3 global interrupt.
-  */
+* @brief This function handles DMA1 channel3 global interrupt.
+*/
 void DMA1_Channel3_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
@@ -331,43 +389,19 @@ void DMA1_Channel3_IRQHandler(void)
 
   /* USER CODE END DMA1_Channel3_IRQn 1 */
 }
-#endif
 
-#if defined(DEBUG_SERIAL_USART2) || defined(CONTROL_SERIAL_USART2) || defined(FEEDBACK_SERIAL_USART2) || defined(SIDEBOARD_SERIAL_USART2)
 /**
-  * @brief This function handles USART2 global interrupt.
-  */
-void USART2_IRQHandler(void)
+* @brief This function handles DMA1 channel2 global interrupt.
+*/
+void DMA1_Channel2_IRQHandler(void)
 {
-  /* USER CODE BEGIN USART2_IRQn 0 */
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
 
-  /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart2);
-  /* USER CODE BEGIN USART2_IRQn 1 */
-  if(RESET != __HAL_UART_GET_IT_SOURCE(&huart2, UART_IT_IDLE)) {  // Check for IDLE line interrupt
-      __HAL_UART_CLEAR_IDLEFLAG(&huart2);                         // Clear IDLE line flag (otherwise it will continue to enter interrupt)
-      usart2_rx_check();                                          // Check for data to process
-  }
-  /* USER CODE END USART2_IRQn 1 */
-}
-#endif
+  /* USER CODE END DMA1_Channel2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart3_tx);
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
 
-#if defined(DEBUG_SERIAL_USART3) || defined(CONTROL_SERIAL_USART3) || defined(FEEDBACK_SERIAL_USART3) || defined(SIDEBOARD_SERIAL_USART3)
-/**
-  * @brief This function handles USART3 global interrupt.
-  */
-void USART3_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART2_IRQn 0 */
-
-  /* USER CODE END USART2_IRQn 0 */
-  HAL_UART_IRQHandler(&huart3);
-  /* USER CODE BEGIN USART2_IRQn 1 */
-  if(RESET != __HAL_UART_GET_IT_SOURCE(&huart3, UART_IT_IDLE)) {  // Check for IDLE line interrupt  
-      __HAL_UART_CLEAR_IDLEFLAG(&huart3);                         // Clear IDLE line flag (otherwise it will continue to enter interrupt)
-      usart3_rx_check();                                          // Check for data to process
-  }
-  /* USER CODE END USART2_IRQn 1 */
+  /* USER CODE END DMA1_Channel2_IRQn 1 */
 }
 #endif
 
@@ -377,6 +411,21 @@ void USART3_IRQHandler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f1xx.s).                    */
 /******************************************************************************/
+
+
+/**
+* @brief This function handles TIM3 global interrupt.
+*/
+void TIM3_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM3_IRQn 0 */
+
+  /* USER CODE END TIM3_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim3);
+  /* USER CODE BEGIN TIM3_IRQn 1 */
+
+  /* USER CODE END TIM3_IRQn 1 */
+}
 
 
 /* USER CODE BEGIN 1 */
