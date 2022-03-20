@@ -5,4 +5,7 @@ catkin_ws/devel/
 catkin_ws/build/
 mcu_ws/.pio/
 mcu_ws/vscode/
+hoverboard_ws/.pio/
+hoverboard_ws/.vscode/
+hoverboard_ws/.DS_Store
 .DS_Store
