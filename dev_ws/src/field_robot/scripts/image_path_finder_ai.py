@@ -33,15 +33,17 @@ class ImageAIPathFinder(Node):
         # tensorflow setup
         self.get_logger().info("TensorFlow version: ", tf.__version__)
         models_dir = os.path.join(get_package_share_directory('field_robot'), 'config', 'ai_models', 'image_path_finder')
-        model = tf.keras.models.load_model(models_dir)
+        self.model = tf.keras.models.load_model(models_dir)
 
     def image_callback(self, msg):
         self.publisher.publish(msg)
         self.get_logger().info("image callback called")
 
-        # convert msg to numpy array
+        # convert msg to tensor
+        array = []
 
         # run model
+        self.model(array)
 
         # convert result to msg
 
