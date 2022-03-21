@@ -49,7 +49,7 @@ set(msg_files
 
 #settings service files
 set(srv_files
-  #"service/BTNode.srv"
+  "service/BTNode.srv"
 )
 
 #setting action files
@@ -69,21 +69,21 @@ include_directories(include)
 
 ## creating cpp executables
 # creating the behavior_tree executable
-add_executable(navigation
-  src/navigation.cpp)
-ament_target_dependencies(navigation
-  rclcpp
-  rclcpp_action
-  behaviortree_cpp_v3)
+#add_executable(navigation
+#  src/navigation.cpp)
+#ament_target_dependencies(navigation
+#  rclcpp
+#  rclcpp_action
+#  behaviortree_cpp_v3)
 
-rosidl_target_interfaces(navigation
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(navigation
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ## installing cpp executables
-install(TARGETS
-  navigation
-  DESTINATION lib/${PROJECT_NAME}
-)
+#install(TARGETS
+#  navigation
+#  DESTINATION lib/${PROJECT_NAME}
+#)
 
 ## installing python modules
 ament_python_install_package(${PROJECT_NAME})
