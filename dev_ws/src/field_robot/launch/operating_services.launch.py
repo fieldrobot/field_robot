@@ -28,7 +28,7 @@ def generate_launch_description():
             package='robot_state_publisher',
             executable='robot_state_publisher',
             name='robot_state_publisher',
-            node_namespace='robot',
+            namespace='robot',
             output='screen',
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')},
@@ -41,7 +41,8 @@ def generate_launch_description():
     odometry = Node(
             package='robot_localization',
             executable='ekf_node',
-            name='ekf_filter_node',
+            name='odometry_fiter',
+            namespace='robot',
             output='screen',
             parameters=[
                 os.path.join(get_package_share_directory('field_robot'), 'config/odometry.yaml'),
