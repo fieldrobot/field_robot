@@ -605,7 +605,7 @@
   </gazebo>
 
   <!-- IMU -->
-  <!--<gazebo reference="imu_link">
+  <gazebo reference="imu_link">
     <sensor name="imu" type="imu">
       <always_on>true</always_on>
       <update_rate>100</update_rate>
@@ -676,12 +676,12 @@
         <initial_orientation_as_reference>false</initial_orientation_as_reference>
         <frame_name>imu_link</frame_name>
         <ros>
-          <namespace>field_robot/imu</namespace>
-          <argument>out:=data</argument>
+          <namespace>field_robot</namespace>
+          <argument>out:=imu/data</argument>
         </ros>
       </plugin>
     </sensor>
-  </gazebo>-->
+  </gazebo>
 
   <!--<gazebo>
     <plugin name="gaezbo_ros_p3d" filename="libgazebo_ros_p3d.so">

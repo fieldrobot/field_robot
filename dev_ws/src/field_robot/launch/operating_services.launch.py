@@ -33,7 +33,9 @@ def generate_launch_description():
             parameters=[
                 {'use_sim_time': LaunchConfiguration('use_sim_time')},
             ],
-            arguments=[LaunchConfiguration('urdf')],
+            arguments=[
+                LaunchConfiguration('urdf')
+            ],
         )
 
     odometry = Node(
