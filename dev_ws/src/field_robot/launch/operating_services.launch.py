@@ -42,7 +42,7 @@ def generate_launch_description():
             package='robot_localization',
             executable='ekf_node',
             name='odometry_fiter',
-            namespace='robot',
+            #namespace='robot',
             output='screen',
             parameters=[
                 os.path.join(get_package_share_directory('field_robot'), 'config/odometry.yaml'),
