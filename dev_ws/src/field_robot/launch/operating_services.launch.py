@@ -56,5 +56,5 @@ def generate_launch_description():
         use_sim_time,
         urdf,
         robot_state_publisher,
-        #odometry,
+        odometry,
     ])
