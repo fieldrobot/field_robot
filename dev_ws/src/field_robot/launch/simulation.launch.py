@@ -53,6 +53,10 @@ def generate_launch_description():
         )
 
     return LaunchDescription([
+        world,
+        gui,
+        pause,
+        debug,
         gazebo,
         robot,
     ])
