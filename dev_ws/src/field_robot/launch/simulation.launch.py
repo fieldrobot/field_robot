@@ -13,6 +13,12 @@ from launch.actions import DeclareLaunchArgument
 
 
 def generate_launch_description():
+    use_sim_time = DeclareLaunchArgument(
+            'use_sim_time',
+            default_value='true',
+            description='Use simulation (Gazebo) clock if true'
+        )
+    
     world = DeclareLaunchArgument(
             'world',
             default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
@@ -30,7 +36,7 @@ def generate_launch_description():
 
     debug = DeclareLaunchArgument(
             'debug',
-            default_value='debug'
+            default_value='true'
         )
 
     gazebo = IncludeLaunchDescription(
@@ -38,6 +44,7 @@ def generate_launch_description():
                 os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
             ),
             launch_arguments={
+                'use_sim_time': LaunchConfiguration('use_sim_time'),
                 'world': LaunchConfiguration('world'),
                 'gui': LaunchConfiguration('gui'),
                 'pause': LaunchConfiguration('pause'),
@@ -53,6 +60,7 @@ def generate_launch_description():
         )
 
     return LaunchDescription([
+        use_sim_time,
         world,
         gui,
         pause,
