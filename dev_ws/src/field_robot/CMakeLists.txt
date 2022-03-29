@@ -26,6 +26,7 @@ find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
+find_package(robot_localization REQUIRED)
 
 #installing launch files
 install(DIRECTORY
