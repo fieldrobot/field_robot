@@ -17,6 +17,8 @@
   <depend>behaviortree_cpp_v3</depend>
   <depend>std_msgs</depend>
   <depend>robot_localization</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>robot_localization</depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
 
@@ -28,8 +30,8 @@
   <export>
     <build_type>ament_cmake</build_type>
     <gazebo_ros gazebo_model_path="${prefix}/models"/>
-    <gazebo_ros gazebo_media_path="${prefix}/media"/>
+    <!--<gazebo_ros gazebo_media_path="${prefix}/media"/>
     <gazebo_ros gazebo_resource_path="{prefix}/media"/>
-    <gazebo_ros gazebo_file_path="${prefix}/media"/>
+    <gazebo_ros gazebo_file_path="${prefix}/media"/>-->
   </export>
 </package>
