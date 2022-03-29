@@ -56,6 +56,7 @@ def generate_launch_description():
     robot = Node(
             package='field_robot',
             executable='robot_spawner.py',
+            namespace='robot',
             name='robot_spawner'
         )
 
