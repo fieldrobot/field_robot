@@ -31,11 +31,12 @@ def generate_launch_description():
         namespace='robot',
         output='screen',
         parameters=[
+            {'robot_description': LaunchConfiguration('urdf')},
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ],
-        arguments=[
-            LaunchConfiguration('urdf')
-        ],
+        #arguments=[
+        #    LaunchConfiguration('urdf')
+        #],
     )
 
     odometry = Node(
