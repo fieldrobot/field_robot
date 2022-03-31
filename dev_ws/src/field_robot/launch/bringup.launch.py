@@ -14,17 +14,8 @@ from launch.acions import DeclareLaunchArgument
 def generate_launch_description():
     use_sim_time = DeclareLaunchArgument(
             'use_sim_time',
-            default_value='true',
+            default_value='false',
             description='Use simulation (Gazebo) clock if true'
-        )
-
-    simulation = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                os.path.join(get_package_share_directory('field_robot'), 'launch', 'simulation.launch.py')
-            ),
-            launch_arguments={
-                'use_sim_time': LaunchConfiguration('use_sim_time'),
-            }.items(),
         )
     
     operating_services = IncludeLaunchDescription(
@@ -38,6 +29,5 @@ def generate_launch_description():
 
     return LaunchDescription([
         use_sim_time,
-        simulation,
         operating_services
     ])
