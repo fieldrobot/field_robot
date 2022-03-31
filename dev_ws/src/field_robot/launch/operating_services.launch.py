@@ -21,7 +21,7 @@ def generate_launch_description():
     odometry = Node(
         package='robot_localization',
         executable='ekf_node',
-        name='odometry_fiter',
+        name='odometry_filter',
         namespace='robot',
         output='screen',
         parameters=[
