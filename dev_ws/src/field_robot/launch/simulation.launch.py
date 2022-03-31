@@ -78,9 +78,6 @@ def generate_launch_description():
             {'robot_description': LaunchConfiguration('urdf')},
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ],
-        #arguments=[
-        #    LaunchConfiguration('urdf')
-        #],
     )
 
     return LaunchDescription([
