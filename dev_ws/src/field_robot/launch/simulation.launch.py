@@ -19,13 +19,14 @@ def generate_launch_description():
     )
     
     world = DeclareLaunchArgument(
-        'world',
+        'world_path',
         default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
     )
 
+    urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
     urdf = DeclareLaunchArgument(
         'urdf',
-        default_value=os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf'),
+        default_value=open(urdf_path,'r').read()
     )
 
     gui = DeclareLaunchArgument(
@@ -49,7 +50,7 @@ def generate_launch_description():
         ),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'world': LaunchConfiguration('world'),
+            'world': LaunchConfiguration('world_path'),
             'gui': LaunchConfiguration('gui'),
             'pause': LaunchConfiguration('pause'),
             'debug': LaunchConfiguration('debug'),
@@ -77,9 +78,9 @@ def generate_launch_description():
             {'robot_description': LaunchConfiguration('urdf')},
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ],
-        arguments=[
-            LaunchConfiguration('urdf')
-        ],
+        #arguments=[
+        #    LaunchConfiguration('urdf')
+        #],
     )
 
     return LaunchDescription([
