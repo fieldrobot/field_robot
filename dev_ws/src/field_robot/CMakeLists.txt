@@ -50,7 +50,7 @@ set(msg_files
 
 #settings service files
 set(srv_files
-  "service/BTNode.srv"
+  #"service/BTNode.srv"
 )
 
 #setting action files
