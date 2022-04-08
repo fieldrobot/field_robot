@@ -25,12 +25,27 @@ def generate_launch_description():
         namespace='robot',
         output='screen',
         parameters=[
-            os.path.join(get_package_share_directory('field_robot'), 'config/ekf.yaml'),
+            os.path.join(get_package_share_directory('field_robot'), 'config/odometry.yaml'),
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ]
     )
 
+    robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        name='robot_state_publisher',
+        namespace='robot',
+        output='screen',
+        parameters=[
+            {'robot_description': LaunchConfiguration('urdf')},
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+        ],
+    )
+
     return LaunchDescription([
+        # parameters
         use_sim_time,
+        # nodes & launch files
+        robot_state_publisher,
         odometry,
     ])
