@@ -59,11 +59,11 @@ set(action_files
 )
 
 #adding defined message, service, and action files to the ros system
-rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
-  ${srv_files}
-  ${action_files}
-)
+#rosidl_generate_interfaces(${PROJECT_NAME}
+#  ${msg_files}
+#  ${srv_files}
+#  ${action_files}
+#)
 
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
