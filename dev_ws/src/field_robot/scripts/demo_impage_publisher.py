@@ -9,6 +9,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 
 import cv_bridge
+import cv2
 import tensorflow as tf
 
 
@@ -16,7 +17,8 @@ import tensorflow as tf
 class DemoImagePublisher(Node):
     def __init__(self):
         super().__init__('demo_image_publisher')
-        self.declare_parameter('image_dst', 'robot_camera_demo')
+        self.declare_parameter('image_src')
+        self.declare_parameter('image_dst')
         
         # ros publisher & subscriber
         self.publisher = self.create_publisher(
@@ -27,21 +29,14 @@ class DemoImagePublisher(Node):
         # openCV setup
         self.bridge = cv_bridge.CvBridge()
 
-    def image_callback(self, msg):
-        self.publisher.publish(msg)
-        self.get_logger().info("image callback called")
+        # timer
+        timer_period = 1/30
+        self.timer = self.create_timer(timer_period, self.timer_callback)
 
-        # convert msg to tensor
-        cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-        tensor = tf.tensor(cvImage.data, [cvImage.rows, cvImage.cols], cvImage)
-
-        # run model
-        res = self.model(tensor)
-        prediction = self.model.predict(tensor)
-
-        # convert result to msg
-
-        # publish result
+    def timer_callback(self):
+        cv_image = cv2.imread(self.get_parameter('image_dst').get_parameter_value().string_value)
+        ros_imgage = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
+        self.publisher.publish(ros_imgage)
 
 def main(args=None):
     # Start node
