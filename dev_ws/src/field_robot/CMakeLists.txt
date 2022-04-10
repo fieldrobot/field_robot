@@ -73,14 +73,14 @@ include_directories(include)
 ## POINT CLOUD GENERATOR
 add_executable(point_cloud_generator
   src/point_cloud_generator.cpp)
-)
+
 ament_target_dependencies(point_cloud_generator
   rclcpp
   sensor_msgs)
 
 add_executable(point_cloud_fusion
   src/point_cloud_fusion.cpp)
-)
+
 ament_target_dependencies(point_cloud_fusion
   rclcpp
   sensor_msgs)
