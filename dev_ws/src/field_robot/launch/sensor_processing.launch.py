@@ -18,12 +18,14 @@ def generate_launch_description():
     )
 
     ### DEMO CAMERA SOURCE
+    image_path = os.path.join(get_package_share_directory('field_robot'), 'config/test_files/demo_image.jpeg')
     demo_camera_source = Node(
         package='field_robot',
         node_executable='demo_image_publisher.py',
         node_namespace='robot/demo_camera',
         name='camera_demo',
         parameters=[
+            {'image_src': image_path},
             {'image_dst' : '/image_raw'},
         ]
     )
