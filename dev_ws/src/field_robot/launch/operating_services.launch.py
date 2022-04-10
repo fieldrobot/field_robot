@@ -42,10 +42,20 @@ def generate_launch_description():
         ],
     )
 
+    sensor_processing = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('field_robot'), 'launch', 'sensor_processing.launch.py')
+        ),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }.items(),
+    )
+
     return LaunchDescription([
         # parameters
         use_sim_time,
         # nodes & launch files
         robot_state_publisher,
         odometry,
+        sensor_processing,
     ])
