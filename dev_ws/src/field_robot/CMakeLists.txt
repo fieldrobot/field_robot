@@ -95,7 +95,10 @@ ament_export_dependencies(rosidl_default_runtime)
 ## installing python executables
 install(PROGRAMS
   scripts/robot_spawner.py
+  scripts/demo_image_publisher.py
   scripts/image_path_finder_ai.py
+  scripts/point_cloud_generator.py
+  scripts/point_cloud_fusion.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
