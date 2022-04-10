@@ -68,23 +68,29 @@ set(action_files
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
 
-## creating cpp executables
-# creating the behavior_tree executable
-#add_executable(navigation
-#  src/navigation.cpp)
-#ament_target_dependencies(navigation
-#  rclcpp
-#  rclcpp_action
-#  behaviortree_cpp_v3)
+# CPP EXECUTABLES
+## POINT CLOUD GENERATOR
+add_executable(point_cloud_generator
+  src/point_cloud_generator.cpp)
+)
+ament_target_dependencies(point_cloud_generator
+  rclcpp)
+
+add_executable(point_cloud_fusion
+  src/point_cloud_fusion.cpp)
+)
+ament_target_dependencies(point_cloud_fusion
+  rclcpp)
 
 #rosidl_target_interfaces(navigation
 #  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-## installing cpp executables
-#install(TARGETS
-#  navigation
-#  DESTINATION lib/${PROJECT_NAME}
-#)
+# installing cpp executables
+install(TARGETS
+  point_cloud_generator
+  point_cloud_fusion
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 ## installing python modules
 ament_python_install_package(${PROJECT_NAME})
