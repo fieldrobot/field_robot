@@ -16,8 +16,8 @@ import tensorflow as tf
 class ImageAIPathFinder(Node):
     def __init__(self):
         super().__init__('image_path_finder_ai')
-        self.declare_parameter('image_src', 'image_src')
-        self.declare_parameter('image_dst', 'image_dst')
+        self.declare_parameter('image_src')
+        self.declare_parameter('image_dst')
         
         # ros publisher & subscriber
         self.subscription = self.create_subscription(
