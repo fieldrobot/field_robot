@@ -34,7 +34,6 @@ class DemoImagePublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
-        self.get_logger().info(self.get_parameter('image_src').get_parameter_value().string_value)
         cv_image = cv2.imread(self.get_parameter('image_src').get_parameter_value().string_value)
         ros_image = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
         self.publisher.publish(ros_image)
