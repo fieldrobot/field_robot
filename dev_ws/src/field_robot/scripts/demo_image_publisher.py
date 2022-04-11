@@ -8,8 +8,8 @@ from rclpy.node import Node
 
 from sensor_msgs.msg import Image
 
-import cv_bridge
 import cv2
+import cv_bridge
 import tensorflow as tf
 
 
