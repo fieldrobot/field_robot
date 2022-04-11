@@ -8,8 +8,8 @@ from rclpy.node import Node
 
 from sensor_msgs.msg import Image
 
-import cv_bridge
 import cv2
+import cv_bridge
 import tensorflow as tf
 
 
@@ -23,7 +23,7 @@ class DemoImagePublisher(Node):
         # ros publisher & subscriber
         self.publisher = self.create_publisher(
             Image,
-            self.get_parameter('image_dst').get_parameter_value().string_value,
+            (self.get_namespace() + self.get_parameter('image_dst').get_parameter_value().string_value),
             10)
 
         # openCV setup
@@ -34,9 +34,9 @@ class DemoImagePublisher(Node):
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
-        cv_image = cv2.imread(self.get_parameter('image_dst').get_parameter_value().string_value)
-        ros_imgage = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
-        self.publisher.publish(ros_imgage)
+        cv_image = cv2.imread(self.get_parameter('image_src').get_parameter_value().string_value)
+        ros_image = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
+        self.publisher.publish(ros_image)
 
 def main(args=None):
     # Start node

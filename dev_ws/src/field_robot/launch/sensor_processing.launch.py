@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from http.server import executable
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -21,8 +22,8 @@ def generate_launch_description():
     image_path = os.path.join(get_package_share_directory('field_robot'), 'config/test_files/demo_image.jpeg')
     demo_camera_source = Node(
         package='field_robot',
-        node_executable='demo_image_publisher.py',
-        node_namespace='robot/demo_camera',
+        executable='demo_image_publisher.py',
+        namespace='robot/demo_camera',
         name='camera_demo',
         parameters=[
             {'image_src': image_path},
@@ -34,7 +35,7 @@ def generate_launch_description():
     demo_ai = Node(
         package='field_robot',
         executable='image_path_finder_ai.py',
-        node_namespace='robot/demo_camera',
+        namespace='robot/demo_camera',
         name='image_path_finder_ai_demo',
         parameters=[
             {'image_src' : '/image_raw'},
@@ -45,7 +46,7 @@ def generate_launch_description():
     front_ai = Node(
         package='field_robot',
         executable='image_path_finder_ai.py',
-        node_namespace='robot/camera_front',
+        namespace='robot/camera_front',
         name='image_path_finder_ai_front',
         parameters=[
             {'image_src' : '/image_raw'},
@@ -56,7 +57,7 @@ def generate_launch_description():
     rear_ai = Node(
         package='field_robot',
         executable='image_path_finder_ai.py',
-        node_namespace='robot/camera_rear',
+        namespace='robot/camera_rear',
         name='image_path_finder_ai_rear',
         parameters=[
            {'image_src' : '/image_raw'},
@@ -67,7 +68,7 @@ def generate_launch_description():
     left_ai = Node(
         package='field_robot',
         executable='image_path_finder_ai.py',
-        node_namespace='robot/camera_left',
+        namespace='robot/camera_left',
         name='image_path_finder_ai_left',
         parameters=[
             {'image_src' : '/image_raw'},
@@ -78,7 +79,7 @@ def generate_launch_description():
     right_ai = Node(
         package='field_robot',
         executable='image_path_finder_ai.py',
-        node_namespace='robot/camera_right',
+        namespace='robot/camera_right',
         name='image_path_finder_ai_right',
         parameters=[
             {'image_src' : '/image_raw'},
@@ -90,7 +91,7 @@ def generate_launch_description():
     point_cloud_generator_demo = Node(
         package='field_robot',
         executable='point_cloud_generator.py',
-        node_namespace='robot/demo_camera',
+        namespace='robot/demo_camera',
         name='point_cloud_generator_demo',
         parameters=[
             {'image_src' : '/image_ai'},
@@ -101,7 +102,7 @@ def generate_launch_description():
     point_cloud_generator_front = Node(
         package='field_robot',
         executable='point_cloud_generator.py',
-        node_namespace='robot/camera_front',
+        namespace='robot/camera_front',
         name='point_cloud_generator_front',
         parameters=[
             {'image_src' : '/image_ai'},
@@ -112,7 +113,7 @@ def generate_launch_description():
     point_cloud_generator_rear = Node(
         package='field_robot',
         executable='point_cloud_generator.py',
-        node_namespace='robot/camera_rear',
+        namespace='robot/camera_rear',
         name='point_cloud_generator_rear',
         parameters=[
             {'image_src' : '/image_ai'},
@@ -123,7 +124,7 @@ def generate_launch_description():
     point_cloud_generator_left = Node(
         package='field_robot',
         executable='point_cloud_generator.py',
-        node_namespace='robot/camera_left',
+        namespace='robot/camera_left',
         name='point_cloud_generator_left',
         parameters=[
             {'image_src' : '/image_ai'},
@@ -134,7 +135,7 @@ def generate_launch_description():
     point_cloud_generator_right = Node(
         package='field_robot',
         executable='point_cloud_generator.py',
-        node_namespace='robot/camera_right',
+        namespace='robot/camera_right',
         name='point_cloud_generator_right',
         parameters=[
             {'image_src' : '/image_ai'},
@@ -146,7 +147,7 @@ def generate_launch_description():
     point_cloud_fusion = Node(
         package='field_robot',
         executable='point_cloud_fusion.py',
-        node_namespace='robot',
+        namespace='robot',
         name='point_cloud_fusion',
         parameters=[
             {'pc_src_1' : '/camera_front/pc'},
@@ -162,7 +163,7 @@ def generate_launch_description():
     point_cloud_to_laserscan = Node(
         package='pointcloud_to_laserscan',
         executable='pointcloud_to_laserscan',
-        node_namespace='robot',
+        namespace='robot',
         name='pointcloud_to_laserscan',
         parameters=[
             
@@ -180,21 +181,21 @@ def generate_launch_description():
         demo_camera_source,
 
         # image path finder AI    
-        demo_ai,    
+        #demo_ai,    
         #front_ai,
         #rear_ai,
         #left_ai,
         #right_ai,
 
         # point cloud generator
-        point_cloud_generator_demo,
+        #point_cloud_generator_demo,
         #point_cloud_generator_front,
         #point_cloud_generator_rear,
         #point_cloud_generator_left,
         #point_cloud_generator_right,
 
         # point cloud fusion
-        point_cloud_fusion,
+        #point_cloud_fusion,
 
         # point cloud to laserscan
         #point_cloud_to_laserscan,

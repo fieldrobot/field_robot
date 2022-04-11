@@ -24,6 +24,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
@@ -72,15 +73,17 @@ include_directories(include)
 ## POINT CLOUD GENERATOR
 add_executable(point_cloud_generator
   src/point_cloud_generator.cpp)
-)
+
 ament_target_dependencies(point_cloud_generator
-  rclcpp)
+  rclcpp
+  sensor_msgs)
 
 add_executable(point_cloud_fusion
   src/point_cloud_fusion.cpp)
-)
+
 ament_target_dependencies(point_cloud_fusion
-  rclcpp)
+  rclcpp
+  sensor_msgs)
 
 #rosidl_target_interfaces(navigation
 #  ${PROJECT_NAME} "rosidl_typesupport_cpp")
