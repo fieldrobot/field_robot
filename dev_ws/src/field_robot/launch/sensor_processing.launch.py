@@ -41,7 +41,7 @@ def generate_launch_description():
             {'image_src' : '/image_raw'},
             {'image_dst' : '/image_ai'},
         ]
-    ),
+    )
 
     front_ai = Node(
         package='field_robot',
@@ -181,7 +181,7 @@ def generate_launch_description():
         demo_camera_source,
 
         # image path finder AI    
-        #demo_ai,    
+        demo_ai,    
         #front_ai,
         #rear_ai,
         #left_ai,
