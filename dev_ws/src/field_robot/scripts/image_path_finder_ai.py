@@ -22,12 +22,12 @@ class ImageAIPathFinder(Node):
         # ros publisher & subscriber
         self.subscription = self.create_subscription(
             Image,
-            self.get_parameter('image_src').get_parameter_value().string_value,
+            (self.get_namespace() + self.get_parameter('image_src').get_parameter_value().string_value),
             self.image_callback,
             10)
         self.publisher = self.create_publisher(
             Image,
-            self.get_parameter('image_dst').get_parameter_value().string_value,
+            (self.get_namespace() + self.get_parameter('image_dst').get_parameter_value().string_value),
             10)
         self.subscription
 
