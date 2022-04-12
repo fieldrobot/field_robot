@@ -9,6 +9,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import Image
 
 import cv2
+import numpy
 import cv_bridge
 import tensorflow as tf
 
@@ -42,20 +43,31 @@ class ImageAIPathFinder(Node):
         self.model = tf.keras.models.load_model(models_dir)
 
     def image_callback(self, msg):
-        self.publisher.publish(msg)
+        #self.publisher.publish(msg)
         self.get_logger().info("image callback called")
 
         # convert msg to tensor
         cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
-        tensor = tf.tensor(cvImage.data, [cvImage.rows, cvImage.cols], cvImage)
+        image_array = numpy.asarray(cvImage)
+        #self.get_logger().info(str(image_array.shape))
+        image_array = numpy.expand_dims(image_array, 0)
+        image_array = image_array/255.
+        #self.get_logger().info(str(numpy.amax(image_array)))
+        tensor = tf.convert_to_tensor(image_array)
+
 
         # run model
-        res = self.model(tensor)
         prediction = self.model.predict(tensor)
+        predictionO = (prediction[0]*255.).astype(numpy.uint8)
+        #self.get_logger().info("prediction0 shape" + str(predictionO.shape))
+        #self.get_logger().info("prediction0" + str(predictionO))
 
         # convert result to msg
+        after = self.bridge.cv2_to_imgmsg(predictionO, encoding='mono8')
+        after.header = msg.header
 
         # publish result
+        self.publisher.publish(after)
 
 def main(args=None):
     # Start node
