@@ -49,7 +49,7 @@ class ImageAIPathFinder(Node):
     def image_callback(self, msg):
         # prints
         self.get_logger().info("image callback called")
-        self.get_logger().info(str(type(self.get_clock().now() - self.time)))
+        self.get_logger().info(str(((self.get_clock().now() - self.time).nanoseconds) / 1000000000))
         self.time = self.get_clock().now()
 
         # convert msg to tensor
