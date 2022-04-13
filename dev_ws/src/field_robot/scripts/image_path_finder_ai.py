@@ -39,6 +39,7 @@ class ImageAIPathFinder(Node):
         # tensorflow setup
         string = "TensorFlow version: " + tf.__version__
         self.get_logger().info(string)
+        print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
         models_dir = os.path.join(get_package_share_directory('field_robot'), 'config', 'ai_models', 'image_path_finder_ai')
         self.model = tf.keras.models.load_model(models_dir)
 
