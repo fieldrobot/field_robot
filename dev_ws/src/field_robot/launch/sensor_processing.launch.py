@@ -90,7 +90,7 @@ def generate_launch_description():
     ### POINT CLOUD GENERATOR
     point_cloud_generator_demo = Node(
         package='field_robot',
-        executable='point_cloud_generator.py',
+        executable='point_cloud_generator',
         namespace='robot/demo_camera',
         name='point_cloud_generator_demo',
         parameters=[
@@ -188,7 +188,7 @@ def generate_launch_description():
         #right_ai,
 
         # point cloud generator
-        #point_cloud_generator_demo,
+        point_cloud_generator_demo,
         #point_cloud_generator_front,
         #point_cloud_generator_rear,
         #point_cloud_generator_left,
