@@ -17,6 +17,8 @@
   <depend>behaviortree_cpp_v3</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2_ros</depend>
   <depend>robot_localization</depend>
   <depend>robot_state_publisher</depend>
 
