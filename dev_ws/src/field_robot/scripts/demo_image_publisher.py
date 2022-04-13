@@ -30,7 +30,8 @@ class DemoImagePublisher(Node):
         self.bridge = cv_bridge.CvBridge()
 
         # timer
-        timer_period = 1/30
+        timer_period = 1./30.
+        self.get_logger().info(str(timer_period))
         self.timer = self.create_timer(timer_period, self.timer_callback)
 
     def timer_callback(self):
