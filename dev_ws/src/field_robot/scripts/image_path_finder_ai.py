@@ -42,9 +42,14 @@ class ImageAIPathFinder(Node):
         models_dir = os.path.join(get_package_share_directory('field_robot'), 'config', 'ai_models', 'image_path_finder_ai')
         self.model = tf.keras.models.load_model(models_dir)
 
+        # timer setup
+        self.time = self.get_clock().now()
+
     def image_callback(self, msg):
-        #self.publisher.publish(msg)
+        # prints
         self.get_logger().info("image callback called")
+        self.get_logger().info(str(self.get_clock().now() - self.time))
+        self.time = self.get_clock().now()
 
         # convert msg to tensor
         cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
