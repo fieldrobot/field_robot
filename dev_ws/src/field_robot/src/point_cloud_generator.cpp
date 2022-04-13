@@ -12,6 +12,8 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 
+#include <opencv2/opencv.hpp>
+
 using std::placeholders::_1;
 
 class PointCloudGenerator : public rclcpp::Node
