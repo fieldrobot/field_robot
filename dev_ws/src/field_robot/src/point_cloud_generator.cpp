@@ -14,7 +14,8 @@ class PointCloudGenerator : public rclcpp::Node
         PointCloudGenerator() : Node("point_cloud_generator")
         {
             image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>("topic", 10, std::bind(&PointCloudGenerator::image_callback, this, _1));
-            image_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("topic", 10);
+            qos = rclcpp::QoS(10);
+            //image_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("topic", rclcpp::QoS);
         }
         //void image_callback(const sensor_msgs::msg::Image::SharedPtr msg);
 
@@ -27,6 +28,7 @@ class PointCloudGenerator : public rclcpp::Node
         }
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_publisher_;
+        rclcpp::QoS qos;
 };
 
 int main(int argc, char * argv[])
