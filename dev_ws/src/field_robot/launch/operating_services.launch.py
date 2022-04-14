@@ -10,11 +10,9 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 
-
 def generate_launch_description():
 
     pkg_share = get_package_share_directory('field_robot')
-    use_sim_time = DeclareLaunchArgument('use_sim_time', default_value='true')
 
     odometry = Node(
         package='robot_localization',
@@ -60,7 +58,8 @@ def generate_launch_description():
 
     return LaunchDescription([
         # parameters
-        use_sim_time,
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
+        
         # nodes & launch files
         robot_state_publisher,
         odometry,
