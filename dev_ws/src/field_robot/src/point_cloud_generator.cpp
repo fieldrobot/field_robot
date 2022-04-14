@@ -65,7 +65,7 @@ class PointCloudGenerator : public rclcpp::Node
             cv::Mat opencv_blured_image;
             cv::GaussianBlur(opencv_image, opencv_blured_image, cv::Size(5, 5), 0);
             cv::Mat border_image;
-            cv::Sobel(opencv_blured_image, border_image, CV_8U, 0, 1, 1);
+            cv::Sobel(opencv_blured_image, border_image, CV_8U, 0, 1, 3);
 
             // publisher border image
             cv_bridge_image->image = border_image;
