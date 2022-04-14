@@ -1,6 +1,7 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <list>
 
 #include <rclcpp/rclcpp.hpp>
 #include <tf2/exceptions.h>
@@ -72,6 +73,14 @@ class PointCloudGenerator : public rclcpp::Node
             border_image_publisher_->publish(border_image_msg);
 
             // identify blobs
+            std::list<cv::Point> blob_points;
+            cv::findNonZero(border_image, border_image);
+            for (int i = 0; i < border_image.total(); i++)
+            {
+                cv::Point point = border_image.at<cv::Point>(i);
+                blob_points.push_back(point);
+            }
+            
 
             // transform blobs to points (inverted projection)
 
