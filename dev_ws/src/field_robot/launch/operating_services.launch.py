@@ -13,10 +13,8 @@ from launch.actions import DeclareLaunchArgument
 
 def generate_launch_description():
 
-    use_sim_time = DeclareLaunchArgument(
-        'use_sim_time',
-        default_value='true'
-    )
+    pkg_share = get_package_share_directory('field_robot')
+    use_sim_time = DeclareLaunchArgument('use_sim_time', default_value='true')
 
     odometry = Node(
         package='robot_localization',
@@ -46,6 +44,8 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('field_robot'), 'launch', 'sensor_processing.launch.py')
         ),
+    navigation = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'navigation.launch.py')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
         }.items(),
@@ -58,4 +58,5 @@ def generate_launch_description():
         robot_state_publisher,
         odometry,
         sensor_processing,
+        navigation,
     ])
