@@ -61,24 +61,35 @@ class PointCloudGenerator : public rclcpp::Node
             cv_bridge::CvImagePtr cv_bridge_image = cv_bridge::toCvCopy(msg, msg->encoding);
             cv::Mat opencv_image = cv_bridge_image->image;
 
+            // do basic image manipulation
+            opencv_image = opencv_image > 180; // making b/w image
+            cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
+            cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 16); // eroding the image
+            cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
+            cv::imwrite("/field_robot/img_erode_dilate.jpg", opencv_image);
+
+            /*cv::drawContours(opencv_image, opencv_image, -1, cv::Scalar(0,255,0), -1);
+            cv::imwrite("/field_robot/img_contours_filled.jpg", opencv_image); */
+
             // run edge detection
-            cv::Mat opencv_blured_image;
-            cv::GaussianBlur(opencv_image, opencv_blured_image, cv::Size(5, 5), 0);
-            cv::Mat border_image;
-            cv::Sobel(opencv_blured_image, border_image, CV_8U, 0, 1, 3);
+            cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);
+            cv::imwrite("/field_robot/img_edge_detection.jpg", opencv_image);
+            //cv::Canny(opencv_image, save, 50, 150, 3, false);
+            //cv::imwrite("/field_robot/img_canny.jpg", save);
 
             // publisher border image
-            cv_bridge_image->image = border_image;
+            /* cv_bridge_image->image = opencv_image;
             sensor_msgs::msg::Image border_image_msg = *cv_bridge_image->toImageMsg();
-            border_image_publisher_->publish(border_image_msg);
+            border_image_publisher_->publish(border_image_msg); */
 
             // identify blobs
             std::list<cv::Point> blob_points;
             RCLCPP_INFO(this->get_logger(), "Starting with %d blobs", blob_points.size());
-            cv::findNonZero(border_image, border_image);
-            for (int i = 0; i < border_image.total(); i++)
+            cv::Mat nonZeros;
+            cv::findNonZero(opencv_image, nonZeros);
+            for (int i = 0; i < nonZeros.total(); i++)
             {
-                cv::Point point = border_image.at<cv::Point>(i);
+                cv::Point point = nonZeros.at<cv::Point>(i);
                 blob_points.push_back(point);
             }
             RCLCPP_INFO(this->get_logger(), "Found %d blobs", blob_points.size());
