@@ -51,6 +51,13 @@ def generate_launch_description():
         }.items(),
     )
 
+    mapping = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'mapping.launch.py')),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }.items(),
+    )
+
     return LaunchDescription([
         # parameters
         use_sim_time,
@@ -59,4 +66,5 @@ def generate_launch_description():
         odometry,
         sensor_processing,
         navigation,
+        mapping,
     ])
