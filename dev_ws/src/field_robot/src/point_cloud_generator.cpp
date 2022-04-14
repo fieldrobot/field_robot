@@ -57,9 +57,13 @@ class PointCloudGenerator : public rclcpp::Node
         void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) const
         {
             // converting the image to opencv
-            cv::Mat opencv_image = cv_bridge::toCvShare(msg, msg->encoding)->image;
+            cv::Mat opencv_image = cv_bridge::toCvCopy(msg, msg->encoding)->image;
 
             // run canny edge detection
+            cv::Mat opencv_blured_image;
+            cv::GaussianBlur(opencv_image, opencv_blured_image, cv::Size(5, 5), 0);
+            cv::Mat border_image;
+            cv::Sobel(opencv_blured_image, border_image, CV_8U, 1, 0, 5);
 
             // publisher border image
 
