@@ -1,1 +1,2 @@
+clear
 colcon build
