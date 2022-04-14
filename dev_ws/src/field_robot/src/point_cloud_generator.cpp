@@ -65,7 +65,7 @@ class PointCloudGenerator : public rclcpp::Node
             cv::Mat opencv_blured_image;
             cv::GaussianBlur(opencv_image, opencv_blured_image, cv::Size(5, 5), 0);
             cv::Mat border_image;
-            cv::Sobel(opencv_blured_image, border_image, CV_8U, 1, 0, 5);
+            cv::Sobel(opencv_blured_image, border_image, CV_8U, 0, 1, 5);
 
             // publisher border image
             cv_bridge_image->image = border_image;
@@ -74,12 +74,14 @@ class PointCloudGenerator : public rclcpp::Node
 
             // identify blobs
             std::list<cv::Point> blob_points;
+            RCLCPP_INFO(this->get_logger(), "Starting with %d blobs", blob_points.size());
             cv::findNonZero(border_image, border_image);
             for (int i = 0; i < border_image.total(); i++)
             {
                 cv::Point point = border_image.at<cv::Point>(i);
                 blob_points.push_back(point);
             }
+            RCLCPP_INFO(this->get_logger(), "Found %d blobs", blob_points.size());
             
 
             // transform blobs to points (inverted projection)
