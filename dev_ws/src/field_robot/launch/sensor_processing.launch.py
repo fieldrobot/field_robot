@@ -95,7 +95,8 @@ def generate_launch_description():
         name='point_cloud_generator_demo',
         parameters=[
             {'image_src' : '/image_ai'},
-            {'pc_dst' : '/pc'},
+            {'pc_dst' : '/point_cloud'},
+            {'border_image' : '/border_img'},
         ]
     )
 

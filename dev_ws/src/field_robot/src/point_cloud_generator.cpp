@@ -43,11 +43,11 @@ class PointCloudGenerator : public rclcpp::Node
             qos.durability_volatile();
             qos.lifespan(rclcpp::Duration(1, 0));
             // setting up the image subscriber
-            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(image_src_, qos, std::bind(&PointCloudGenerator::image_callback, this, _1));
+            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>((this->get_namespace() + image_src_), qos, std::bind(&PointCloudGenerator::image_callback, this, _1));
             // setting up the point cloud publisher
-            pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(pc_dst_, qos);
+            pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_dst_), qos);
             // setting up the border image publisher
-            border_image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>(border_img_, qos);
+            border_image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>((this->get_namespace() + border_img_), qos);
             // setting up the transform listener
             tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
@@ -81,14 +81,7 @@ class PointCloudGenerator : public rclcpp::Node
 
             // publish pc2
             
-            geometry_msgs::msg::TransformStamped transformStamped = getTransform();
-
-            try {
-                transformStamped = tf_buffer_->lookupTransform("base_link", "base_linnk", tf2::TimePointZero);
-            } catch (tf2::TransformException & ex) {
-                RCLCPP_INFO(this->get_logger(), "Could not transform.");
-                return;
-            }
+            //geometry_msgs::msg::TransformStamped transformStamped = getTransform();
 
         }
 
