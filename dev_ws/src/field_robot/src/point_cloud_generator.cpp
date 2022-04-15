@@ -9,6 +9,7 @@
 #include <tf2_ros/buffer.h>
 
 #include <sensor_msgs/msg/image.hpp>
+#include <sensor_msgs/msg/camera_info.hpp>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
@@ -37,6 +38,9 @@ class PointCloudGenerator : public rclcpp::Node
             // bord_image topic
             this->declare_parameter("border_img", "/border_image");
             this->get_parameter("border_img", border_img_);
+            // camera_info topic
+            this->declare_parameter("camera_info", "/camera_info");
+            this->get_parameter("camera_info", camera_info_);
 
             // setting qos
             auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
@@ -45,6 +49,8 @@ class PointCloudGenerator : public rclcpp::Node
             qos.lifespan(rclcpp::Duration(1, 0));
             // setting up the image subscriber
             image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>((this->get_namespace() + image_src_), qos, std::bind(&PointCloudGenerator::image_callback, this, _1));
+            // setting up the camera info subscriber
+            camera_info_subscriber_ = this->create_subscription<sensor_msgs::msg::CameraInfo>((this->get_namespace() + camera_info_), qos, std::bind(&PointCloudGenerator::camera_info_callback, this, _1));
             // setting up the point cloud publisher
             pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_dst_), qos);
             // setting up the border image publisher
@@ -107,6 +113,11 @@ class PointCloudGenerator : public rclcpp::Node
 
         }
 
+        void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg) const
+        {
+            //
+        }
+
         geometry_msgs::msg::TransformStamped getTransform() const
         {
             geometry_msgs::msg::TransformStamped transformStamped;
@@ -126,7 +137,9 @@ class PointCloudGenerator : public rclcpp::Node
         std::string image_src_;
         std::string pc_dst_;
         std::string border_img_;
+        std::string camera_info_;
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
+        rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
         rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc_publisher_;
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr border_image_publisher_;
         std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
