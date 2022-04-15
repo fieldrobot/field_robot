@@ -725,7 +725,7 @@
 </joint>
 
 <gazebo reference="lidar_link">
-  <sensor name="lidar" type="ray">
+  <sensor name="lidar" type="gpu_ray">
     <always_on>true</always_on>
     <visualize>true</visualize>
     <update_rate>5</update_rate>
