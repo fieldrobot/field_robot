@@ -13,6 +13,7 @@
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
+#include <geometry_msgs/msg/vector3.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -113,6 +114,15 @@ class PointCloudGenerator : public rclcpp::Node
 
         }
 
+        geometry_msgs::msg::Vector3 pixelCooridnates2Vector(std::int x, std::int y) const
+        {
+            geometry_msgs::msg::Vector3 vector;
+            vector.x = (x - cx_)/fx;
+            vector.y = (y - cy_)/fy;
+            vector.z = 1;
+            return vector;
+        }
+        
         void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg) const
         {
             //
@@ -132,16 +142,29 @@ class PointCloudGenerator : public rclcpp::Node
             return transformStamped;
         }
 
+        // frames
         std::string camera_frame_ = "camera_link";
         std::string base_frame_ = "base_link";
+
+        //topics
         std::string image_src_;
         std::string pc_dst_;
         std::string border_img_;
         std::string camera_info_;
+
+        // global variables
+        float64_t fx_ = 183.5583030605572;
+        float64_t fy_ = 183.5583030605572;
+        float64_t cx_ = 320;
+        float64_t cy_ = 240;
+
+        // publishers and subscribers
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
         rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscriber_;
         rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pc_publisher_;
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr border_image_publisher_;
+
+        // transform listener
         std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
         std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
 };
