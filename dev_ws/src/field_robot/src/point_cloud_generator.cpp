@@ -114,18 +114,21 @@ class PointCloudGenerator : public rclcpp::Node
 
         }
 
-        geometry_msgs::msg::Vector3 pixelCooridnates2Vector(std::int x, std::int y) const
+        geometry_msgs::msg::Vector3 pixelCooridnates2Vector(int x, int y) const
         {
             geometry_msgs::msg::Vector3 vector;
-            vector.x = (x - cx_)/fx;
-            vector.y = (y - cy_)/fy;
+            vector.x = (x - cx_)/fx_;
+            vector.y = (y - cy_)/fy_;
             vector.z = 1;
             return vector;
         }
         
-        void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg) const
+        void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg)
         {
-            //
+            fx_ = msg->p[0];
+            cx_ = msg->p[2];
+            fy_ = msg->p[5];
+            cy_ = msg->p[6];
         }
 
         geometry_msgs::msg::TransformStamped getTransform() const
