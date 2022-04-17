@@ -11,3 +11,4 @@ hoverboard_ws/.vscode/
 hoverboard_ws/.DS_Store
 hoverboard_ws/.gitignore
 .DS_Store
+*.env

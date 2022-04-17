@@ -1,0 +1,14 @@
+version: "3.8"
+
+# Don't forget to add a .env File defining the 'DISPLAY' Variable (see wiki for more Info)
+services:      
+  field_robot:
+    container_name: field_robot
+    image: field_robot
+    env_file:
+      - .env
+    build:
+      context: .
+    volumes:
+      - .:/field_robot
+    tty: true
