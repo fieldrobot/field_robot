@@ -15,6 +15,8 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <geometry_msgs/msg/vector3_stamped.hpp>
+#include <geometry_msgs/msg/point_stamped.hpp>
+#include <geometry_msgs/msg/point.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -112,8 +114,20 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             // find groud points
+            geometry_msgs::msg::PointStamped ground_points[blob_points.size()];
             geometry_msgs::msg::TransformStamped transform = tf_buffer_->lookupTransform(base_frame_, camera_frame_, rclcpp::Time(0, 0), tf2::durationFromSec(0.1));
-
+            float64_t z_diff = transform.transform.translation.z;
+            for (int i = 0; i < sizeof(points_camera_frame); i++)
+            {
+                float64_t factor = z_diff/(points_camera_frame[i].vector.z);
+                points_camera_frame[i].vector.x = points_camera_frame[i].vector.x * factor;
+                points_camera_frame[i].vector.y = points_camera_frame[i].vector.y * factor;
+                points_camera_frame[i].vector.z = points_camera_frame[i].vector.z * factor;
+                ground_points[i].point.x = points_camera_frame[i].vector.x - transform.transform.translation.x;
+                ground_points[i].point.y = points_camera_frame[i].vector.y - transform.transform.translation.y;
+                ground_points[i].point.z = points_camera_frame[i].vector.z - transform.transform.translation.z;
+                ground_points[i].header.frame_id = base_frame_;
+            }    
 
             // convert bobs to pc2
 
