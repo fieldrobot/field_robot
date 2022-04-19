@@ -5,7 +5,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <tf2/exceptions.h>
-#include <tf2_ros/transform_listener.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <tf2_ros/buffer.h>
 
 #include <sensor_msgs/msg/image.hpp>
@@ -14,6 +14,7 @@
 #include <geometry_msgs/msg/transform_stamped.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
+#include <geometry_msgs/msg/vector3_stamped.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
@@ -58,7 +59,7 @@ class PointCloudGenerator : public rclcpp::Node
             border_image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>((this->get_namespace() + border_img_), qos);
             // setting up the transform listener
             tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
-            transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+            // transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
         }
 
     private:
@@ -102,9 +103,17 @@ class PointCloudGenerator : public rclcpp::Node
             RCLCPP_INFO(this->get_logger(), "Found %d blobs", blob_points.size());
             
 
-            // transform blobs to points (inverted projection)
+            // transform blobs to points & changing reference frame
+            geometry_msgs::msg::Vector3Stamped points_camera_frame[blob_points.size()];
+            for (int i = 0; i < blob_points.size(); i++)
+            {
+                tf_buffer_->transform<geometry_msgs::msg::Vector3Stamped>(pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y), points_camera_frame[i], base_frame_);
+                blob_points.pop_front();
+            }
 
-            // change blob reference frame
+            // find groud points
+            geometry_msgs::msg::TransformStamped transform = tf_buffer_->lookupTransform(base_frame_, camera_frame_, rclcpp::Time(0, 0), tf2::durationFromSec(0.1));
+
 
             // convert bobs to pc2
 
@@ -114,13 +123,14 @@ class PointCloudGenerator : public rclcpp::Node
 
         }
 
-        geometry_msgs::msg::Vector3 pixelCooridnates2Vector(int x, int y) const
+        geometry_msgs::msg::Vector3Stamped pixelCooridnates2Vector(int x, int y) const
         {
-            geometry_msgs::msg::Vector3 vector;
-            vector.x = (x - cx_)/fx_;
-            vector.y = (y - cy_)/fy_;
-            vector.z = 1;
-            return vector;
+            geometry_msgs::msg::Vector3Stamped vectorStamped;
+            vectorStamped.vector.x = (x - cx_)/fx_;
+            vectorStamped.vector.y = (y - cy_)/fy_;
+            vectorStamped.vector.z = 1;
+            vectorStamped.header.frame_id = camera_frame_;
+            return vectorStamped;
         }
         
         void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg)
@@ -131,7 +141,7 @@ class PointCloudGenerator : public rclcpp::Node
             cy_ = msg->p[6];
         }
 
-        geometry_msgs::msg::TransformStamped getTransform() const
+        /*geometry_msgs::msg::TransformStamped getTransform() const
         {
             geometry_msgs::msg::TransformStamped transformStamped;
 
@@ -143,7 +153,7 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             return transformStamped;
-        }
+        }*/
 
         // frames
         std::string camera_frame_ = "camera_link";
@@ -168,7 +178,7 @@ class PointCloudGenerator : public rclcpp::Node
         rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr border_image_publisher_;
 
         // transform listener
-        std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
+        // std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
         std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
 };
 
