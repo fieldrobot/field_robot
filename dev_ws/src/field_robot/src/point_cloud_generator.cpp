@@ -130,6 +130,10 @@ class PointCloudGenerator : public rclcpp::Node
             }    
 
             // convert bobs to pc2
+            // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
+            // https://github.com/ros-perception/perception_pcl/tree/foxy-devel/pcl_ros
+            // http://docs.ros.org/en/indigo/api/pcl_conversions/html/namespacepcl.html
+            // https://pointclouds.org/documentation/classpcl_1_1_point_cloud.html
 
             // publish pc2
             
