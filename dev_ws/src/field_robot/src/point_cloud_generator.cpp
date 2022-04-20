@@ -23,9 +23,9 @@
 
 #include <pcl/common/distances.h>
 #include <pcl/impl/point_types.hpp>
-//#include <pcl_conversions/pcl_conversions.h>
+#include <pcl_conversions/pcl_conversions.h>
 
-using std::placeholders::_1;
+//using std::placeholders;
 
 class PointCloudGenerator : public rclcpp::Node
 {
@@ -56,9 +56,9 @@ class PointCloudGenerator : public rclcpp::Node
             qos.durability_volatile();
             qos.lifespan(rclcpp::Duration(1, 0));
             // setting up the image subscriber
-            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>((this->get_namespace() + image_src_), qos, std::bind(&PointCloudGenerator::image_callback, this, _1));
+            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>((this->get_namespace() + image_src_), qos, std::bind(&PointCloudGenerator::image_callback, this , std::placeholders::_1));
             // setting up the camera info subscriber
-            camera_info_subscriber_ = this->create_subscription<sensor_msgs::msg::CameraInfo>((this->get_namespace() + camera_info_), qos, std::bind(&PointCloudGenerator::camera_info_callback, this, _1));
+            camera_info_subscriber_ = this->create_subscription<sensor_msgs::msg::CameraInfo>((this->get_namespace() + camera_info_), qos, std::bind(&PointCloudGenerator::camera_info_callback, this, std::placeholders::_1));
             // setting up the point cloud publisher
             pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_dst_), qos);
             // setting up the border image publisher
@@ -143,7 +143,9 @@ class PointCloudGenerator : public rclcpp::Node
                 point.z = ground_points[i].point.z;*/
                 cloud.push_back(point);
             }
-
+            sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
+            pcl::toROSMsg(cloud, pc2_msg);
+            pc2_msg.header.frame_id = base_frame_;
             // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
             // https://github.com/ros-perception/perception_pcl/tree/foxy-devel/pcl_ros
             // http://docs.ros.org/en/indigo/api/pcl_conversions/html/namespacepcl.html
