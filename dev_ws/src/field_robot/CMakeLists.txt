@@ -28,6 +28,7 @@ find_package(sensor_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(PCL REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -86,6 +87,7 @@ ament_target_dependencies(point_cloud_generator
   tf2_ros
   tf2_geometry_msgs
   OpenCV
+  PCL
   cv_bridge)
 
 add_executable(point_cloud_fusion

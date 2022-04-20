@@ -21,6 +21,10 @@
 #include <opencv2/opencv.hpp>
 #include <cv_bridge/cv_bridge.h>
 
+#include <pcl/common/distances.h>
+#include <pcl/impl/point_types.hpp>
+//#include <pcl_conversions/pcl_conversions.h>
+
 using std::placeholders::_1;
 
 class PointCloudGenerator : public rclcpp::Node
@@ -130,6 +134,16 @@ class PointCloudGenerator : public rclcpp::Node
             }    
 
             // convert bobs to pc2
+            pcl::PointCloud<pcl::PointXYZ> cloud;
+            for (int i = 0; i < sizeof(ground_points); i++)
+            {
+                pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
+                /*point.x = ground_points[i].point.x;
+                point.y = ground_points[i].point.y;
+                point.z = ground_points[i].point.z;*/
+                cloud.push_back(point);
+            }
+
             // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
             // https://github.com/ros-perception/perception_pcl/tree/foxy-devel/pcl_ros
             // http://docs.ros.org/en/indigo/api/pcl_conversions/html/namespacepcl.html
