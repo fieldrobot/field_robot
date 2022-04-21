@@ -54,15 +54,22 @@ class PointCloudFusion : public rclcpp::Node
         void timer_callback()
         {
             sensor_msgs::msg::PointCloud2 fused_point_cloud;
+
             pcl::PointCloud<pcl::PointXYZ> comb_1, comb_2, fin;
-            pcl::concatenate(point_cloud_one_, point_cloud_two, comb_1);
-            pcl::concatenate(point_cloud_three_, point_cloud_four, comb_2);
+            pcl::concatenate(point_cloud_one_, point_cloud_two_, comb_1);
+            pcl::concatenate(point_cloud_three_, point_cloud_four_, comb_2);
             pcl::concatenate(comb_1, comb_2, fin);
+
+            pcl::toROSMsg(fin, fused_point_cloud);
+            fused_point_cloud.header.frame_id = frame_;
+
+            point_cloud_publisher_->publish(fused_point_cloud);
         }
 
         void point_cloud_one_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
             pcl::fromROSMsg(*msg, point_cloud_one_);
+            frame_ = msg->header.frame_id;
         }
 
         void point_cloud_two_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
@@ -80,6 +87,9 @@ class PointCloudFusion : public rclcpp::Node
             pcl::fromROSMsg(*msg, point_cloud_four_);
         }
 
+        // frame
+        std:: string frame_ = "base_link";
+        
         // topics
         std::string pc_src_1_;
         std::string pc_src_2_;
