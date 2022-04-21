@@ -5,6 +5,10 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
 
+#include <pcl/common/distances.h>
+#include <pcl/impl/point_types.hpp>
+#include <pcl_conversions/pcl_conversions.h>
+
 class PointCloudFusion : public rclcpp::Node
 {
     public:
@@ -50,33 +54,44 @@ class PointCloudFusion : public rclcpp::Node
         void timer_callback()
         {
             sensor_msgs::msg::PointCloud2 fused_point_cloud;
+            pcl::PointCloud<pcl::PointXYZ> comb_1, comb_2, fin;
+            pcl::concatenate(point_cloud_one_, point_cloud_two, comb_1);
+            pcl::concatenate(point_cloud_three_, point_cloud_four, comb_2);
+            pcl::concatenate(comb_1, comb_2, fin);
         }
 
-        void point_cloud_one_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
+        void point_cloud_one_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
-
+            pcl::fromROSMsg(*msg, point_cloud_one_);
         }
 
-        void point_cloud_two_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
+        void point_cloud_two_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
-
+            pcl::fromROSMsg(*msg, point_cloud_two_);
         }
 
-        void point_cloud_three_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
+        void point_cloud_three_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
-
+            pcl::fromROSMsg(*msg, point_cloud_three_);
         }
 
-        void point_cloud_four_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) const
+        void point_cloud_four_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
-
+            pcl::fromROSMsg(*msg, point_cloud_four_);
         }
 
+        // topics
         std::string pc_src_1_;
         std::string pc_src_2_;
         std::string pc_src_3_;
         std::string pc_src_4_;
         std::string pc_dst_;
+
+        // point clouds
+        pcl::PointCloud<pcl::PointXYZ> point_cloud_one_;
+        pcl::PointCloud<pcl::PointXYZ> point_cloud_two_;
+        pcl::PointCloud<pcl::PointXYZ> point_cloud_three_;
+        pcl::PointCloud<pcl::PointXYZ> point_cloud_four_;
 
         // publishers and subscribers
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_one_subscriber_;
