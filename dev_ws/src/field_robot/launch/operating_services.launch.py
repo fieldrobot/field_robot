@@ -18,6 +18,12 @@ def generate_launch_description():
         default_value='true'
     )
 
+    urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
+    urdf = DeclareLaunchArgument(
+        'urdf',
+        default_value=open(urdf_path,'r').read()
+    )
+
     odometry = Node(
         package='robot_localization',
         executable='ekf_node',
@@ -54,8 +60,9 @@ def generate_launch_description():
     return LaunchDescription([
         # parameters
         use_sim_time,
+        urdf,
         # nodes & launch files
         robot_state_publisher,
         odometry,
-        sensor_processing,
+        #sensor_processing,
     ])
