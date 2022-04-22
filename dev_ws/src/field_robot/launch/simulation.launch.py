@@ -20,7 +20,7 @@ def generate_launch_description():
     
     world = DeclareLaunchArgument(
         'world_path',
-        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
+        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'reduced.world')
     )
 
     urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
