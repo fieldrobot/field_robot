@@ -152,7 +152,7 @@ class PointCloudGenerator : public rclcpp::Node
             // https://pointclouds.org/documentation/classpcl_1_1_point_cloud.html
 
             // publish pc2
-            pc2_publisher_->publish(pc2_msg);
+            pc_publisher_->publish(pc2_msg);
             
             //geometry_msgs::msg::TransformStamped transformStamped = getTransform();
 
