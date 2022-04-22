@@ -95,6 +95,8 @@ add_executable(point_cloud_fusion
 
 ament_target_dependencies(point_cloud_fusion
   rclcpp
+  PCL
+  geometry_msgs
   sensor_msgs)
 
 #rosidl_target_interfaces(navigation
