@@ -278,7 +278,7 @@
   </joint>
 
   <!-- CAMERA LEFT -->
-  <link name="camera_left_link">
+  <!--<link name="camera_left_link">
     <visual>
       <origin xyz="0 0 0" rpy="0.0 0 0"/>
       <geometry>
@@ -308,11 +308,11 @@
     <child link="camera_left_link"/>
     <origin xyz="0.0 0.15 0.1" rpy="0 0 1.5708"/>
   </joint>
-
+-->
 
 
   <!-- CAMERA RIGHT -->
-  <link name="camera_right_link">
+  <!--<link name="camera_right_link">
     <visual>
       <origin xyz="0 0 0" rpy="0.0 0 0"/>
       <geometry>
@@ -341,7 +341,7 @@
     <parent link="base_link"/>
     <child link="camera_right_link"/>
     <origin xyz="0.0 -0.15 0.1" rpy="0 0 -1.5708"/>
-  </joint>
+  </joint>-->
 
   <!-- IMU -->
   <link name="imu_link">
@@ -475,7 +475,7 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="camera_back_link">
+  <!--<gazebo reference="camera_back_link">
     <sensor type="camera" name="camera_back">
       <always_on>true</always_on>
       <update_rate>30</update_rate>
@@ -516,9 +516,9 @@
         <frame_name>camera_back_link</frame_name>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo>-->
 
-  <gazebo reference="camera_right_link">
+  <!--<gazebo reference="camera_right_link">
     <sensor type="camera" name="camera_right">
       <always_on>true</always_on>
       <update_rate>30</update_rate>
@@ -602,7 +602,7 @@
         <frame_name>camera_left_link</frame_name>
       </plugin>
     </sensor>
-  </gazebo>
+  </gazebo>-->
 
   <!-- IMU -->
   <gazebo reference="imu_link">
