@@ -88,7 +88,7 @@ class PointCloudFusion : public rclcpp::Node
         }
 
         // frame
-        std:: string frame_ = "base_link";
+        std:: string frame_ = "base_footprint";
         
         // topics
         std::string pc_src_1_;

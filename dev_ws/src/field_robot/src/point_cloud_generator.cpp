@@ -192,7 +192,7 @@ class PointCloudGenerator : public rclcpp::Node
 
         // frames
         std::string camera_frame_ = "camera_link";
-        std::string base_frame_ = "base_link";
+        std::string base_frame_ = "base_footprint";
 
         //topics
         std::string image_src_;
