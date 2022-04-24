@@ -37,6 +37,7 @@ class DemoImagePublisher(Node):
     def timer_callback(self):
         cv_image = cv2.imread(self.get_parameter('image_src').get_parameter_value().string_value)
         ros_image = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
+        ros_image.header.frame_id = 'camera_front_link'
         self.publisher.publish(ros_image)
 
 def main(args=None):
