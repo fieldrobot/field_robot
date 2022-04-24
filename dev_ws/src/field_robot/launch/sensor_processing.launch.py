@@ -179,18 +179,18 @@ def generate_launch_description():
         use_sim_time,
 
         # development
-        #demo_camera_source,
+        demo_camera_source,
 
         # image path finder AI    
         #demo_ai,    
-        front_ai,
+        #front_ai,
         #rear_ai,
         #left_ai,
         #right_ai,
 
         # point cloud generator
         #point_cloud_generator_demo,
-        #point_cloud_generator_front,
+        point_cloud_generator_front,
         #point_cloud_generator_rear,
         #point_cloud_generator_left,
         #point_cloud_generator_right,
