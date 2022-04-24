@@ -74,20 +74,21 @@ class PointCloudGenerator : public rclcpp::Node
             // converting the image to opencv
             cv_bridge::CvImagePtr cv_bridge_image = cv_bridge::toCvCopy(msg, msg->encoding);
             cv::Mat opencv_image = cv_bridge_image->image;
+            cv::cvtColor(opencv_image, opencv_image, cv::COLOR_BGR2GRAY);
 
             // do basic image manipulation
-            opencv_image = opencv_image > 180; // making b/w image
+            /*opencv_image = opencv_image > 180; // making b/w image
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
             cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 16); // eroding the image
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
-            cv::imwrite("/field_robot/img_erode_dilate.jpg", opencv_image);
+            *///cv::imwrite("/field_robot/img_erode_dilate.jpg", opencv_image);
 
             /*cv::drawContours(opencv_image, opencv_image, -1, cv::Scalar(0,255,0), -1);
             cv::imwrite("/field_robot/img_contours_filled.jpg", opencv_image); */
 
             // run edge detection
-            cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);
-            cv::imwrite("/field_robot/img_edge_detection.jpg", opencv_image);
+            /*cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);*/
+            //cv::imwrite("/field_robot/img_edge_detection.jpg", opencv_image);
             //cv::Canny(opencv_image, save, 50, 150, 3, false);
             //cv::imwrite("/field_robot/img_canny.jpg", save);
 
@@ -191,8 +192,8 @@ class PointCloudGenerator : public rclcpp::Node
         }*/
 
         // frames
-        std::string camera_frame_ = "camera_link";
-        std::string base_frame_ = "base_footprint";
+        std::string camera_frame_ = "/camera_link";
+        std::string base_frame_ = "/base_footprint";
 
         //topics
         std::string image_src_;

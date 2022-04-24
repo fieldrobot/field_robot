@@ -23,7 +23,7 @@ def generate_launch_description():
     demo_camera_source = Node(
         package='field_robot',
         executable='demo_image_publisher.py',
-        namespace='robot/camera_front',
+        namespace='robot/camera_front2',
         name='camera_demo',
         parameters=[
             {'image_src': image_path},
@@ -102,8 +102,8 @@ def generate_launch_description():
 
     point_cloud_generator_front = Node(
         package='field_robot',
-        executable='point_cloud_generator.py',
-        namespace='robot/camera_front',
+        executable='point_cloud_generator',
+        namespace='robot/camera_front2',
         name='point_cloud_generator_front',
         parameters=[
             {'image_src' : '/image_ai'},
