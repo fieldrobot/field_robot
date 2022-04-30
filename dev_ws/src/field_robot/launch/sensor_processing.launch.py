@@ -188,16 +188,13 @@ def generate_launch_description():
         #left_ai,
         #right_ai,
 
-        # point cloud generator
+        # point cloud generator,
         #point_cloud_generator_demo,
         point_cloud_generator_front,
         #point_cloud_generator_rear,
         #point_cloud_generator_left,
         #point_cloud_generator_right,
 
-        # point cloud fusion
+        # point cloud fusion,
         #point_cloud_fusion,
-
-        # point cloud to laserscan
-        #point_cloud_to_laserscan,
     ])

@@ -1,4 +1,5 @@
 #include <chrono>
+#include <thread>
 #include <functional>
 #include <memory>
 #include <list>
@@ -66,6 +67,10 @@ class PointCloudGenerator : public rclcpp::Node
             // setting up the transform listener
             tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
             // transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+            RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS A");
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+            //tf_buffer_->lookupTransform(base_frame_, camera_frame_, this->get_clock()->now(), tf2::durationFromSec(20.0));
+            RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS B");
         }
 
     private:
@@ -114,9 +119,12 @@ class PointCloudGenerator : public rclcpp::Node
             geometry_msgs::msg::Vector3Stamped points_camera_frame[blob_points.size()];
             for (int i = 0; i < blob_points.size(); i++)
             {
+                RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS FUCK");
                 tf_buffer_->transform<geometry_msgs::msg::Vector3Stamped>(pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y), points_camera_frame[i], base_frame_);
                 blob_points.pop_front();
             }
+
+            RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS DEBUGGING");
 
             // find groud points
             geometry_msgs::msg::PointStamped ground_points[blob_points.size()];
@@ -192,8 +200,8 @@ class PointCloudGenerator : public rclcpp::Node
         }*/
 
         // frames
-        std::string camera_frame_ = "/camera_link";
-        std::string base_frame_ = "/base_footprint";
+        std::string camera_frame_ = "camera_front_link";
+        std::string base_frame_ = "base_footprint";
 
         //topics
         std::string image_src_;
@@ -221,7 +229,9 @@ class PointCloudGenerator : public rclcpp::Node
 int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<PointCloudGenerator>());
+    auto node = std::make_shared<PointCloudGenerator>();
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;
 }
