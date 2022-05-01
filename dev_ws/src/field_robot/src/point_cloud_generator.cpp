@@ -189,8 +189,8 @@ class PointCloudGenerator : public rclcpp::Node
             RCLCPP_INFO(this->get_logger(), "Hier: %d", sizeof(points_camera_frame));
             for (int i = 0; i < amount_of_blobs; i++)
             {
-                RCLCPP_INFO(this->get_logger(), "nun: %d", i);
-                RCLCPP_INFO(this->get_logger(), "for");
+                //RCLCPP_INFO(this->get_logger(), "nun: %d", i);
+                //RCLCPP_INFO(this->get_logger(), "for");
                 float64_t factor = z_diff/(points_camera_frame[i].vector.z);
                 points_camera_frame[i].vector.x = points_camera_frame[i].vector.x * factor;
                 points_camera_frame[i].vector.y = points_camera_frame[i].vector.y * factor;
@@ -200,10 +200,11 @@ class PointCloudGenerator : public rclcpp::Node
                 ground_points[i].point.z = points_camera_frame[i].vector.z - transform.transform.translation.z;
                 ground_points[i].header.frame_id = base_frame_;
             }    
-/*
-            // convert bobs to pc2
+
+            // creating pcl cloud
+            RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
             pcl::PointCloud<pcl::PointXYZ> cloud;
-            for (int i = 0; i < sizeof(ground_points); i++)
+            for (int i = 0; i < amount_of_blobs; i++)
             {
                 pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
                 //point.x = ground_points[i].point.x;
@@ -211,6 +212,9 @@ class PointCloudGenerator : public rclcpp::Node
                 //point.z = ground_points[i].point.z;
                 cloud.push_back(point);
             }
+
+            // creating pc2
+            RCLCPP_INFO(this->get_logger(), "creating pc2");
             sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
             pcl::toROSMsg(cloud, pc2_msg);
             pc2_msg.header.frame_id = base_frame_;
@@ -220,10 +224,11 @@ class PointCloudGenerator : public rclcpp::Node
             // https://pointclouds.org/documentation/classpcl_1_1_point_cloud.html
 
             // publish pc2
+            RCLCPP_INFO(this->get_logger(), "publishing pointcloud2");
             pc_publisher_->publish(pc2_msg);
             
             //geometry_msgs::msg::TransformStamped transformStamped = getTransform();
-            */
+            
 
 
             RCLCPP_INFO(this->get_logger(), "Finished image callback");
