@@ -93,7 +93,7 @@ class PointCloudGenerator : public rclcpp::Node
         void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) const
         {
             RCLCPP_INFO(this->get_logger(), "calling image callback");
-            geometry_msgs::msg::TransformStamped transform;
+            /*geometry_msgs::msg::TransformStamped transform;
             try
             {
                 transform = tf_buffer_->lookupTransform(base_frame_, camera_frame_, rclcpp::Time(0, 0), tf2::durationFromSec(5.0));
@@ -103,36 +103,41 @@ class PointCloudGenerator : public rclcpp::Node
             {
                 RCLCPP_INFO(this->get_logger(), "Could not transform !!!");
                 return;
-            }
+            }*/
             
-        
+            
             // converting the image to opencv
+            RCLCPP_INFO(this->get_logger(), "converting the image to opencv");
             cv_bridge::CvImagePtr cv_bridge_image = cv_bridge::toCvCopy(msg, msg->encoding);
             cv::Mat opencv_image = cv_bridge_image->image;
             cv::cvtColor(opencv_image, opencv_image, cv::COLOR_BGR2GRAY);
 
-            // do basic image manipulation
-            /*opencv_image = opencv_image > 180; // making b/w image
+            // DO BASIC IMAGE PROCESSING HERE
+            RCLCPP_INFO(this->get_logger(), "doing basic image processing");
+            opencv_image = opencv_image > 180; // making b/w image
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
             cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 16); // eroding the image
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4); // eroding the image
-            *///cv::imwrite("/field_robot/img_erode_dilate.jpg", opencv_image);
+            //cv::imwrite("/field_robot/img_erode_dilate.jpg", opencv_image);
 
-            /*cv::drawContours(opencv_image, opencv_image, -1, cv::Scalar(0,255,0), -1);
-            cv::imwrite("/field_robot/img_contours_filled.jpg", opencv_image); */
+            //cv::drawContours(opencv_image, opencv_image, -1, cv::Scalar(0,255,0), -1);
+            //cv::imwrite("/field_robot/img_contours_filled.jpg", opencv_image);
 
-            // run edge detection
-            /*cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);*/
+            // RUN EDGE DETECTION
+            RCLCPP_INFO(this->get_logger(), "running edge detection");
+            cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);
             //cv::imwrite("/field_robot/img_edge_detection.jpg", opencv_image);
             //cv::Canny(opencv_image, save, 50, 150, 3, false);
             //cv::imwrite("/field_robot/img_canny.jpg", save);
 
-            // publisher border image
-            /* cv_bridge_image->image = opencv_image;
+            // PUBLISH BORDER IMAGE
+            RCLCPP_INFO(this->get_logger(), "publishing border image");
+            cv_bridge_image->image = opencv_image;
             sensor_msgs::msg::Image border_image_msg = *cv_bridge_image->toImageMsg();
-            border_image_publisher_->publish(border_image_msg); */
+            border_image_publisher_->publish(border_image_msg);
 
-            // identify blobs
+            // IDENTIFY BLOBS
+            RCLCPP_INFO(this->get_logger(), "identifying blobs");
             std::list<cv::Point> blob_points;
             RCLCPP_INFO(this->get_logger(), "Starting with %d blobs", blob_points.size());
             cv::Mat nonZeros;
@@ -144,24 +149,45 @@ class PointCloudGenerator : public rclcpp::Node
             }
             RCLCPP_INFO(this->get_logger(), "Found %d blobs", blob_points.size());
             
-
-            // transform blobs to points & changing reference frame
+            // TRANSFORM BLOBS TO POINTS & CHANGING REFERENCE FRAME
+            RCLCPP_INFO(this->get_logger(), "transforming blobs to points and changing reference frame");
             geometry_msgs::msg::Vector3Stamped points_camera_frame[blob_points.size()];
             for (int i = 0; i < blob_points.size(); i++)
             {
-                //RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS FUCK");
-                tf_buffer_->transform<geometry_msgs::msg::Vector3Stamped>(pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y), points_camera_frame[i], base_frame_);
-                blob_points.pop_front();
+                try
+                {
+                    tf_buffer_->transform<geometry_msgs::msg::Vector3Stamped>(pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y), points_camera_frame[i], base_frame_, tf2::durationFromSec(0.0));
+                    blob_points.pop_front();
+                }
+                catch(const std::exception& e)
+                {
+                    RCLCPP_INFO(this->get_logger(), "Could not transform !!!");
+                    return;
+                }
             }
 
-            //RCLCPP_INFO(this->get_logger(), "DEBUGGING IS DEBUGGING AS DEBUGGING");
-
-            // find groud points
+            // FIND GROUND POINTS
+            RCLCPP_INFO(this->get_logger(), "finding ground points");
             geometry_msgs::msg::PointStamped ground_points[blob_points.size()];
-            /*geometry_msgs::msg::TransformStamped*/ transform = tf_buffer_->lookupTransform(base_frame_, camera_frame_, rclcpp::Time(0, 0), tf2::durationFromSec(0.1));
+            RCLCPP_INFO(this->get_logger(), "A");
+            geometry_msgs::msg::TransformStamped transform;
+            RCLCPP_INFO(this->get_logger(), "B");
+            try
+            {
+                transform = tf_buffer_->lookupTransform(base_frame_, camera_frame_, rclcpp::Time(0, 0), tf2::durationFromSec(0.0));
+                RCLCPP_INFO(this->get_logger(), "C");
+            }
+            catch(const std::exception& e)
+            {
+                RCLCPP_INFO(this->get_logger(), "Could not transform !!!");
+                return;
+            }
+            
             float64_t z_diff = transform.transform.translation.z;
+            RCLCPP_INFO(this->get_logger(), "D");
             for (int i = 0; i < sizeof(points_camera_frame); i++)
             {
+                RCLCPP_INFO(this->get_logger(), "for");
                 float64_t factor = z_diff/(points_camera_frame[i].vector.z);
                 points_camera_frame[i].vector.x = points_camera_frame[i].vector.x * factor;
                 points_camera_frame[i].vector.y = points_camera_frame[i].vector.y * factor;
@@ -171,15 +197,15 @@ class PointCloudGenerator : public rclcpp::Node
                 ground_points[i].point.z = points_camera_frame[i].vector.z - transform.transform.translation.z;
                 ground_points[i].header.frame_id = base_frame_;
             }    
-
+/*
             // convert bobs to pc2
             pcl::PointCloud<pcl::PointXYZ> cloud;
             for (int i = 0; i < sizeof(ground_points); i++)
             {
                 pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
-                /*point.x = ground_points[i].point.x;
-                point.y = ground_points[i].point.y;
-                point.z = ground_points[i].point.z;*/
+                //point.x = ground_points[i].point.x;
+                //point.y = ground_points[i].point.y;
+                //point.z = ground_points[i].point.z;
                 cloud.push_back(point);
             }
             sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
@@ -194,29 +220,29 @@ class PointCloudGenerator : public rclcpp::Node
             pc_publisher_->publish(pc2_msg);
             
             //geometry_msgs::msg::TransformStamped transformStamped = getTransform();
+            */
+
+
+            RCLCPP_INFO(this->get_logger(), "Finished image callback");
 
         }
 
         geometry_msgs::msg::Vector3Stamped pixelCooridnates2Vector(int x, int y) const
         {
-            RCLCPP_INFO(this->get_logger(), "callling pixelCooridnates2Vector");
             geometry_msgs::msg::Vector3Stamped vectorStamped;
             vectorStamped.vector.x = (x - cx_)/fx_;
             vectorStamped.vector.y = (y - cy_)/fy_;
             vectorStamped.vector.z = 1;
             vectorStamped.header.frame_id = camera_frame_;
             return vectorStamped;
-            RCLCPP_INFO(this->get_logger(), "call to pixelCooridnates2Vector finished");
         }
         
         void camera_info_callback(const sensor_msgs::msg::CameraInfo::SharedPtr msg)
         {
-            RCLCPP_INFO(this->get_logger(), "calling camera_info_callback");
             fx_ = msg->p[0];
             cx_ = msg->p[2];
             fy_ = msg->p[5];
             cy_ = msg->p[6];
-            RCLCPP_INFO(this->get_logger(), "call to camera_info_callback finished");
         }
 
         /*geometry_msgs::msg::TransformStamped getTransform() const
