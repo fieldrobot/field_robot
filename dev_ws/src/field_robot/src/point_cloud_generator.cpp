@@ -147,12 +147,13 @@ class PointCloudGenerator : public rclcpp::Node
                 cv::Point point = nonZeros.at<cv::Point>(i);
                 blob_points.push_back(point);
             }
-            RCLCPP_INFO(this->get_logger(), "Found %d blobs", blob_points.size());
+            int amount_of_blobs = blob_points.size();
+            RCLCPP_INFO(this->get_logger(), "Found %d blobs", amount_of_blobs);
             
             // TRANSFORM BLOBS TO POINTS & CHANGING REFERENCE FRAME
             RCLCPP_INFO(this->get_logger(), "transforming blobs to points and changing reference frame");
-            geometry_msgs::msg::Vector3Stamped points_camera_frame[blob_points.size()];
-            for (int i = 0; i < blob_points.size(); i++)
+            geometry_msgs::msg::Vector3Stamped points_camera_frame[amount_of_blobs];
+            for (int i = 0; i < amount_of_blobs; i++)
             {
                 try
                 {
@@ -168,7 +169,7 @@ class PointCloudGenerator : public rclcpp::Node
 
             // FIND GROUND POINTS
             RCLCPP_INFO(this->get_logger(), "finding ground points");
-            geometry_msgs::msg::PointStamped ground_points[blob_points.size()];
+            geometry_msgs::msg::PointStamped ground_points[amount_of_blobs];
             RCLCPP_INFO(this->get_logger(), "A");
             geometry_msgs::msg::TransformStamped transform;
             RCLCPP_INFO(this->get_logger(), "B");
@@ -185,8 +186,10 @@ class PointCloudGenerator : public rclcpp::Node
             
             float64_t z_diff = transform.transform.translation.z;
             RCLCPP_INFO(this->get_logger(), "D");
-            for (int i = 0; i < sizeof(points_camera_frame); i++)
+            RCLCPP_INFO(this->get_logger(), "Hier: %d", sizeof(points_camera_frame));
+            for (int i = 0; i < amount_of_blobs; i++)
             {
+                RCLCPP_INFO(this->get_logger(), "nun: %d", i);
                 RCLCPP_INFO(this->get_logger(), "for");
                 float64_t factor = z_diff/(points_camera_frame[i].vector.z);
                 points_camera_frame[i].vector.x = points_camera_frame[i].vector.x * factor;
