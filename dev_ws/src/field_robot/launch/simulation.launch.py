@@ -31,12 +31,12 @@ def generate_launch_description():
 
     gui = DeclareLaunchArgument(
         'gui',
-        default_value='false'
+        default_value='true'
     )
 
     pause = DeclareLaunchArgument(
         'pause',
-        default_value='false'
+        default_value='true'
     )
 
     debug = DeclareLaunchArgument(
