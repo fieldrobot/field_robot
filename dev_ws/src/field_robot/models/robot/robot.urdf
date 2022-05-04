@@ -242,7 +242,7 @@
   <joint name="camera_front_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_front_link"/>
-    <origin xyz="0.15 0.0 0.1" rpy="0 0 0"/>
+    <origin xyz="0.15 0.0 0.1" rpy="-1.57079632679 0 -1.57079632679"/>
   </joint>
 
   <link name="camera_front_virtual_link">
@@ -250,7 +250,7 @@
   <joint name="camera_front_virtual_joint" type="fixed">
     <parent link="camera_front_link"/>
     <child link="camera_front_virtual_link"/>
-    <origin xyz="0 0 0" rpy="0 -1.57079632679 1.57079632679"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/> <!-- 1.57079632679 1.57079632679"/> -->
   </joint>
 
   <!-- CAMERA Back -->
@@ -282,7 +282,7 @@
   <joint name="camera_back_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_back_link"/>
-    <origin xyz="-0.15 0.0 0.1" rpy="0 0 3.1415926536"/>
+    <origin xyz="-0.15 0.0 0.1" rpy="-1.57079632679 0 1.57079632679"/> <!-- rpy="0 0 3.1415926536"/> -->
   </joint>
 
   <link name="camera_back_virtual_link">
@@ -290,7 +290,7 @@
   <joint name="camera_back_virtual_joint" type="fixed">
     <parent link="camera_back_link"/>
     <child link="camera_back_virtual_link"/>
-    <origin xyz="0 0 0" rpy="0 -1.57079632679 1.57079632679"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
   </joint>
 
   <!-- CAMERA LEFT -->
@@ -322,7 +322,7 @@
   <joint name="camera_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_left_link"/>
-    <origin xyz="0.0 0.15 0.1" rpy="0 0 1.57079632679"/>
+    <origin xyz="0.0 0.15 0.1" rpy="-1.57079632679 0 0"/> <!-- rpy="0 0 1.57079632679"/> -->
   </joint>
 
   <link name="camera_left_virtual_link">
@@ -330,7 +330,7 @@
   <joint name="camera_left_virtual_joint" type="fixed">
     <parent link="camera_left_link"/>
     <child link="camera_left_virtual_link"/>
-    <origin xyz="0 0 0" rpy="0 -1.57079632679 1.57079632679"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
   </joint>
 
 
@@ -363,7 +363,7 @@
   <joint name="camera_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_right_link"/>
-    <origin xyz="0.0 -0.15 0.1" rpy="0 0 -1.57079632679"/>
+    <origin xyz="0.0 -0.15 0.1" rpy="-1.57079632679 0 3.1415926536"/> <!-- rpy="0 0 -1.57079632679"/> -->
   </joint>
 
   <link name="camera_right_virtual_link">
@@ -371,7 +371,7 @@
   <joint name="camera_right_virtual_joint" type="fixed">
     <parent link="camera_right_link"/>
     <child link="camera_right_virtual_link"/>
-    <origin xyz="0 0 0" rpy="0 -1.57079632679 1.57079632679"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
   </joint>
 
   <!-- IMU -->
