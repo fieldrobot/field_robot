@@ -18,6 +18,7 @@ class DemoImagePublisher(Node):
     def __init__(self):
         super().__init__('demo_image_publisher')
         self.declare_parameter('image_src')
+        self.declare_parameter('sub_topic')
         self.declare_parameter('image_dst')
         
         # ros publisher & subscriber
@@ -30,14 +31,19 @@ class DemoImagePublisher(Node):
         self.bridge = cv_bridge.CvBridge()
 
         # timer
-        timer_period = 1./30.
-        self.get_logger().info(str(timer_period))
-        self.timer = self.create_timer(timer_period, self.timer_callback)
+        #timer_period = 1./30.
+        #self.get_logger().info(str(timer_period))
+        #self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.subscriber = self.create_subscription(
+            Image,
+            (self.get_namespace() + self.get_parameter('sub_topic').get_parameter_value().string_value),
+            self.image_callback,
+            10)
 
-    def timer_callback(self):
+    def image_callback(self, msg):
         cv_image = cv2.imread(self.get_parameter('image_src').get_parameter_value().string_value)
         ros_image = self.bridge.cv2_to_imgmsg(cv_image, encoding='bgr8')
-        ros_image.header.frame_id = 'camera_front_link'
+        ros_image.header = msg.header
         self.publisher.publish(ros_image)
 
 def main(args=None):
