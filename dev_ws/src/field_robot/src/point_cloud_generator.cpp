@@ -67,17 +67,17 @@ class PointCloudGenerator : public rclcpp::Node
             qos.durability_volatile();
             qos.lifespan(rclcpp::Duration(1, 0));
             // setting up the image subscriber
-            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>((this->get_namespace() + image_src_), qos, std::bind(&PointCloudGenerator::image_callback, this , std::placeholders::_1));
+            image_subscriber_ = this->create_subscription<sensor_msgs::msg::Image>(image_src_, qos, std::bind(&PointCloudGenerator::image_callback, this , std::placeholders::_1));
             // setting up the camera info subscriber
-            camera_info_subscriber_ = this->create_subscription<sensor_msgs::msg::CameraInfo>((this->get_namespace() + camera_info_), qos, std::bind(&PointCloudGenerator::camera_info_callback, this, std::placeholders::_1));
+            camera_info_subscriber_ = this->create_subscription<sensor_msgs::msg::CameraInfo>(camera_info_, qos, std::bind(&PointCloudGenerator::camera_info_callback, this, std::placeholders::_1));
             
             RCLCPP_INFO(this->get_logger(), "finished setting up subscribers");
             RCLCPP_INFO(this->get_logger(), "setting up publishers");
 
             // setting up the point cloud publisher
-            pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_dst_), qos);
+            pc_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(pc_dst_, qos);
             // setting up the border image publisher
-            border_image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>((this->get_namespace() + border_img_), qos);
+            border_image_publisher_ = this->create_publisher<sensor_msgs::msg::Image>(border_img_, qos);
             
             RCLCPP_INFO(this->get_logger(), "finished setting up publishers");
             RCLCPP_INFO(this->get_logger(), "setting up transform listener");

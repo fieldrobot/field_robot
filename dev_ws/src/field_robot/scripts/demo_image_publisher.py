@@ -24,7 +24,7 @@ class DemoImagePublisher(Node):
         # ros publisher & subscriber
         self.publisher = self.create_publisher(
             Image,
-            (self.get_namespace() + self.get_parameter('image_dst').get_parameter_value().string_value),
+            (self.get_parameter('image_dst').get_parameter_value().string_value),
             10)
 
         # openCV setup
@@ -36,7 +36,7 @@ class DemoImagePublisher(Node):
         #self.timer = self.create_timer(timer_period, self.timer_callback)
         self.subscriber = self.create_subscription(
             Image,
-            (self.get_namespace() + self.get_parameter('sub_topic').get_parameter_value().string_value),
+            (self.get_parameter('sub_topic').get_parameter_value().string_value),
             self.image_callback,
             10)
 
