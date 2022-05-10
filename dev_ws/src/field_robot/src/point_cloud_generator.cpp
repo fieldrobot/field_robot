@@ -149,6 +149,7 @@ class PointCloudGenerator : public rclcpp::Node
             geometry_msgs::msg::Vector3Stamped points_camera_frame[amount_of_blobs];
             for (int i = 0; i < amount_of_blobs; i++)
             {
+                //points_camera_frame[i] = pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y, msg->header.frame_id);
                 try
                 {
                     tf_buffer_->transform<geometry_msgs::msg::Vector3Stamped>(pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y, msg->header.frame_id), points_camera_frame[i], base_frame_, tf2::durationFromSec(0.0));
@@ -162,7 +163,7 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             // FIND GROUND POINTS
-            RCLCPP_INFO(this->get_logger(), "finding ground points");
+            /*RCLCPP_INFO(this->get_logger(), "finding ground points");
             geometry_msgs::msg::PointStamped ground_points[amount_of_blobs];
             RCLCPP_INFO(this->get_logger(), "A");
             geometry_msgs::msg::TransformStamped transform;
@@ -193,14 +194,21 @@ class PointCloudGenerator : public rclcpp::Node
                 ground_points[i].point.y = points_camera_frame[i].vector.y - transform.transform.translation.y;
                 ground_points[i].point.z = points_camera_frame[i].vector.z - transform.transform.translation.z;
                 ground_points[i].header.frame_id = base_frame_;
-            }    
+            }*/
 
             // creating pcl cloud
             RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
             pcl::PointCloud<pcl::PointXYZ> cloud;
             for (int i = 0; i < amount_of_blobs; i++)
             {
-                pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
+                // ACTUAL pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
+                
+                pcl::PointXYZ point = pcl::PointXYZ(points_camera_frame[i].vector.x, points_camera_frame[i].vector.y, points_camera_frame[i].vector.z);
+                
+                //auto vec = pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y, msg->header.frame_id);
+                //pcl::PointXYZ point = pcl::PointXYZ(vec.vector.x, vec.vector.y, vec.vector.z);
+                //blob_points.pop_front();
+                
                 //point.x = ground_points[i].point.x;
                 //point.y = ground_points[i].point.y;
                 //point.z = ground_points[i].point.z;
@@ -212,6 +220,7 @@ class PointCloudGenerator : public rclcpp::Node
             sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
             pcl::toROSMsg(cloud, pc2_msg);
             pc2_msg.header.frame_id = base_frame_;
+            //pc2_msg.header.frame_id = msg->header.frame_id;
             // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
             // https://github.com/ros-perception/perception_pcl/tree/foxy-devel/pcl_ros
             // http://docs.ros.org/en/indigo/api/pcl_conversions/html/namespacepcl.html
@@ -259,8 +268,8 @@ class PointCloudGenerator : public rclcpp::Node
         // global variables
         float64_t fx_ = 183.5583030605572;
         float64_t fy_ = 183.5583030605572;
-        float64_t cx_ = 320;
-        float64_t cy_ = 240;
+        float64_t cx_ = 320.5;
+        float64_t cy_ = 240.5;
 
         // publishers and subscribers
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
