@@ -162,16 +162,14 @@ class PointCloudGenerator : public rclcpp::Node
                 }
             }
 
-            // FIND GROUND POINTS
-            /*RCLCPP_INFO(this->get_logger(), "finding ground points");
+            // FIND GROUND POINTS IN CAMERA FRAME
+            RCLCPP_INFO(this->get_logger(), "finding ground points in camera frame");
             geometry_msgs::msg::PointStamped ground_points[amount_of_blobs];
-            RCLCPP_INFO(this->get_logger(), "A");
             geometry_msgs::msg::TransformStamped transform;
-            RCLCPP_INFO(this->get_logger(), "B");
             try
             {
+                //transform = tf_buffer_->lookupTransform(base_frame_, msg->header.frame_id, rclcpp::Time(0, 0), tf2::durationFromSec(0.0));
                 transform = tf_buffer_->lookupTransform(base_frame_, msg->header.frame_id, rclcpp::Time(0, 0), tf2::durationFromSec(0.0));
-                RCLCPP_INFO(this->get_logger(), "C");
             }
             catch(const std::exception& e)
             {
@@ -179,39 +177,37 @@ class PointCloudGenerator : public rclcpp::Node
                 return;
             }
             
-            float64_t z_diff = transform.transform.translation.z;
-            RCLCPP_INFO(this->get_logger(), "D");
             RCLCPP_INFO(this->get_logger(), "Hier: %d", sizeof(points_camera_frame));
             for (int i = 0; i < amount_of_blobs; i++)
             {
                 //RCLCPP_INFO(this->get_logger(), "nun: %d", i);
                 //RCLCPP_INFO(this->get_logger(), "for");
-                float64_t factor = z_diff/(points_camera_frame[i].vector.z);
-                points_camera_frame[i].vector.x = points_camera_frame[i].vector.x * factor;
-                points_camera_frame[i].vector.y = points_camera_frame[i].vector.y * factor;
-                points_camera_frame[i].vector.z = points_camera_frame[i].vector.z * factor;
-                ground_points[i].point.x = points_camera_frame[i].vector.x - transform.transform.translation.x;
-                ground_points[i].point.y = points_camera_frame[i].vector.y - transform.transform.translation.y;
-                ground_points[i].point.z = points_camera_frame[i].vector.z - transform.transform.translation.z;
+                float64_t factor = (transform.transform.translation.z/(points_camera_frame[i].vector.z));
+                if (factor >= 0.0)
+                {
+                    RCLCPP_INFO(this->get_logger(), "point to high");
+                    break;
+                }
+                RCLCPP_INFO(this->get_logger(), "Factor: %f", factor);
+                ground_points[i].point.x = (points_camera_frame[i].vector.x * -factor)+transform.transform.translation.x;
+                ground_points[i].point.y = (points_camera_frame[i].vector.y * -factor)+transform.transform.translation.y;
+                ground_points[i].point.z = (points_camera_frame[i].vector.z * factor)-transform.transform.translation.z;
                 ground_points[i].header.frame_id = base_frame_;
-            }*/
+            }
 
             // creating pcl cloud
             RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
             pcl::PointCloud<pcl::PointXYZ> cloud;
             for (int i = 0; i < amount_of_blobs; i++)
             {
-                // ACTUAL pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
+                pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
                 
-                pcl::PointXYZ point = pcl::PointXYZ(points_camera_frame[i].vector.x, points_camera_frame[i].vector.y, points_camera_frame[i].vector.z);
+                //pcl::PointXYZ point = pcl::PointXYZ(points_camera_frame[i].vector.x, points_camera_frame[i].vector.y, points_camera_frame[i].vector.z);
                 
                 //auto vec = pixelCooridnates2Vector(blob_points.front().x, blob_points.front().y, msg->header.frame_id);
                 //pcl::PointXYZ point = pcl::PointXYZ(vec.vector.x, vec.vector.y, vec.vector.z);
                 //blob_points.pop_front();
                 
-                //point.x = ground_points[i].point.x;
-                //point.y = ground_points[i].point.y;
-                //point.z = ground_points[i].point.z;
                 cloud.push_back(point);
             }
 
