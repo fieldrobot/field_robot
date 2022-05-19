@@ -20,7 +20,7 @@ def main() -> None:
         thread = Thread(target = threaded_function, args = (10, ))
         thread.start()
         time.sleep(30)
-        os.system("ros2 run virtual_maize_field robot_spawner")
+        os.system("ros2 run virtual_maize_field robot_spawner --ros-args -p x:=" + str(4.23) + " -p y:=" + str(2.43) + " -p z:=" + str(0.5))
         time.sleep(10)
 
         #record images
