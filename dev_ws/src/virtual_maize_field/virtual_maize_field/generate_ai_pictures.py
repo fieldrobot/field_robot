@@ -27,6 +27,7 @@ def main() -> None:
 
         os.system("ros2 run virtual_maize_field robot_delete")
         time.sleep(30)
+        thread.kill()
         os.system("pkill -9 gzserver && pkill -9 gzclient")
 
 if __name__ == "__main__":
