@@ -17,7 +17,7 @@ import subprocess
 import os
 
 # Spawnpoint Variables
-pointAmounts = [1,1,1] # Field, Padding, Edge
+pointAmounts = [5,5,5] # Field, Padding, Edge
 spawnHeight = .1
 
 # World Variables
