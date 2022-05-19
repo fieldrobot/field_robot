@@ -19,6 +19,10 @@ def main():
     # Start node
     node = rclpy.create_node("robot_spawner")
 
+    node.declare_parameter('x')
+    node.declare_parameter('y')
+    node.declare_parameter('z')
+
     node.get_logger().info(
         'Creating Service client to connect to `/spawn_entity`')
     client = node.create_client(SpawnEntity, "/spawn_entity")
@@ -39,9 +43,12 @@ def main():
     request.robot_namespace = 'robot'
     pose = Pose()
     position = Point()
-    position.x = -1.14
-    position.y = -5.95
-    position.z = 0.3
+    position.x = node.get_parameter('x').get_parameter_value().string_value
+    position.y = node.get_parameter('y').get_parameter_value().string_value
+    position.z = node.get_parameter('z').get_parameter_value().string_value
+    #position.x = -1.14
+    #position.y = -5.95
+    #position.z = 0.3
     orientation = Quaternion()
     orientation.x = 0.0
     orientation.y = 0.0
