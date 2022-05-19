@@ -10,6 +10,9 @@ from gazebo_msgs.srv import SpawnEntity
 from gazebo_msgs.srv import DeleteEntity
 from geometry_msgs.msg import Pose, Point, Quaternion
 
+import numpy as np
+import random
+
 from rclpy.node import Node
 
 def main():
@@ -50,6 +53,11 @@ def main():
     #position.y = -5.95
     #position.z = 0.3
     orientation = Quaternion()
+    #
+
+    arr = get_quaternion_from_euler(0, 0, (random.random()*2*np.pi))
+
+    #
     orientation.x = 0.0
     orientation.y = 0.0
     orientation.z = 0.682
@@ -71,6 +79,24 @@ def main():
     node.destroy_node()
     rclpy.shutdown()
 
+def get_quaternion_from_euler(roll, pitch, yaw):
+  """
+  Convert an Euler angle to a quaternion.
+   
+  Input
+    :param roll: The roll (rotation around x-axis) angle in radians.
+    :param pitch: The pitch (rotation around y-axis) angle in radians.
+    :param yaw: The yaw (rotation around z-axis) angle in radians.
+ 
+  Output
+    :return qx, qy, qz, qw: The orientation in quaternion [x,y,z,w] format
+  """
+  qx = np.sin(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) - np.cos(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+  qy = np.cos(roll/2) * np.sin(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.cos(pitch/2) * np.sin(yaw/2)
+  qz = np.cos(roll/2) * np.cos(pitch/2) * np.sin(yaw/2) - np.sin(roll/2) * np.sin(pitch/2) * np.cos(yaw/2)
+  qw = np.cos(roll/2) * np.cos(pitch/2) * np.cos(yaw/2) + np.sin(roll/2) * np.sin(pitch/2) * np.sin(yaw/2)
+ 
+  return [qx, qy, qz, qw]
 
 if __name__ == "__main__":
     main()
