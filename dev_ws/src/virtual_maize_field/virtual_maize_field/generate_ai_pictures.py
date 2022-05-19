@@ -43,7 +43,7 @@ def main() -> None:
         points = generateCoordinates()
 
         for point in points:
-            st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}"" -p "y:={str(point[1])}"" -p "z:={str(point[2])}"'
+            st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}F" -p "y:={str(point[1])}F" -p "z:={str(point[2])}F"'
             print(st)
             os.system(st)
             #ros2 run virtual_maize_field robot_spawner --ros-args -p "x:=str(point[0])" -p "y:=str(point[1])" -p z:="str(point[2])
