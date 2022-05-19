@@ -22,6 +22,9 @@ def main() -> None:
         time.sleep(30)
         os.system("ros2 run virtual_maize_field robot_spawner")
         time.sleep(10)
+
+        #record images
+
         os.system("ros2 run virtual_maize_field robot_delete")
         time.sleep(30)
         os.system("pkill -9 gzserver && pkill -9 gzclient")
