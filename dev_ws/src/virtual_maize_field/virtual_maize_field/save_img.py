@@ -47,13 +47,13 @@ class ImageSubscriber(Node):
       self.shutdown()
 
   def listener_callback0(self, data):
-    listener_callback(data, 0)
+    self.listener_callback(data, 0)
   def listener_callback1(self, data):
-    listener_callback(data, 1)
+    self.listener_callback(data, 1)
   def listener_callback2(self, data):
-    listener_callback(data, 2)
+    self.listener_callback(data, 2)
   def listener_callback3(self, data):
-    listener_callback(data, 3)
+    self.listener_callback(data, 3)
     
 def main(args=None):
   rclpy.init(args=args)
