@@ -38,13 +38,15 @@ def main() -> None:
         thread = Thread(target = threaded_function, args = (10, ))
         thread.start()
         time.sleep(30)
-        os.system("ros2 run virtual_maize_field robot_spawner --ros-args -p x:=" + str(4.23) + " -p y:=" + str(2.43) + " -p z:=" + str(0.5))
-        time.sleep(10)
 
-        #record images
+        points = generateCoordinates()
 
-        os.system("ros2 run virtual_maize_field robot_delete")
-        time.sleep(30)
+        for point in points:
+            os.system("ros2 run virtual_maize_field robot_spawner --ros-args -p x:=" + point[0] + " -p y:=" + point[1] + " -p z:=" + point[2])
+            time.sleep(10)
+            #record images
+            os.system("ros2 run virtual_maize_field robot_delete")
+            time.sleep(30)
         thread.kill()
         os.system("pkill -9 gzserver && pkill -9 gzclient")
 
