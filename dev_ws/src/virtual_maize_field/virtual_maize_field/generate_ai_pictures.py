@@ -30,7 +30,8 @@ field_edge = -2
 robotRadius = .25
 
 def threaded_function(arg):
-    subprocess.call(['sh', '/field_robot/src/virtual_maize_field/virtual_maize_field/start.sh'])
+    #subprocess.call(['sh', '/field_robot/src/virtual_maize_field/virtual_maize_field/start.sh'])
+    subprocess.call(['sh', get_package_share_directory('virtual_maize_field') + '/virtual_maize_field/start.sh'])
 
 def main() -> None:
 
@@ -42,7 +43,10 @@ def main() -> None:
         points = generateCoordinates()
 
         for point in points:
-            os.system("ros2 run virtual_maize_field robot_spawner --ros-args -p x:=" + point[0] + " -p y:=" + point[1] + " -p z:=" + point[2])
+            st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}"" -p "y:={str(point[1])}"" -p "z:={str(point[2])}"'
+            print(st)
+            os.system(st)
+            #ros2 run virtual_maize_field robot_spawner --ros-args -p "x:=str(point[0])" -p "y:=str(point[1])" -p z:="str(point[2])
             time.sleep(10)
             #record images
             os.system("ros2 run virtual_maize_field robot_delete")
