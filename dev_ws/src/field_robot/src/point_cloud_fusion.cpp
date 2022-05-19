@@ -38,13 +38,13 @@ class PointCloudFusion : public rclcpp::Node
             qos.lifespan(rclcpp::Duration(1, 0));
 
             // subscriber
-            point_cloud_one_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_src_1_), qos, std::bind(&PointCloudFusion::point_cloud_one_callback, this , std::placeholders::_1));
-            point_cloud_two_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_src_2_), qos, std::bind(&PointCloudFusion::point_cloud_two_callback, this , std::placeholders::_1));
-            point_cloud_three_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_src_3_), qos, std::bind(&PointCloudFusion::point_cloud_three_callback, this , std::placeholders::_1));
-            point_cloud_four_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_src_4_), qos, std::bind(&PointCloudFusion::point_cloud_four_callback, this , std::placeholders::_1));
+            point_cloud_one_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(pc_src_1_, qos, std::bind(&PointCloudFusion::point_cloud_one_callback, this , std::placeholders::_1));
+            point_cloud_two_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(pc_src_2_, qos, std::bind(&PointCloudFusion::point_cloud_two_callback, this , std::placeholders::_1));
+            point_cloud_three_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(pc_src_3_, qos, std::bind(&PointCloudFusion::point_cloud_three_callback, this , std::placeholders::_1));
+            point_cloud_four_subscriber_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(pc_src_4_, qos, std::bind(&PointCloudFusion::point_cloud_four_callback, this , std::placeholders::_1));
 
             // publisher
-            point_cloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>((this->get_namespace() + pc_dst_), qos);
+            point_cloud_publisher_ = this->create_publisher<sensor_msgs::msg::PointCloud2>(pc_dst_, qos);
 
             // timer
             timer_ = this->create_wall_timer(std::chrono::milliseconds(40), std::bind(&PointCloudFusion::timer_callback, this));
@@ -88,7 +88,7 @@ class PointCloudFusion : public rclcpp::Node
         }
 
         // frame
-        std:: string frame_ = "base_link";
+        std:: string frame_ = "base_footprint";
         
         // topics
         std::string pc_src_1_;

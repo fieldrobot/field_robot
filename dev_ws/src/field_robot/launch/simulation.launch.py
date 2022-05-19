@@ -20,7 +20,7 @@ def generate_launch_description():
     
     world = DeclareLaunchArgument(
         'world_path',
-        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
+        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'reduced.world')
     )
 
     urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
@@ -31,12 +31,12 @@ def generate_launch_description():
 
     gui = DeclareLaunchArgument(
         'gui',
-        default_value='false'
+        default_value='true'
     )
 
     pause = DeclareLaunchArgument(
         'pause',
-        default_value='false'
+        default_value='true'
     )
 
     debug = DeclareLaunchArgument(
@@ -68,7 +68,7 @@ def generate_launch_description():
         ]
     )
 
-    robot_state_publisher = Node(
+    '''robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
@@ -78,7 +78,7 @@ def generate_launch_description():
             {'robot_description': LaunchConfiguration('urdf')},
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ],
-    )
+    )'''
 
     return LaunchDescription([
         # declare launch configuration
@@ -91,5 +91,5 @@ def generate_launch_description():
         # actual launch
         gazebo,
         robot,
-        robot_state_publisher,
+        #robot_state_publisher,
     ])

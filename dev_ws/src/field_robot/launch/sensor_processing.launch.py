@@ -19,15 +19,16 @@ def generate_launch_description():
     )
 
     ### DEMO CAMERA SOURCE
-    image_path = os.path.join(get_package_share_directory('field_robot'), 'config/test_files/demo_image.jpeg')
+    image_path = os.path.join(get_package_share_directory('field_robot'), 'config/test_files/camera_front_ai.png')
     demo_camera_source = Node(
         package='field_robot',
         executable='demo_image_publisher.py',
-        namespace='robot/demo_camera',
+        namespace='robot/camera_front',
         name='camera_demo',
         parameters=[
             {'image_src': image_path},
-            {'image_dst' : '/image_raw'},
+            {'sub_topic': 'image_raw'},
+            {'image_dst' : 'image_ai'},
         ]
     )
 
@@ -38,8 +39,8 @@ def generate_launch_description():
         namespace='robot/demo_camera',
         name='image_path_finder_ai_demo',
         parameters=[
-            {'image_src' : '/image_raw'},
-            {'image_dst' : '/image_ai'},
+            {'image_src' : 'image_raw'},
+            {'image_dst' : 'image_ai'},
         ]
     )
 
@@ -49,10 +50,10 @@ def generate_launch_description():
         namespace='robot/camera_front',
         name='image_path_finder_ai_front',
         parameters=[
-            {'image_src' : '/image_raw'},
-            {'image_dst' : '/image_ai'},
+            {'image_src' : 'image_raw'},
+            {'image_dst' : 'image_ai'},
         ]
-    ),
+    )
     
     rear_ai = Node(
         package='field_robot',
@@ -60,8 +61,8 @@ def generate_launch_description():
         namespace='robot/camera_rear',
         name='image_path_finder_ai_rear',
         parameters=[
-           {'image_src' : '/image_raw'},
-           {'image_dst' : '/image_ai'},
+           {'image_src' : 'image_raw'},
+           {'image_dst' : 'image_ai'},
        ]
     ),
     
@@ -71,8 +72,8 @@ def generate_launch_description():
         namespace='robot/camera_left',
         name='image_path_finder_ai_left',
         parameters=[
-            {'image_src' : '/image_raw'},
-            {'image_dst' : '/image_ai'},
+            {'image_src' : 'image_raw'},
+            {'image_dst' : 'image_ai'},
         ]
     ),
     
@@ -82,8 +83,8 @@ def generate_launch_description():
         namespace='robot/camera_right',
         name='image_path_finder_ai_right',
         parameters=[
-            {'image_src' : '/image_raw'},
-            {'image_dst' : '/image_ai'},
+            {'image_src' : 'image_raw'},
+            {'image_dst' : 'image_ai'},
         ]
     ),
 
@@ -94,20 +95,21 @@ def generate_launch_description():
         namespace='robot/demo_camera',
         name='point_cloud_generator_demo',
         parameters=[
-            {'image_src' : '/image_ai'},
-            {'pc_dst' : '/point_cloud'},
-            {'border_image' : '/border_img'},
+            {'image_src' : 'image_ai'},
+            {'pc_dst' : 'point_cloud'},
+            {'border_image' : 'border_img'},
         ]
     )
 
     point_cloud_generator_front = Node(
         package='field_robot',
-        executable='point_cloud_generator.py',
+        executable='point_cloud_generator',
         namespace='robot/camera_front',
         name='point_cloud_generator_front',
         parameters=[
-            {'image_src' : '/image_ai'},
-            {'pc_dst' : '/pc'},
+            {'image_src' : 'image_ai'},
+            {'pc_dst' : 'pc'},
+            {'camera_info' : 'camera_info'},
         ]
     )
 
@@ -117,8 +119,9 @@ def generate_launch_description():
         namespace='robot/camera_rear',
         name='point_cloud_generator_rear',
         parameters=[
-            {'image_src' : '/image_ai'},
-            {'pc_dst' : '/pc'},
+            {'image_src' : 'image_ai'},
+            {'pc_dst' : 'pc'},
+            {'camera_info' : 'camera_info'},
         ]
     )
 
@@ -128,8 +131,9 @@ def generate_launch_description():
         namespace='robot/camera_left',
         name='point_cloud_generator_left',
         parameters=[
-            {'image_src' : '/image_ai'},
-            {'pc_dst' : '/pc'},
+            {'image_src' : 'image_ai'},
+            {'pc_dst' : 'pc'},
+            {'camera_info' : 'camera_info'},
         ]
     )
 
@@ -139,8 +143,9 @@ def generate_launch_description():
         namespace='robot/camera_right',
         name='point_cloud_generator_right',
         parameters=[
-            {'image_src' : '/image_ai'},
-            {'pc_dst' : '/pc'},
+            {'image_src' : 'image_ai'},
+            {'pc_dst' : 'pc'},
+            {'camera_info' : 'camera_info'},
         ]
     )
 
@@ -151,12 +156,12 @@ def generate_launch_description():
         namespace='robot',
         name='point_cloud_fusion',
         parameters=[
-            {'pc_src_1' : '/camera_front/pc'},
-            {'pc_src_2' : '/camera_rear/pc'},
-            {'pc_src_3' : '/camera_left/pc'},
-            {'pc_src_4' : '/camera_right/pc'},
-            {'pc_dst_5' : '/demo_camera/pc'},
-            {'dst_pc': '/pc'},
+            {'pc_src_1' : 'camera_front/pc'},
+            {'pc_src_2' : 'camera_rear/pc'},
+            {'pc_src_3' : 'camera_left/pc'},
+            {'pc_src_4' : 'camera_right/pc'},
+            {'pc_dst_5' : 'demo_camera/pc'},
+            {'dst_pc': 'pc'},
         ]
     )
 
@@ -182,22 +187,19 @@ def generate_launch_description():
         demo_camera_source,
 
         # image path finder AI    
-        demo_ai,    
+        #demo_ai,    
         #front_ai,
         #rear_ai,
         #left_ai,
         #right_ai,
 
-        # point cloud generator
-        point_cloud_generator_demo,
-        #point_cloud_generator_front,
+        # point cloud generator,
+        #point_cloud_generator_demo,
+        point_cloud_generator_front,
         #point_cloud_generator_rear,
         #point_cloud_generator_left,
         #point_cloud_generator_right,
 
-        # point cloud fusion
+        # point cloud fusion,
         #point_cloud_fusion,
-
-        # point cloud to laserscan
-        #point_cloud_to_laserscan,
     ])
