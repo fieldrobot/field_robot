@@ -56,6 +56,7 @@ setup(
             "generate_ai_pictures = virtual_maize_field.generate_ai_pictures:main",
             "robot_spawner = virtual_maize_field.robot_spawner:main",
             "robot_delete = virtual_maize_field.robot_delete:main",
+            "save_img = virtual_maize_field.save_img:main",
         ],
     },
 )
