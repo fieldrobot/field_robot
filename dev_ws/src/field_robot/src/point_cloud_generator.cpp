@@ -182,7 +182,7 @@ class PointCloudGenerator : public rclcpp::Node
             {
                 //RCLCPP_INFO(this->get_logger(), "nun: %d", i);
                 //RCLCPP_INFO(this->get_logger(), "for");
-                float64_t factor = (transform.transform.translation.z/(points_camera_frame[i].vector.z));
+                float_t factor = (transform.transform.translation.z/(points_camera_frame[i].vector.z));
                 if (factor >= 0.0)
                 {
                     RCLCPP_INFO(this->get_logger(), "point to high");
@@ -262,10 +262,10 @@ class PointCloudGenerator : public rclcpp::Node
         std::string camera_info_;
 
         // global variables
-        float64_t fx_ = 183.5583030605572;
-        float64_t fy_ = 183.5583030605572;
-        float64_t cx_ = 320.5;
-        float64_t cy_ = 240.5;
+        float_t fx_ = 183.5583030605572;
+        float_t fy_ = 183.5583030605572;
+        float_t cx_ = 320.5;
+        float_t cy_ = 240.5;
 
         // publishers and subscribers
         rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr image_subscriber_;
