@@ -20,7 +20,7 @@ import os
 robotRadius = .25
 
 # Spawnpoint Variables
-pointAmounts = [5,5,5] # Field, Padding, Edge
+pointAmounts = [1,1,1] # Field, Padding, Edge
 spawnHeight = 1
 minDistance = robotRadius*2
 maxDistance = robotRadius*3
