@@ -16,9 +16,14 @@ import time
 import subprocess
 import os
 
+# Robot Variables
+robotRadius = .25
+
 # Spawnpoint Variables
-pointAmounts = [5,5,5] # Field, Padding, Edge
-spawnHeight = .1
+pointAmounts = [1,1,1] # Field, Padding, Edge
+spawnHeight = 1
+minDistance = robotRadius*2
+maxDistance = robotRadius*3
 
 # World Variables
 worldFilePath = get_package_share_directory('virtual_maize_field') + '/worlds/generated.world'
@@ -26,16 +31,13 @@ plantSpacing = .75
 field_padding = 1
 field_edge = -2
 
-# Robot Variables
-robotRadius = .25
-
 def threaded_function(arg):
     #subprocess.call(['sh', '/field_robot/src/virtual_maize_field/virtual_maize_field/start.sh'])
     subprocess.call(['sh', get_package_share_directory('virtual_maize_field') + '/virtual_maize_field/start.sh'])
 
 def main() -> None:
 
-    while (True):
+    # while (True):
         thread = Thread(target = threaded_function, args = (10, ))
         thread.start()
         time.sleep(30)
@@ -48,10 +50,8 @@ def main() -> None:
             os.system(st)
             #ros2 run virtual_maize_field robot_spawner --ros-args -p "x:=str(point[0])" -p "y:=str(point[1])" -p z:="str(point[2])
             os.system("ros2 run virtual_maize_field save_img")
-            time.sleep(10)
             #record images
             os.system("ros2 run virtual_maize_field robot_delete")
-            time.sleep(30)
         thread.kill()
         os.system("pkill -9 gzserver && pkill -9 gzclient")
 
@@ -160,7 +160,7 @@ def generateCoordinates():
         for spawnPoint in range(pointAmounts[point_type]):
             pos = generateSpawnpointCandidate(point_type)
             distance = calcMinDistance(pos)
-            while distance < robotRadius:
+            while distance < minDistance or distance > maxDistance:
                 pos = generateSpawnpointCandidate(point_type)
                 distance = calcMinDistance(pos)
             spawnpoints.append(pos)
