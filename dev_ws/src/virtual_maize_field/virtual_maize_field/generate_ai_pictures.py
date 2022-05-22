@@ -114,16 +114,19 @@ def generateCoordinates():
     spawnpoints = []
 
     def randomPointInField(dif):
-        return randomPointInRange(
-            min_cord[0]-dif, max_cord[0]+dif,
-            min_cord[1]-dif, max_cord[1]+dif
-        )
+        pos1 = plants[random.randint(0,len(plants)-1)]
+        pos2 = plants[random.randint(0,len(plants)-1)]
+        return [
+            (pos1[0] - pos2[0])/2+pos2[0],
+            (pos1[1] - pos2[1])/2+pos2[1],
+            spawnHeight
+        ]
 
     def randomPointInRange(xMin, xMax, yMin, yMax):
         return [
             random.uniform(xMin, xMax),
             random.uniform(yMin, yMax),
-            spawnHeight+max_cord[2],
+            spawnHeight
         ]
 
     def randomPointOnEdge(dif):
