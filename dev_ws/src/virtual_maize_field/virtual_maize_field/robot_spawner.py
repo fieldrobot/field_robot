@@ -51,23 +51,19 @@ def main():
     st = node.get_parameter('y').get_parameter_value().string_value
     position.y = float(st[:-1])
     st = node.get_parameter('z').get_parameter_value().string_value
-    position.y = float(st[:-1])
+    position.y = 1.5 #float(st[:-1])
     #position.x = -1.14
     #position.y = -5.95
     #position.z = 0.3
     orientation = Quaternion()
-    #
-
     arr = get_quaternion_from_euler(0, 0, (random.random()*2*np.pi))
-    orientation.x = arr[0]
-    orientation.y = arr[1]
-    orientation.z = arr[2]
-
-    #
-    #orientation.x = 0.0
-    #orientation.y = 0.0
-    #orientation.z = 0.682
-    #orientation.w = 0.732
+    #orientation.x = arr[0]
+    #orientation.y = arr[1]
+    #orientation.z = arr[2]
+    orientation.x = 0.0
+    orientation.y = 0.0
+    orientation.z = 0.682
+    orientation.w = 0.732
     pose.position = position
     pose.orientation = orientation
     request.initial_pose = pose
