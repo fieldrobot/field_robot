@@ -37,7 +37,7 @@ def threaded_function(arg):
 
 def main() -> None:
 
-    # while (True):
+    while (True):
         thread = Thread(target = threaded_function, args = (10, ))
         thread.start()
         time.sleep(30)
