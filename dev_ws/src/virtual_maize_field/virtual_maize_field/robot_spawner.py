@@ -51,7 +51,7 @@ def main():
     st = node.get_parameter('y').get_parameter_value().string_value
     position.y = float(st[:-1])
     st = node.get_parameter('z').get_parameter_value().string_value
-    position.y = 1.5 #float(st[:-1])
+    position.z = 1.5 #float(st[:-1])
     #position.x = -1.14
     #position.y = -5.95
     #position.z = 0.3
