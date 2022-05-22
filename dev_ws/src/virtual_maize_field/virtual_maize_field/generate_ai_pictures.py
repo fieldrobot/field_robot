@@ -33,7 +33,7 @@ field_edge = -2
 
 def threaded_function(arg):
     #subprocess.call(['sh', '/field_robot/src/virtual_maize_field/virtual_maize_field/start.sh'])
-    subprocess.call(['sh', get_package_share_directory('virtual_maize_field') + '/virtual_maize_field/start.sh'])
+    subprocess.call(['bash', get_package_share_directory('virtual_maize_field') + '/virtual_maize_field/start.bash'])
 
 def main() -> None:
 
@@ -52,38 +52,19 @@ def main() -> None:
             name = 'robot_' + str(i)
             st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}F" -p "y:={str(point[1])}F" -p "z:={str(point[2])}F" -p "name:={name}"'
             print(st)
-            os.system(st)
+            #os.system(st)
             time.sleep(5)
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
-            print('asdfjalsdfkjasöldfkjasdölfkj')
             print('asdfjalsdfkjasöldfkjasdölfkj')
             #ros2 run virtual_maize_field robot_spawner --ros-args -p "x:=str(point[0])" -p "y:=str(point[1])" -p z:="str(point[2])
-            os.system("ros2 run virtual_maize_field save_img")
+            #os.system("ros2 run virtual_maize_field save_img")
             time.sleep(5)
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
-            print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
             print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
             #record images
             st2 = f'ros2 run virtual_maize_field robot_delete --ros-args -p "name:={name}"'
-            os.system(st2)
+            #os.system(st2)
             time.sleep(5)
             i = i + 1
-        thread.kill()
+        #thread.kill()
         os.system("pkill -9 gzserver && pkill -9 gzclient")
 
 def generateCoordinates():

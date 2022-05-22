@@ -38,7 +38,7 @@ def main():
 
     # Get path to the turtlebot3 burgerbot
     sdf_file_path = os.path.join(
-        get_package_share_directory("virtual_maize_field"), "models", "robot", "robot.urdf")
+        get_package_share_directory("field_robot"), "models", "robot", "robot.urdf")
 
     # Set data for request
     request = SpawnEntity.Request()
