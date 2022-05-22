@@ -4,12 +4,13 @@ from sensor_msgs.msg import Image
 import cv2
 from cv_bridge import CvBridge
 import time
+import sys
  
 class ImageSubscriber(Node):
   def __init__(self):
     self.counter=[False, False, False, False]
     self.timestamp = int(time.time())
-    self.path="/field_robot/src/virtual_maize_field/ai_imgs/"
+    self.path="/media/psf/field_robot/imgs"
     super().__init__('save_img')
     self.create_subscription(
       Image, 
@@ -41,7 +42,8 @@ class ImageSubscriber(Node):
       self.get_logger().info(f'Image {id} saved')
       self.counter[id]=True
       if self.counter[0] and self.counter[1] and self.counter[2] and self.counter[3]:
-        self.shutdown()
+        #self.shutdown()
+        sys.exit()
 
   def listener_callback0(self, data):
     self.listener_callback(data, 0)
