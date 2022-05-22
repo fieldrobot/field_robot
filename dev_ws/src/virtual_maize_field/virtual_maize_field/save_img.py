@@ -1,3 +1,5 @@
+from pickle import FALSE
+from xmlrpc.client import Boolean
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
@@ -7,6 +9,8 @@ import time
 import sys
  
 class ImageSubscriber(Node):
+  i = True
+
   def __init__(self):
     self.counter=[False, False, False, False]
     self.timestamp = int(time.time())
@@ -42,9 +46,7 @@ class ImageSubscriber(Node):
       self.get_logger().info(f'Image {id} saved')
       self.counter[id]=True
       if self.counter[0] and self.counter[1] and self.counter[2] and self.counter[3]:
-        #self.shutdown()
-        rclpy.shutdown()
-        #sys.exit()
+        self.i = False
 
   def listener_callback0(self, data):
     self.listener_callback(data, 0)
@@ -58,7 +60,10 @@ class ImageSubscriber(Node):
 def main(args=None):
   rclpy.init(args=args)
   image_subscriber = ImageSubscriber()
-  rclpy.spin(image_subscriber)
+  while image_subscriber.i:
+    print(image_subscriber.i)
+    rclpy.spin_once(image_subscriber)
+  print('ending')
   image_subscriber.destroy_node()
   rclpy.shutdown()
   
