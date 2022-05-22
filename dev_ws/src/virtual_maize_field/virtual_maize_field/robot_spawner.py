@@ -25,6 +25,7 @@ def main():
     node.declare_parameter('x')
     node.declare_parameter('y')
     node.declare_parameter('z')
+    node.declare_parameter('name')
 
     node.get_logger().info(
         'Creating Service client to connect to `/spawn_entity`')
@@ -41,7 +42,7 @@ def main():
 
     # Set data for request
     request = SpawnEntity.Request()
-    request.name = 'robot'
+    request.name = node.get_parameter('name').get_parameter_value().string_value
     request.xml = open(sdf_file_path, 'r').read()
     request.robot_namespace = 'robot'
     pose = Pose()

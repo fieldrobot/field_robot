@@ -15,6 +15,8 @@ def main():
     rclpy.init()
 
     node1 = rclpy.create_node('robot_delete')
+    node1.declare_parameter('name')
+
     delete_cli = node1.create_client(DeleteEntity, '/delete_entity')
     node1.get_logger().info("Connecting to `/delete_entity` service...")
     if not delete_cli.service_is_ready():
@@ -22,7 +24,7 @@ def main():
         node1.get_logger().info("delete-...connected!")
 
     delete_request = DeleteEntity.Request()
-    delete_request.name = "robot"
+    delete_request.name = node1.get_parameter('name').get_parameter_value().string_value
 
     future1 = delete_cli.call_async(delete_request)
     rclpy.spin_until_future_complete(node1, future1)

@@ -46,8 +46,11 @@ def main() -> None:
 
         points = generateCoordinates()
 
+        i = 1
+
         for point in points:
-            st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}F" -p "y:={str(point[1])}F" -p "z:={str(point[2])}F"'
+            name = 'robot_' + str(i)
+            st = f'ros2 run virtual_maize_field robot_spawner --ros-args -p "x:={str(point[0])}F" -p "y:={str(point[1])}F" -p "z:={str(point[2])}F" -p "name:={name}"'
             print(st)
             os.system(st)
             time.sleep(5)
@@ -76,7 +79,8 @@ def main() -> None:
             print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
             print('w48czw34zwme8uxmw4u9w,4pxw0u,4tp90u4')
             #record images
-            os.system("ros2 run virtual_maize_field robot_delete")
+            st2 = f'ros2 run virtual_maize_field robot_delete --ros-args -p "name:={name}"'
+            os.system(st2)
             time.sleep(5)
             i = i + 1
         thread.kill()
