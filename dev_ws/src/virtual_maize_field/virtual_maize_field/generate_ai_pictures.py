@@ -37,6 +37,8 @@ def threaded_function(arg):
 
 def main() -> None:
 
+    i = 1
+
     while (True):
         thread = Thread(target = threaded_function, args = (10, ))
         thread.start()
@@ -76,6 +78,7 @@ def main() -> None:
             #record images
             os.system("ros2 run virtual_maize_field robot_delete")
             time.sleep(5)
+            i = i + 1
         thread.kill()
         os.system("pkill -9 gzserver && pkill -9 gzclient")
 

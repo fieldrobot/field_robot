@@ -43,7 +43,8 @@ class ImageSubscriber(Node):
       self.counter[id]=True
       if self.counter[0] and self.counter[1] and self.counter[2] and self.counter[3]:
         #self.shutdown()
-        sys.exit()
+        rclpy.shutdown()
+        #sys.exit()
 
   def listener_callback0(self, data):
     self.listener_callback(data, 0)
