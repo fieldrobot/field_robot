@@ -23,7 +23,7 @@ def generate_launch_description() -> LaunchDescription:
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         name="use_sim_time", default_value="True"
     )
-    declare_gui_cmd = DeclareLaunchArgument(name="gui", default_value="False")
+    declare_gui_cmd = DeclareLaunchArgument(name="gui", default_value="True")
     declare_paused_cmd = DeclareLaunchArgument(name="paused", default_value="False")
     declare_headless_cmd = DeclareLaunchArgument(name="headless", default_value="False")
     declare_world_path_cmd = DeclareLaunchArgument(

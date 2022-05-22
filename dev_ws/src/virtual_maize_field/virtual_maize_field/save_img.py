@@ -42,7 +42,7 @@ class ImageSubscriber(Node):
     if self.counter[id]==False:
       current_frame = self.br.imgmsg_to_cv2(data)
       current_frame = cv2.cvtColor(current_frame, cv2.COLOR_BGR2RGB)
-      cv2.imwrite(f"{self.path}/{self.timestamp}-{id}.png", current_frame)
+      cv2.imwrite(f"{self.path}/{int(time.time())}-{id}.png", current_frame)
       self.get_logger().info(f'Image {id} saved')
       self.counter[id]=True
       if self.counter[0] and self.counter[1] and self.counter[2] and self.counter[3]:
