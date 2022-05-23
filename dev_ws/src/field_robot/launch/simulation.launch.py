@@ -13,7 +13,7 @@ from launch.actions import DeclareLaunchArgument
 
 
 def generate_launch_description():
-    default_rviz_config_path = os.path.join(get_package_share_directory('field_robot'), 'default.rviz')
+    #default_rviz_config_path = os.path.join(get_package_share_directory('field_robot'), 'default.rviz')
     use_sim_time = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true'
@@ -67,48 +67,28 @@ def generate_launch_description():
         ]
     )
 
-    '''robot_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        namespace='robot',
-        output='screen',
-        parameters=[
-            {'robot_description': LaunchConfiguration('urdf')},
-            {'use_sim_time': LaunchConfiguration('use_sim_time')},
-        ],
-    )'''
-
-    operating_services = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'operating_services.launch.py')),
-        launch_arguments={
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-        }.items(),
-    )
-
-    rviz = Node(
+    '''rviz = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output={'both': 'log'},
         arguments=['-d', default_rviz_config_path],
-    )
+    )'''
 
     return LaunchDescription([
         # General Parameters
-        DeclareLaunchArgument('use_sim_time', default_value='true'),
-        DeclareLaunchArgument('urdf', default_value=open(urdf_path, 'r').read()),
+        use_sim_time,
+        urdf,
 
         # Gazebo Parameters
-        DeclareLaunchArgument('world_path', default_value=os.path.join(pkg_share, 'worlds', 'main.world')),
-        DeclareLaunchArgument('gui', default_value='false'),
-        DeclareLaunchArgument('pause', default_value='false'),
-        DeclareLaunchArgument('debug', default_value='true'),
+        world,
+        gui,
+        pause,
+        debug,
 
         # actual launch
         gazebo,
-        rviz,
+        #rviz,
         robot,
-        #robot_state_publisher,
     ])
 
