@@ -13,10 +13,37 @@ from launch.actions import DeclareLaunchArgument
 
 
 def generate_launch_description():
-    # Paths
-    pkg_share = get_package_share_directory('field_robot')
-    urdf_path = os.path.join(pkg_share, 'models', 'robot', 'robot.urdf')
-    default_rviz_config_path = os.path.join(pkg_share, 'default.rviz')
+    default_rviz_config_path = os.path.join(get_package_share_directory('field_robot'), 'default.rviz')
+    use_sim_time = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='true'
+    )
+    
+    world = DeclareLaunchArgument(
+        'world_path',
+        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'reduced.world')
+    )
+
+    urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
+    urdf = DeclareLaunchArgument(
+        'urdf',
+        default_value=open(urdf_path,'r').read()
+    )
+
+    gui = DeclareLaunchArgument(
+        'gui',
+        default_value='true'
+    )
+
+    pause = DeclareLaunchArgument(
+        'pause',
+        default_value='true'
+    )
+
+    debug = DeclareLaunchArgument(
+        'debug',
+        default_value='true'
+    )
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')),
@@ -40,7 +67,7 @@ def generate_launch_description():
         ]
     )
 
-    robot_state_publisher = Node(
+    '''robot_state_publisher = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         name='robot_state_publisher',
@@ -50,7 +77,7 @@ def generate_launch_description():
             {'robot_description': LaunchConfiguration('urdf')},
             {'use_sim_time': LaunchConfiguration('use_sim_time')},
         ],
-    )
+    )'''
 
     operating_services = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'operating_services.launch.py')),
@@ -82,7 +109,6 @@ def generate_launch_description():
         gazebo,
         rviz,
         robot,
-        operating_services,
-        robot_state_publisher,
+        #robot_state_publisher,
     ])
 

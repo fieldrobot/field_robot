@@ -112,7 +112,7 @@
   <joint name="wheel_l_joint" type="continuous">
     <parent link="base_link"/>
     <child link="wheel_l"/>
-    <origin xyz="0.0 0.125 0.0" rpy="-1.57 0 0"/>
+    <origin xyz="0.0 0.125 0.0" rpy="-1.57079632679 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
@@ -156,7 +156,7 @@
   <joint name="wheel_r_joint" type="continuous"> <!-- continuous-->
     <parent link="base_link"/>
     <child link="wheel_r"/>
-    <origin xyz="0.0 -0.125 0.0" rpy="-1.57 0 0"/>
+    <origin xyz="0.0 -0.125 0.0" rpy="-1.57079632679 0 0"/>
     <axis xyz="0 0 1"/>
   </joint>
 
@@ -200,7 +200,7 @@
   <joint name="caster_back_joint" type="fixed">
     <parent link="base_link"/>
     <child link="caster_back_link"/>
-    <origin xyz="-0.4 0.0 -0.12" rpy="-1.57 0 0"/>
+    <origin xyz="-0.4 0.0 -0.12" rpy="-1.57079632679 0 0"/>
   </joint>
 
   <gazebo reference="caster_back_link">
@@ -242,7 +242,15 @@
   <joint name="camera_front_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_front_link"/>
-    <origin xyz="0.15 0.0 0.1" rpy="0 0 0"/>
+    <origin xyz="0.15 0.0 0.1" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+
+  <link name="camera_front_virtual_link">
+  </link>
+  <joint name="camera_front_virtual_joint" type="fixed">
+    <parent link="camera_front_link"/>
+    <child link="camera_front_virtual_link"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/> <!-- 1.57079632679 1.57079632679"/> -->
   </joint>
 
   <!-- CAMERA Back -->
@@ -274,7 +282,15 @@
   <joint name="camera_back_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_back_link"/>
-    <origin xyz="-0.15 0.0 0.1" rpy="0 0 3.14159265"/>
+    <origin xyz="-0.15 0.0 0.1" rpy="-1.57079632679 0 1.57079632679"/>
+  </joint>
+
+  <link name="camera_back_virtual_link">
+  </link>
+  <joint name="camera_back_virtual_joint" type="fixed">
+    <parent link="camera_back_link"/>
+    <child link="camera_back_virtual_link"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
   </joint>
 
   <!-- CAMERA LEFT -->
@@ -306,9 +322,16 @@
   <joint name="camera_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_left_link"/>
-    <origin xyz="0.0 0.15 0.1" rpy="0 0 1.5708"/>
+    <origin xyz="0.0 0.15 0.1" rpy="-1.57079632679 0 0"/>
   </joint>
 
+  <link name="camera_left_virtual_link">
+  </link>
+  <joint name="camera_left_virtual_joint" type="fixed">
+    <parent link="camera_left_link"/>
+    <child link="camera_left_virtual_link"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
+  </joint>
 
 
   <!-- CAMERA RIGHT -->
@@ -340,7 +363,15 @@
   <joint name="camera_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="camera_right_link"/>
-    <origin xyz="0.0 -0.15 0.1" rpy="0 0 -1.5708"/>
+    <origin xyz="0.0 -0.15 0.1" rpy="-1.57079632679 0 3.1415926536"/>
+  </joint>
+
+  <link name="camera_right_virtual_link">
+  </link>
+  <joint name="camera_right_virtual_joint" type="fixed">
+    <parent link="camera_right_link"/>
+    <child link="camera_right_virtual_link"/>
+    <origin xyz="0 0 0" rpy="1.57079632679 -1.57079632679 0"/>
   </joint>
 
   <!-- IMU -->
@@ -432,9 +463,9 @@
   </gazebo>
 
   <!-- CAMERA PLUGINS/SENSORS -->
-  <gazebo reference="camera_front_link">
+  <gazebo reference="camera_front_virtual_link">
     <sensor type="camera" name="camera_front">
-      <always_on>true</always_on>
+      <visualize>true</visualize>
       <update_rate>30</update_rate>
       <camera name="camera_front">
         <horizontal_fov>2.1</horizontal_fov>
@@ -444,8 +475,8 @@
           <format>R8G8B8</format>
         </image>
         <clip>
-          <near>0.05</near>
-          <far>100</far>
+          <near>0.02</near>
+          <far>300</far>
         </clip>
         <noise>
           <type>gaussian</type>
@@ -475,9 +506,9 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="camera_back_link">
+  <gazebo reference="camera_back_virtual_link">
     <sensor type="camera" name="camera_back">
-      <always_on>true</always_on>
+      <visualize>true</visualize>
       <update_rate>30</update_rate>
       <camera name="camera_back">
         <horizontal_fov>2.1</horizontal_fov>
@@ -518,9 +549,9 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="camera_right_link">
+  <gazebo reference="camera_right_virtual_link">
     <sensor type="camera" name="camera_right">
-      <always_on>true</always_on>
+      <visualize>true</visualize>
       <update_rate>30</update_rate>
       <camera name="camera_right">
         <horizontal_fov>2.1</horizontal_fov>
@@ -561,9 +592,9 @@
     </sensor>
   </gazebo>
 
-  <gazebo reference="camera_left_link">
+  <gazebo reference="camera_left_virtual_link">
     <sensor type="camera" name="camera_left">
-      <always_on>true</always_on>
+      <visualize>true</visualize>
       <update_rate>30</update_rate>
       <camera name="camera_left">
         <horizontal_fov>2.1</horizontal_fov>

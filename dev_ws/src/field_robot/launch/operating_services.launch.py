@@ -12,7 +12,17 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('field_robot')
+    
+    use_sim_time = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='true'
+    )
+
+    urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
+    urdf = DeclareLaunchArgument(
+        'urdf',
+        default_value=open(urdf_path,'r').read()
+    )
 
     odometry = Node(
         package='robot_localization',
@@ -47,7 +57,7 @@ def generate_launch_description():
         }.items(),
     )
 
-    navigation = IncludeLaunchDescription(
+    '''navigation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'navigation.launch.py')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
@@ -59,16 +69,14 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
         }.items(),
-    )
+    )'''
 
     return LaunchDescription([
         # parameters
-        DeclareLaunchArgument('use_sim_time', default_value='true'),
-
+        use_sim_time,
+        urdf,
         # nodes & launch files
         robot_state_publisher,
         odometry,
-        sensor_processing,
-        # navigation,
-        mapping,
+        #sensor_processing,
     ])

@@ -25,6 +25,12 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(PCL REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
@@ -76,13 +82,21 @@ add_executable(point_cloud_generator
 
 ament_target_dependencies(point_cloud_generator
   rclcpp
-  sensor_msgs)
+  sensor_msgs
+  geometry_msgs
+  tf2_ros
+  tf2_geometry_msgs
+  OpenCV
+  PCL
+  cv_bridge)
 
 add_executable(point_cloud_fusion
   src/point_cloud_fusion.cpp)
 
 ament_target_dependencies(point_cloud_fusion
   rclcpp
+  PCL
+  geometry_msgs
   sensor_msgs)
 
 #rosidl_target_interfaces(navigation
