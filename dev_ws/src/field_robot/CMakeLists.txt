@@ -123,6 +123,12 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+## adding RViz Files
+install(PROGRAMS
+  default.rviz
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 ## normal/unmodified cmake list actions
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

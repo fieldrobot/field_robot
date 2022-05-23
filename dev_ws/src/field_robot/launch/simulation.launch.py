@@ -13,6 +13,7 @@ from launch.actions import DeclareLaunchArgument
 
 
 def generate_launch_description():
+    default_rviz_config_path = os.path.join(get_package_share_directory('field_robot'), 'default.rviz')
     use_sim_time = DeclareLaunchArgument(
         'use_sim_time',
         default_value='true'
@@ -45,9 +46,7 @@ def generate_launch_description():
     )
 
     gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')
-        ),
+        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
             'world': LaunchConfiguration('world_path'),
@@ -57,7 +56,7 @@ def generate_launch_description():
             'verbose': LaunchConfiguration('debug'),
         }.items(),
     )
-    
+
     robot = Node(
         package='field_robot',
         executable='robot_spawner.py',
@@ -80,16 +79,36 @@ def generate_launch_description():
         ],
     )'''
 
+    operating_services = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'operating_services.launch.py')),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+        }.items(),
+    )
+
+    rviz = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output={'both': 'log'},
+        arguments=['-d', default_rviz_config_path],
+    )
+
     return LaunchDescription([
-        # declare launch configuration
-        use_sim_time,
-        world,
-        gui,
-        pause,
-        debug,
-        urdf,
+        # General Parameters
+        DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument('urdf', default_value=open(urdf_path, 'r').read()),
+
+        # Gazebo Parameters
+        DeclareLaunchArgument('world_path', default_value=os.path.join(pkg_share, 'worlds', 'main.world')),
+        DeclareLaunchArgument('gui', default_value='false'),
+        DeclareLaunchArgument('pause', default_value='false'),
+        DeclareLaunchArgument('debug', default_value='true'),
+
         # actual launch
         gazebo,
+        rviz,
         robot,
         #robot_state_publisher,
     ])
+
