@@ -93,7 +93,7 @@ def generate_launch_description():
             'map_subscribe_transient_local', default_value='false',
             description='Whether to set the map subscriber QoS to transient local'),
 
-        Node(
+        Node( #
             package='nav2_controller',
             executable='controller_server',
             output='screen',
@@ -101,7 +101,7 @@ def generate_launch_description():
             remappings=remappings,
             namespace=namespace),
 
-        Node(
+        Node( #
             package='nav2_planner',
             executable='planner_server',
             name='planner_server',
@@ -110,7 +110,7 @@ def generate_launch_description():
             remappings=remappings,
             namespace=namespace),
 
-        Node(
+        Node( #
             package='nav2_recoveries',
             executable='recoveries_server',
             name='recoveries_server',
@@ -119,7 +119,7 @@ def generate_launch_description():
             remappings=remappings,
             namespace=namespace),
 
-        Node(
+        Node( # essential
             package='nav2_bt_navigator',
             executable='bt_navigator',
             name='bt_navigator',
