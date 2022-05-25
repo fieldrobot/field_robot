@@ -1,0 +1,5 @@
+navigation_bt:
+  ros__parameters:
+    xml_file_path: 'adöfjalsdfjaslf'
+    plugin_lib_names: 'adfaskjfösaldkföja'
+    tick_frequency_ms: 500
