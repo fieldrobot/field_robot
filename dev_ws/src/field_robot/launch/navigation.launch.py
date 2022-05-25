@@ -37,6 +37,18 @@ def generate_launch_description():
             'use_sim_time', default_value='true',
             description='Use simulation (Gazebo) clock if true')
 
+    ###### CUSTOM NAVIGATION ACTION SERVERS ######
+
+    ###### NAVIGATION BEHAVIOR TREE ######
+
+    behavior_tree = Node(
+        package='field_robot',
+        executable='navigation_bt',
+        namespace='robot',
+        name='navigation_bt',
+        parameters=[os.path.join(get_package_share_directory('field_robot'), 'config', 'navigation_params.yaml')],
+    )
+
     ###### NAV2 CONFIGURATION ######
 
     remappings = [('/robot/tf', '/tf'),
@@ -133,5 +145,8 @@ def generate_launch_description():
         nav2_planner,
         nav2_recoveries,
         nav2_lifecycle_manager,
+
+        ###### navigation behavior tree ######
+        behavior_tree,
 
     ])
