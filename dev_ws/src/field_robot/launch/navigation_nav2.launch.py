@@ -25,7 +25,7 @@ from nav2_common.launch import RewrittenYaml
 
 def generate_launch_description():
     # Get the launch directory
-    bringup_dir = get_package_share_directory('nav2_bringup')
+    #bringup_dir = get_package_share_directory('nav2_bringup')
     pkg_share = get_package_share_directory('field_robot')
 
     namespace = LaunchConfiguration('namespace')
@@ -37,9 +37,7 @@ def generate_launch_description():
 
     lifecycle_nodes = ['controller_server',
                        'planner_server',
-                       'recoveries_server',
-                       'bt_navigator',
-                       'waypoint_follower']
+                       'recoveries_server']
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -81,12 +79,12 @@ def generate_launch_description():
 
         DeclareLaunchArgument(
             'params_file',
-            default_value=os.path.join(pkg_share, 'config', 'nav2_params.yaml'),
+            default_value=os.path.join(pkg_share, 'config', 'nav2_params_old.yaml'),
             description='Full path to the ROS2 parameters file to use'),
 
         DeclareLaunchArgument(
             'default_bt_xml_filename',
-            default_value=os.path.join(pkg_share, "config", 'nav2_bt_config.xml'),
+            default_value=os.path.join(pkg_share, "config", 'nav2_bt_config_old.xml'),
             description='Full path to the behavior tree xml file to use'),
 
         DeclareLaunchArgument(
@@ -114,24 +112,6 @@ def generate_launch_description():
             package='nav2_recoveries',
             executable='recoveries_server',
             name='recoveries_server',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings,
-            namespace=namespace),
-
-        Node( # essential
-            package='nav2_bt_navigator',
-            executable='bt_navigator',
-            name='bt_navigator',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings,
-            namespace=namespace),
-
-        Node(
-            package='nav2_waypoint_follower',
-            executable='waypoint_follower',
-            name='waypoint_follower',
             output='screen',
             parameters=[configured_params],
             remappings=remappings,
