@@ -90,6 +90,7 @@ ament_target_dependencies(point_cloud_generator
   PCL
   cv_bridge)
 
+## POINT CLOUD FUSION
 add_executable(point_cloud_fusion
   src/point_cloud_fusion.cpp)
 
@@ -99,6 +100,14 @@ ament_target_dependencies(point_cloud_fusion
   geometry_msgs
   sensor_msgs)
 
+## NAVIGATION_BT
+add_executable(navigation_bt
+  src/navigation/navigation_bt.cpp)
+
+ament_target_dependencies(navigation_bt
+  rclcpp
+  behaviortree_cpp_v3)
+
 #rosidl_target_interfaces(navigation
 #  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
@@ -106,6 +115,7 @@ ament_target_dependencies(point_cloud_fusion
 install(TARGETS
   point_cloud_generator
   point_cloud_fusion
+  navigation_bt
   DESTINATION lib/${PROJECT_NAME}
 )
 
