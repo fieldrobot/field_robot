@@ -25,6 +25,7 @@
   <depend>cv_bridge</depend>
   <depend>robot_localization</depend>
   <depend>robot_state_publisher</depend>
+  <!--<depend>field_robot</depend>-->
 
   <exec_depend>rosidl_default_runtime</exec_depend>
 
