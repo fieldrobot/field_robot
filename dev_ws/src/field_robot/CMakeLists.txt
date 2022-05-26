@@ -34,6 +34,7 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
+find_package(field_robot REQUIRED)
 
 ############### DIRECTORIES ###############
 
@@ -54,23 +55,19 @@ set(msg_files
 
 #settings service files
 set(srv_files
-  #"service/BTNode.srv"
 )
 
 #setting action files
 set(action_files
-  #"action/BTNode.action"
+  "action/ConditionAction.action"
 )
 
-#rosidl_target_interfaces(navigation
-#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
 #adding defined message, service, and action files to the ros system
-#rosidl_generate_interfaces(${PROJECT_NAME}
+rosidl_generate_interfaces(${PROJECT_NAME}
 #  ${msg_files}
 #  ${srv_files}
-#  ${action_files}
-#)
+  ${action_files}
+)
 
 ############### CPP ###############
 
@@ -117,21 +114,6 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-############### BT PLUGINS ###############
-
-# adding (BT) plugins
-add_library(continuous_sequence SHARED src/navigation/bt_plugins/control/continuous_sequency_node.cpp)
-target_compile_definitions(continuous_sequence PRIVATE  BT_PLUGIN_EXPORT)
-ament_target_dependencies(continuous_sequence
-  behaviortree_cpp_v3)
-list(APPEND plugin_libs continuous_sequence)
-
-install(TARGETS ${plugin_libs}
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
-
 ############### PYTHON ###############
 
 ## installing python modules
@@ -147,6 +129,32 @@ install(PROGRAMS
   scripts/image_path_finder_ai.py
   DESTINATION lib/${PROJECT_NAME}
 )
+
+############### BT PLUGINS ###############
+
+# adding (BT) plugins
+add_library(continuous_sequence SHARED src/navigation/bt_plugins/control/continuous_sequency_node.cpp)
+target_compile_definitions(continuous_sequence PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(continuous_sequence
+  behaviortree_cpp_v3)
+list(APPEND plugin_libs continuous_sequence)
+
+add_library(finished_headland_drive SHARED src/navigation/bt_plugins/condition/finished_headland_drive_node.cpp)
+target_compile_definitions(finished_headland_drive PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(finished_headland_drive
+  behaviortree_cpp_v3
+  rclcpp
+  rclcpp_action)
+list(APPEND plugin_libs finished_headland_drive)
+
+install(TARGETS ${plugin_libs}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+rosidl_target_interfaces(finished_headland_drive
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
 
