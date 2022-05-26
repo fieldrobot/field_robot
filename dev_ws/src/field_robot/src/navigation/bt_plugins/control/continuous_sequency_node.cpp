@@ -3,9 +3,9 @@
 class ContinuousSequence : public BT::ControlNode
 {
     public:
-        ContinuousSequence(const std::string& name) : BT::ControlNode::ControlNode(name, {}), current_child_index_(0)
+        ContinuousSequence(const std::string& name) : BT::ControlNode::ControlNode(name, {}), current_child_idx_(0)
         {
-            BT::setRegistrationID("ContinuousSequence");
+            setRegistrationID("ContinuousSequence");
         }
 
         void halt()
@@ -19,13 +19,13 @@ class ContinuousSequence : public BT::ControlNode
 
         BT::NodeStatus tick() override
         {
-            const size_t children_count = BT::children_nodes_.size();
+            const size_t children_count = children_nodes_.size();
 
-            BT::setStatus(BT::NodeStatus::RUNNING);
+            setStatus(BT::NodeStatus::RUNNING);
 
             while (true)
             {
-                BT::TreeNode* current_child_node = BT::children_nodes_[current_child_idx_];
+                BT::TreeNode* current_child_node = children_nodes_[current_child_idx_];
                 const BT::NodeStatus child_status = current_child_node->executeTick();
 
                 switch (child_status)
@@ -36,13 +36,17 @@ class ContinuousSequence : public BT::ControlNode
                     }
                     case BT::NodeStatus::SUCCESS:
                     {
-                        BT::haltChild(current_child_idx_);
+                        haltChild(current_child_idx_);
                         current_child_idx_++;
                     }
                     break;
                     case BT::NodeStatus::FAILURE:
                     {
-                        throw LogicError("A continuous sequence does not expect failure returns.");
+                        throw BT::LogicError("A continuous sequence does not expect failure returns.");
+                    }
+                    case BT::NodeStatus::IDLE:
+                    {
+                        throw BT::LogicError("A child node must never return IDLE");
                     }
                 }
 
@@ -55,3 +59,14 @@ class ContinuousSequence : public BT::ControlNode
             return BT::NodeStatus::SUCCESS;
         }
 };
+
+int main()
+{
+    return 0;
+}
+
+#include "behaviortree_cpp_v3/bt_factory.h"
+BT_REGISTER_NODES(factory)
+{
+    factory.registerNodeType<ContinuousSequence>("ContinuousSequence");
+}
