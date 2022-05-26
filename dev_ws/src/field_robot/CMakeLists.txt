@@ -35,14 +35,11 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
 
-#installing launch files
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
-)
+############### DIRECTORIES ###############
 
 #installing directories
 install(DIRECTORY
+  launch
   models
   worlds
   config
@@ -65,6 +62,9 @@ set(action_files
   #"action/BTNode.action"
 )
 
+#rosidl_target_interfaces(navigation
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 #adding defined message, service, and action files to the ros system
 #rosidl_generate_interfaces(${PROJECT_NAME}
 #  ${msg_files}
@@ -72,10 +72,8 @@ set(action_files
 #  ${action_files}
 #)
 
-## including cpp "include" directory for cpp header files definitions
-include_directories(include)
+############### CPP ###############
 
-# CPP EXECUTABLES
 ## POINT CLOUD GENERATOR
 add_executable(point_cloud_generator
   src/point_cloud_generator.cpp)
@@ -108,8 +106,8 @@ ament_target_dependencies(navigation_bt
   rclcpp
   behaviortree_cpp_v3)
 
-#rosidl_target_interfaces(navigation
-#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+## including cpp "include" directory for cpp header files definitions
+include_directories(include)
 
 # installing cpp executables
 install(TARGETS
@@ -118,6 +116,23 @@ install(TARGETS
   navigation_bt
   DESTINATION lib/${PROJECT_NAME}
 )
+
+############### BT PLUGINS ###############
+
+# adding (BT) plugins
+add_library(continuous_sequence SHARED src/navigation/bt_plugins/control/continuous_sequency_node.cpp)
+target_compile_definitions(continuous_sequence PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(continuous_sequence
+  behaviortree_cpp_v3)
+list(APPEND plugin_libs continuous_sequence)
+
+install(TARGETS ${plugin_libs}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+############### PYTHON ###############
 
 ## installing python modules
 ament_python_install_package(${PROJECT_NAME})
@@ -133,11 +148,15 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+############### ADDITIONAL FILES ###############
+
 ## adding RViz Files
 install(PROGRAMS
   default.rviz
   DESTINATION share/${PROJECT_NAME}/
 )
+
+############### STUFF ###############
 
 ## normal/unmodified cmake list actions
 if(BUILD_TESTING)
