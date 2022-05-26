@@ -6,10 +6,10 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <PipelineSequence name="NavigateWithReplanning">
-      <DistanceController distance="1.0">
-        <!--<ComputePathToPose goal="{goal}" path="{path}"/>-->
+      <!--<DistanceController distance="1.0">
+        <ComputePathToPose goal="{goal}" path="{path}"/>
       </DistanceController>
-      <!--<FollowPath path="{path}"/>-->
+      <FollowPath path="{path}"/>-->
     </PipelineSequence>
   </BehaviorTree>
 </root>
