@@ -11,6 +11,8 @@ class NavigationBT : public rclcpp::Node
         NavigationBT() : Node("navigation_bt")
         {
             
+            RCLCPP_INFO(this->get_logger(), "starting navigation bt node");
+
             // getting parameters
             // xml file path
             this->declare_parameter("xml_file_path");
@@ -22,12 +24,18 @@ class NavigationBT : public rclcpp::Node
             this->declare_parameter("tick_frequency_ms");
             this->get_parameter("tick_frequency_ms", tick_frequency_);
 
+            RCLCPP_INFO(this->get_logger(), "loading bt nodes");
+
             BT::SharedLibrary loader;
             for (const auto & p : plugin_lib_names_) {
                 factory.registerFromPlugin(loader.getOSName(p));
             }
 
+            RCLCPP_INFO(this->get_logger(), "loading the behavior tree from xml file");
+
             tree = factory.createTreeFromFile(xml_file_path_);
+
+            RCLCPP_INFO(this->get_logger(), "creating the timer for tree ticking");
 
             timer_ = this->create_wall_timer(std::chrono::milliseconds(tick_frequency_), std::bind(&NavigationBT::timer_callback, this));
         }
@@ -35,7 +43,8 @@ class NavigationBT : public rclcpp::Node
     private:
         void timer_callback()
         {
-            tree.tickRoot();
+            RCLCPP_INFO(this->get_logger(), "calling timer callback, ticking the tree");
+            //tree.tickRoot();
         }
 
         rclcpp::TimerBase::SharedPtr timer_;
