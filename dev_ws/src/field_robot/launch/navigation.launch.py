@@ -41,12 +41,20 @@ def generate_launch_description():
 
     ###### NAVIGATION BEHAVIOR TREE ######
 
+    navigation_bt_params = RewrittenYaml(
+            source_file=os.path.join(get_package_share_directory('field_robot'), 'config', 'navigation_parameters.yaml'),
+            root_key='robot',
+            param_rewrites={
+                'xml_file_path': os.path.join(get_package_share_directory('field_robot'), 'config', 'navigation_bt.xml'),
+            },
+            convert_types=True)
+
     behavior_tree = Node(
         package='field_robot',
         executable='navigation_bt',
         namespace='robot',
         name='navigation_bt',
-        parameters=[os.path.join(get_package_share_directory('field_robot'), 'config', 'navigation_params.yaml')],
+        parameters=[navigation_bt_params],
     )
 
     ###### NAV2 CONFIGURATION ######
@@ -135,16 +143,16 @@ def generate_launch_description():
         use_sim_time,
 
         ###### nav2 configuration ######
-        nav2_autostart,
-        nav2_params_file,
-        #nav2_bt_file,
-        nav2_transient_local,
+        #nav2_autostart,
+        #nav2_params_file,
+                #nav2_bt_file,
+        #nav2_transient_local,
 
         ###### nav2 nodes ######
-        nav2_controller,
-        nav2_planner,
-        nav2_recoveries,
-        nav2_lifecycle_manager,
+        #nav2_controller,
+        #nav2_planner,
+        #nav2_recoveries,
+        #nav2_lifecycle_manager,
 
         ###### navigation behavior tree ######
         behavior_tree,
