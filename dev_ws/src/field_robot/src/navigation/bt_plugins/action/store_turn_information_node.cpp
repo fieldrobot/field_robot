@@ -2,10 +2,10 @@
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "field_robot/action/compute_goal_action.hpp"
 
-class GoalComputableNode : public nav2_behavior_tree::BtActionNode<field_robot::action::ComputeGoalAction>
+class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action::ComputeGoalAction>
 {
     public:
-        GoalComputableNode(const std::string & name, const std::string & action_name, const BT::NodeConfiguration & conf)
+        ComputeGoal(const std::string & name, const std::string & action_name, const BT::NodeConfiguration & conf)
             : BtActionNode<field_robot::action::ComputeGoalAction>(name, action_name, conf)
         {
 
@@ -18,19 +18,19 @@ class GoalComputableNode : public nav2_behavior_tree::BtActionNode<field_robot::
 
         BT::NodeStatus on_success()
         {
+          setOutput("remaining_rows", result_.result->remaining_rows);
           setOutput("last_ron_pose", result_.result->pose);
-          int rows = !getInput<int>("remaining_rows");
-          setOutput("remaining_rows", rows-1);
+          setOutput("turn_direction", result_.result->turn_direction);
           return BT::NodeStatus::SUCCESS;
         }
 
         static BT::PortsList providedPorts()
         {
-            return providedBasicPorts({
-                BT::InputPort<int>("remaining_rows"),
-                BT::OutputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
-                BT::OutputPort<int>("remaining_rows"),
-            });
+          return providedBasicPorts({
+            BT::OutputPort<int8>("remaining_rows"),
+            BT::OutputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
+            BT::OutputPort<bool>("turn_direction"),
+          });
         }
 
     private:
@@ -43,7 +43,7 @@ BT_REGISTER_NODES(factory)
 
   builder = [](const std::string & name, const BT::NodeConfiguration & config)
   {
-    return std::make_unique<GoalComputableNode>(name, "navigation/new_goal_computable_headland_drive", config);
+    return std::make_unique<ComputeGoal>(name, "navigation/turn_information", config);
   };
-  factory.registerBuilder<GoalComputableNode>("NewGoalComputable", builder);
+  factory.registerBuilder<ComputeGoal>("PublishTurnInformation", builder);
 }
