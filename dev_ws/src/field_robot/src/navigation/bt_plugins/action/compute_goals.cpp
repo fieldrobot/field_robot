@@ -16,6 +16,12 @@ class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action:
 
         }
 
+        BT::NodeStatus on_success()
+        {
+          setOutput("goal", result_.result->pose);
+          return BT::NodeStatus::SUCCESS;
+        }
+
         static BT::PortsList providedPorts()
         {
           return providedBasicPorts({
