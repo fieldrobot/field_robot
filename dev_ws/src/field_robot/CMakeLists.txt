@@ -61,6 +61,7 @@ set(srv_files
 #setting action files
 set(action_files
   "action/ConditionAction.action"
+  "action/ComputeGoal.action"
 )
 
 #adding defined message, service, and action files to the ros system
@@ -140,13 +141,12 @@ ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
 
-#add_library(finished_headland_drive SHARED src/navigation/bt_plugins/condition/finished_headland_drive_node.cpp)
-#target_compile_definitions(finished_headland_drive PRIVATE  BT_PLUGIN_EXPORT)
-#ament_target_dependencies(finished_headland_drive
-#  behaviortree_cpp_v3
-#  rclcpp
-#  rclcpp_action)
-#list(APPEND plugin_libs finished_headland_drive)
+add_library(compute_goals SHARED src/navigation/bt_plugins/action/compute_goals.cpp)
+target_compile_definitions(compute_goals PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(compute_goals
+  behaviortree_cpp_v3
+  nav2_behavior_tree)
+list(APPEND plugin_libs compute_goals)
 
 add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
 target_compile_definitions(simple_check_nodes PRIVATE  BT_PLUGIN_EXPORT)
@@ -161,11 +161,11 @@ install(TARGETS ${plugin_libs}
   RUNTIME DESTINATION bin
 )
 
-#rosidl_target_interfaces(finished_headland_drive
-#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(simple_check_nodes
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
- rosidl_target_interfaces(simple_check_nodes
-   ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_target_interfaces(compute_goals
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
 
