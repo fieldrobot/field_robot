@@ -33,7 +33,11 @@ class NavigationBT : public rclcpp::Node
 
             RCLCPP_INFO(this->get_logger(), "loading the behavior tree from xml file");
 
-            tree = factory.createTreeFromFile(xml_file_path_);
+            blackboard_ = BT::Blackboard::create();
+            blackboard_->set<rclcpp::Node::SharedPtr>("node", std::make_shared<rclcpp::Node>("bt_client_node"));
+            blackboard_->set<std::chrono::milliseconds>("server_timeout", std::chrono::milliseconds(20));
+
+            tree = factory.createTreeFromFile(xml_file_path_, blackboard_);
 
             RCLCPP_INFO(this->get_logger(), "creating the timer for tree ticking");
 
@@ -49,6 +53,7 @@ class NavigationBT : public rclcpp::Node
 
         rclcpp::TimerBase::SharedPtr timer_;
         BT::BehaviorTreeFactory factory;
+        BT::Blackboard::Ptr blackboard_;
         BT::Tree tree;
 
         std::string xml_file_path_;
