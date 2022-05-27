@@ -15,6 +15,11 @@ class SimpleCheckNode : public nav2_behavior_tree::BtActionNode<field_robot::act
 
         }
 
+        BT::NodeStatus on_success()
+        {
+          return BT::NodeStatus::SUCCESS;
+        }
+
         static BT::PortsList providedPorts()
         {
             return {};
