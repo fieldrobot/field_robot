@@ -42,16 +42,4 @@ BT_REGISTER_NODES(factory)
     return std::make_unique<ComputeGoal>(name, "navigation/compute_goal/in_row", config);
   };
   factory.registerBuilder<ComputeGoal>("ComputeGoalInRow", builder);
-
-  builder = [](const std::string & name, const BT::NodeConfiguration & config)
-  {
-    return std::make_unique<ComputeGoal>(name, "navigation/compute_goal/leaving_row", config);
-  };
-  factory.registerBuilder<ComputeGoal>("ComputeGoalLeavingRow", builder);
-
-  builder = [](const std::string & name, const BT::NodeConfiguration & config)
-  {
-    return std::make_unique<ComputeGoal>(name, "navigation/compute_goal/out_of_row", config);
-  };
-  factory.registerBuilder<ComputeGoal>("ComputeGoalOutOfRow", builder);
 }
