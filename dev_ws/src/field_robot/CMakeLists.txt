@@ -35,6 +35,7 @@ find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
 find_package(field_robot REQUIRED)
+find_package(nav2_behavior_tree REQUIRED)
 
 ############### DIRECTORIES ###############
 
@@ -139,13 +140,20 @@ ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
 
-add_library(finished_headland_drive SHARED src/navigation/bt_plugins/condition/finished_headland_drive_node.cpp)
-target_compile_definitions(finished_headland_drive PRIVATE  BT_PLUGIN_EXPORT)
-ament_target_dependencies(finished_headland_drive
+#add_library(finished_headland_drive SHARED src/navigation/bt_plugins/condition/finished_headland_drive_node.cpp)
+#target_compile_definitions(finished_headland_drive PRIVATE  BT_PLUGIN_EXPORT)
+#ament_target_dependencies(finished_headland_drive
+#  behaviortree_cpp_v3
+#  rclcpp
+#  rclcpp_action)
+#list(APPEND plugin_libs finished_headland_drive)
+
+add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
+target_compile_definitions(simple_check_nodes PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(simple_check_nodes
   behaviortree_cpp_v3
-  rclcpp
-  rclcpp_action)
-list(APPEND plugin_libs finished_headland_drive)
+  nav2_behavior_tree)
+list(APPEND plugin_libs simple_check_nodes)
 
 install(TARGETS ${plugin_libs}
   ARCHIVE DESTINATION lib
@@ -153,8 +161,11 @@ install(TARGETS ${plugin_libs}
   RUNTIME DESTINATION bin
 )
 
-rosidl_target_interfaces(finished_headland_drive
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(finished_headland_drive
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+ rosidl_target_interfaces(simple_check_nodes
+   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
 
