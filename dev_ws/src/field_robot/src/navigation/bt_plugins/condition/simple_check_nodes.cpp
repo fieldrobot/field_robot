@@ -30,9 +30,9 @@ BT_REGISTER_NODES(factory)
 
   builder = [](const std::string & name, const BT::NodeConfiguration & config)
   {
-    return std::make_unique<SimpleCheckNode>(name, "navigation/finished_headland_drive", config);
+    return std::make_unique<SimpleCheckNode>(name, "navigation/front_empty", config);
   };
-  factory.registerBuilder<SimpleCheckNode>("FinishedHeadlandDrive", builder);
+  factory.registerBuilder<SimpleCheckNode>("FrontEmpty", builder);
 
   builder = [](const std::string & name, const BT::NodeConfiguration & config)
   {
@@ -48,7 +48,7 @@ BT_REGISTER_NODES(factory)
 
   builder = [](const std::string & name, const BT::NodeConfiguration & config)
   {
-    return std::make_unique<SimpleCheckNode>(name, "navigation/new_goal_computable_headland_drive", config);
+    return std::make_unique<SimpleCheckNode>(name, "navigation/finished_headland_drive", config);
   };
-  factory.registerBuilder<SimpleCheckNode>("NewGoalComputableHeadlandDrive", builder);
+  factory.registerBuilder<SimpleCheckNode>("FinishedHeadlandDrive", builder);
 }
