@@ -1,5 +1,5 @@
 #include "nav2_behavior_tree/bt_action_node.hpp"
-//#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
 #include "field_robot/action/compute_goal_action.hpp"
 
 class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action::ComputeGoalAction>
@@ -18,10 +18,9 @@ class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action:
 
         static BT::PortsList providedPorts()
         {
-          /*return {
-            BT::OutputPort<geometry_msgs::msg::PoseStamped>("goal")
-          };*/
-          return {};
+          return providedBasicPorts({
+            BT::OutputPort<geometry_msgs::msg::PoseStamped>("goal"),
+          });
         }
 
     private:
