@@ -61,7 +61,7 @@ set(srv_files
 #setting action files
 set(action_files
   "action/ConditionAction.action"
-  "action/ComputeGoal.action"
+  "action/ComputeGoalAction.action"
 )
 
 #adding defined message, service, and action files to the ros system
