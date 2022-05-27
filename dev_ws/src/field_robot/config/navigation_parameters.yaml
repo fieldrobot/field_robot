@@ -27,4 +27,6 @@ navigation_bt:
     - continuous_sequence
     - simple_check_nodes
     - compute_goals
+    - compute_based_goals
+    - new_goal_computable
     tick_frequency_ms: 500

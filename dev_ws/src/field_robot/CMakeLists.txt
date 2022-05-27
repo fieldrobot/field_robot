@@ -61,6 +61,8 @@ set(srv_files
 set(action_files
   "action/ConditionAction.action"
   "action/ComputeGoalAction.action"
+  "action/TurnInformationAction.action"
+  "action/ComputeBasedGoalAction.action"
 )
 
 #adding defined message, service, and action files to the ros system
@@ -141,19 +143,36 @@ ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
 
-add_library(compute_goals SHARED src/navigation/bt_plugins/action/compute_goals.cpp)
-target_compile_definitions(compute_goals PRIVATE  BT_PLUGIN_EXPORT)
-ament_target_dependencies(compute_goals
-  behaviortree_cpp_v3
-  nav2_behavior_tree)
-list(APPEND plugin_libs compute_goals)
-
 add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
 target_compile_definitions(simple_check_nodes PRIVATE  BT_PLUGIN_EXPORT)
 ament_target_dependencies(simple_check_nodes
   behaviortree_cpp_v3
   nav2_behavior_tree)
 list(APPEND plugin_libs simple_check_nodes)
+
+add_library(compute_goals SHARED src/navigation/bt_plugins/action/compute_goals.cpp)
+target_compile_definitions(compute_goals PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(compute_goals
+  behaviortree_cpp_v3
+  nav2_behavior_tree
+  geometry_msgs)
+list(APPEND plugin_libs compute_goals)
+
+add_library(compute_based_goals SHARED src/navigation/bt_plugins/action/compute_based_goals.cpp)
+target_compile_definitions(compute_based_goals PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(compute_based_goals
+  behaviortree_cpp_v3
+  nav2_behavior_tree
+  geometry_msgs)
+list(APPEND plugin_libs compute_based_goals)
+
+add_library(new_goal_computable SHARED src/navigation/bt_plugins/condition/new_goal_computable_headland_drive_node.cpp)
+target_compile_definitions(new_goal_computable PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(new_goal_computable
+  behaviortree_cpp_v3
+  nav2_behavior_tree
+  geometry_msgs)
+list(APPEND plugin_libs new_goal_computable)
 
 install(TARGETS ${plugin_libs}
   ARCHIVE DESTINATION lib
@@ -166,6 +185,15 @@ rosidl_target_interfaces(compute_goals
 
 rosidl_target_interfaces(simple_check_nodes
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+rosidl_target_interfaces(new_goal_computable
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+rosidl_target_interfaces(compute_based_goals
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+  rosidl_target_interfaces(new_goal_computable
+    ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
 
