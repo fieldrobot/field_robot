@@ -34,7 +34,6 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(robot_localization REQUIRED)
-find_package(field_robot REQUIRED)
 find_package(nav2_behavior_tree REQUIRED)
 
 ############### DIRECTORIES ###############
@@ -69,6 +68,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 #  ${msg_files}
 #  ${srv_files}
   ${action_files}
+  DEPENDENCIES geometry_msgs
 )
 
 ############### CPP ###############
@@ -161,10 +161,10 @@ install(TARGETS ${plugin_libs}
   RUNTIME DESTINATION bin
 )
 
-rosidl_target_interfaces(simple_check_nodes
+rosidl_target_interfaces(compute_goals
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-rosidl_target_interfaces(compute_goals
+rosidl_target_interfaces(simple_check_nodes
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
