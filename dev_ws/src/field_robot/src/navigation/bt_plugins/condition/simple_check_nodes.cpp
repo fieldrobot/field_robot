@@ -50,10 +50,4 @@ BT_REGISTER_NODES(factory)
     return std::make_unique<SimpleCheckNode>(name, "navigation/completed_leaving_row", config);
   };
   factory.registerBuilder<SimpleCheckNode>("CompletedLeavingRow", builder);
-
-  builder = [](const std::string & name, const BT::NodeConfiguration & config)
-  {
-    return std::make_unique<SimpleCheckNode>(name, "navigation/finished_headland_drive", config);
-  };
-  factory.registerBuilder<SimpleCheckNode>("FinishedHeadlandDrive", builder);
 }
