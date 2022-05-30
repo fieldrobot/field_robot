@@ -63,7 +63,7 @@ set(action_files
   "action/ComputeGoalAction.action"
   "action/TurnInformationAction.action"
   "action/ComputeBasedGoalAction.action"
-  "action/RobotPoseUpdate.action"
+  "action/RobotPoseUpdateAction.action"
 )
 
 #adding defined message, service, and action files to the ros system
@@ -107,6 +107,18 @@ add_executable(navigation_bt
 ament_target_dependencies(navigation_bt
   rclcpp
   behaviortree_cpp_v3)
+
+## FRONT EMPTY ACTION SERVER
+add_executable(front_empty_server
+  src/navigation/action_servers/condition/front_empty_node_server.cpp)
+
+ament_target_dependencies(front_empty_server
+  rclcpp
+  rclcpp_action
+  sensor_msgs)
+
+rosidl_target_interfaces(front_empty_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
