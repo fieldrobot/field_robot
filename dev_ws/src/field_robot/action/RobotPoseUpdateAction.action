@@ -1,6 +1,7 @@
 # Request
+bool turn_direction
 ---
 # Result
-geometry_msgs/Pose pose
+geometry_msgs/PoseStamped pose
 ---
 # Feedback
