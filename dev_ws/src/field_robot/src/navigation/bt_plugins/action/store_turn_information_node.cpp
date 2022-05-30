@@ -2,10 +2,10 @@
 #include "geometry_msgs/msg/pose.hpp"
 #include "field_robot/action/turn_information_action.hpp"
 
-class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action::TurnInformationAction>
+class StoreTurnInformation : public nav2_behavior_tree::BtActionNode<field_robot::action::TurnInformationAction>
 {
     public:
-        ComputeGoal(const std::string & name, const std::string & action_name, const BT::NodeConfiguration & conf)
+        StoreTurnInformation(const std::string & name, const std::string & action_name, const BT::NodeConfiguration & conf)
             : BtActionNode<field_robot::action::TurnInformationAction>(name, action_name, conf)
         {
 
@@ -28,7 +28,7 @@ class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action:
         {
           return providedBasicPorts({
             BT::OutputPort<int8>("remaining_rows"),
-            BT::OutputPort<geometry_msgs::msg::Pose>("last_ron_pose"),
+            BT::OutputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
             BT::OutputPort<bool>("turn_direction"),
           });
         }
@@ -43,7 +43,7 @@ BT_REGISTER_NODES(factory)
 
   builder = [](const std::string & name, const BT::NodeConfiguration & config)
   {
-    return std::make_unique<ComputeGoal>(name, "navigation/turn_information", config);
+    return std::make_unique<StoreTurnInformation>(name, "navigation/turn_information", config);
   };
-  factory.registerBuilder<ComputeGoal>("PublishTurnInformation", builder);
+  factory.registerBuilder<StoreTurnInformation>("PublishTurnInformation", builder);
 }
