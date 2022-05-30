@@ -63,6 +63,7 @@ set(action_files
   "action/ComputeGoalAction.action"
   "action/TurnInformationAction.action"
   "action/ComputeBasedGoalAction.action"
+  "action/RobotPoseUpdate.action"
 )
 
 #adding defined message, service, and action files to the ros system
