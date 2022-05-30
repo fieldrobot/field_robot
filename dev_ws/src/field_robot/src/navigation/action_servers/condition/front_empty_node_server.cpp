@@ -28,14 +28,14 @@ class FrontEmptyActionServer : public rclcpp::Node
             qos.lifespan(rclcpp::Duration(1, 0));
 
             subscription_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-                action_topic,
+                front_cloud_topic,
                 qos,
                 std::bind(&FrontEmptyActionServer::topic_callback, this, std::placeholders::_1)
             );
             
             action_server_ = rclcpp_action::create_server<ConditionAction>(
                 this,
-                front_cloud_topic,
+                action_topic,
                 std::bind(&FrontEmptyActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
                 std::bind(&FrontEmptyActionServer::handle_cancel, this, std::placeholders::_1),
                 std::bind(&FrontEmptyActionServer::handle_accepted, this, std::placeholders::_1)
