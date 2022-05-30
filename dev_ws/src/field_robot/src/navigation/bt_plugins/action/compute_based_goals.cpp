@@ -29,7 +29,7 @@ class ComputeBasedGoal : public nav2_behavior_tree::BtActionNode<field_robot::ac
           return providedBasicPorts({
             BT::OutputPort<geometry_msgs::msg::PoseStamped>("goal"),
             BT::InputPort<int>("remaining_rows"),
-            BT::InputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
+            BT::InputPort<geometry_msgs::msg::Pose>("last_ron_pose"),
             BT::InputPort<bool>("turn_direction"),
           });
         }
