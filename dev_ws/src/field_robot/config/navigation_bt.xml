@@ -1,9 +1,35 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
-    <PipelineSequence name="NavigateWithReplanning">
-      <ComputeGoalInRow/>
-      <ComputePathToPose goal="{goal}" path="{path}"/>
-      <FollowPath path="{path}"/>
-    </PipelineSequence>
+    <ContinuousSequence>
+      <Fallback name="in_row">
+        <FrontEmpty/>
+        <PipelineSequence>
+          <ComputeGoalInRow goal="{goal}"/>
+          <ComputePathToPose goal="{goal}" path="{path}"/>
+          <FollowPath path="{path}"/>
+        </PipelineSequence>
+      </Fallback>
+      <PublishTurnInformation remaining_rows="{remaining_rows}" last_ron_pose="{last_ron_pose}" turn_direction="{turn_direction}"/>
+      <Fallback name="leaving_row">
+        <CompletedLeavingRow/>
+        <SequenceStar>
+          <ComputeBasedGoalLeavingRow goal="{goal}" remaining_rows="{remaining_rows}" last_ron_pose="{last_ron_pose}" turn_direction="{turn_direction}"/>
+          <PipelineSequence>
+            <ComputePathToPose goal="{goal}" path="{path}"/>
+            <FollowPath path="{path}"/>
+          </PipelineSequence>
+        </SequenceStar>
+      </Fallback>
+      <ContinuousSequence name="out_of_row">
+        <ComputeBasedGoalOutOfRow goal="{goal}" remaining_rows="{remaining_rows}" last_ron_pose="{last_ron_pose}" turn_direction="{turn_direction}"/>
+        <Fallback>
+          <NewGoalComputable remaining_rows="{remaining_rows}" last_ron_pose="{last_ron_pose}" turn_direction="{turn_direction}"/>
+          <PipelineSequence>
+            <ComputePathToPose goal="{goal}" path="{path}"/>
+            <FollowPath path="{path}"/>
+          </PipelineSequence>
+        </Fallback>
+      </ContinuousSequence>
+    </ContinuousSequence>
   </BehaviorTree>
 </root>
