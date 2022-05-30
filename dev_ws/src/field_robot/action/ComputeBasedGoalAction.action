@@ -5,6 +5,6 @@ bool turn_direction
 geometry_msgs/Pose pose
 ---
 # Result
-geometry_msgs/Pose pose
+geometry_msgs/PoseStamped pose
 ---
 # Feedback
