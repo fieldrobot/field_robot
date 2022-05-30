@@ -1,12 +1,12 @@
 #include "nav2_behavior_tree/bt_action_node.hpp"
-#include "geometry_msgs/msg/pose_stamped.hpp"
-#include "field_robot/action/compute_goal_action.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "field_robot/action/turn_information_action.hpp"
 
-class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action::ComputeGoalAction>
+class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action::TurnInformationAction>
 {
     public:
         ComputeGoal(const std::string & name, const std::string & action_name, const BT::NodeConfiguration & conf)
-            : BtActionNode<field_robot::action::ComputeGoalAction>(name, action_name, conf)
+            : BtActionNode<field_robot::action::TurnInformationAction>(name, action_name, conf)
         {
 
         }
@@ -28,7 +28,7 @@ class ComputeGoal : public nav2_behavior_tree::BtActionNode<field_robot::action:
         {
           return providedBasicPorts({
             BT::OutputPort<int8>("remaining_rows"),
-            BT::OutputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
+            BT::OutputPort<geometry_msgs::msg::Pose>("last_ron_pose"),
             BT::OutputPort<bool>("turn_direction"),
           });
         }
