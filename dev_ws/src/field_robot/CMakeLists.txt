@@ -25,6 +25,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -90,6 +91,9 @@ ament_target_dependencies(point_cloud_generator
   PCL
   cv_bridge)
 
+rosidl_target_interfaces(point_cloud_generator
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 ## POINT CLOUD FUSION
 add_executable(point_cloud_fusion
   src/point_cloud_fusion.cpp)
@@ -100,6 +104,9 @@ ament_target_dependencies(point_cloud_fusion
   geometry_msgs
   sensor_msgs)
 
+rosidl_target_interfaces(point_cloud_fusion
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 ## NAVIGATION_BT
 add_executable(navigation_bt
   src/navigation/navigation_bt.cpp)
@@ -107,6 +114,9 @@ add_executable(navigation_bt
 ament_target_dependencies(navigation_bt
   rclcpp
   behaviortree_cpp_v3)
+
+rosidl_target_interfaces(navigation_bt
+${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ## FRONT EMPTY ACTION SERVER
 add_executable(front_empty_server
@@ -118,6 +128,47 @@ ament_target_dependencies(front_empty_server
   sensor_msgs)
 
 rosidl_target_interfaces(front_empty_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+## COMPLETED LEAVING ROW ACTION SERVER
+add_executable(completed_leaving_row_server
+  src/navigation/action_servers/condition/completed_leaving_row_turn_action.cpp)
+
+ament_target_dependencies(completed_leaving_row_server
+  rclcpp
+  rclcpp_action
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs)
+
+rosidl_target_interfaces(completed_leaving_row_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+## PUBLISH TURN INFORMATION ACTION SERVER
+add_executable(publish_turn_information_server
+  src/navigation/action_servers/action/publish_turn_information_server.cpp)
+
+ament_target_dependencies(publish_turn_information_server
+  rclcpp
+  rclcpp_action)
+
+rosidl_target_interfaces(publish_turn_information_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+## NEW GOAL COMPUTABLE ACTION SERVER
+add_executable(new_goal_computable_server
+  src/navigation/action_servers/condition/new_goal_computable_headland_drive_server.cpp)
+
+ament_target_dependencies(new_goal_computable_server
+  rclcpp
+  rclcpp_action
+  sensor_msgs
+  tf2_ros
+  tf2_geometry_msgs
+  PCL)
+
+rosidl_target_interfaces(new_goal_computable_server
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ## including cpp "include" directory for cpp header files definitions
