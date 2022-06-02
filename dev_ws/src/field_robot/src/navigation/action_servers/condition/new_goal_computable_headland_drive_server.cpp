@@ -116,6 +116,12 @@ class NewGoalComputableActionServer : public rclcpp::Node
 
         void execute(const std::shared_ptr<GoalHandleRobotPoseUpdateAction> goal_handle)
         {
+            //TODO: add cancel functionality
+            /*               
+                    while(!goal_handle->is_canceling())
+                    {}
+            */
+
             const auto goal = goal_handle->get_goal();
             auto result = std::make_shared<RobotPoseUpdateAction::Result>();
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, left, right;
@@ -193,10 +199,6 @@ class NewGoalComputableActionServer : public rclcpp::Node
             
             goal_handle->succeed(result);
             return;
-            
-                
-            while(!goal_handle->is_canceling())
-            {}
         }
 
         geometry_msgs::msg::PointStamped get_point(std::string id, float x, float y, float z) const
