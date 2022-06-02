@@ -199,6 +199,23 @@ ament_target_dependencies(compute_goal_in_row_server
 rosidl_target_interfaces(compute_goal_in_row_server
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
+## COMPUTE GOAL HEADLAND DRIVE ACTION SERVER
+add_executable(compute_goal_headland_drive_server
+  src/navigation/action_servers/action/compute_goal_headland_drive_server.cpp)
+
+ament_target_dependencies(compute_goal_headland_drive_server
+  rclcpp
+  rclcpp_action
+  sensor_msgs
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  PCL)
+
+rosidl_target_interfaces(compute_goal_headland_drive_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
 
