@@ -13,13 +13,13 @@
 #include "sensor_msgs/msg/point_cloud2.hpp"
 #include "field_robot/action/compute_goal_action.hpp"
 
-class FrontEmptyActionServer : public rclcpp::Node
+class ComputeGoalHeadlandDriveActionServer : public rclcpp::Node
 {
     public:
         using ComputeGoalAction = field_robot::action::ComputeGoalAction;
         using GoalHandleComputeGoalAction = rclcpp_action::ServerGoalHandle<ComputeGoalAction>;
 
-        FrontEmptyActionServer() : Node("front_empty_action_server")
+        ComputeGoalHeadlandDriveActionServer() : Node("compute_goal_headland_drive_action_server")
         {
 
             this->declare_parameter("action_topic", "front_empty");
@@ -39,21 +39,21 @@ class FrontEmptyActionServer : public rclcpp::Node
             subscription_front_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
                 front_cloud_topic,
                 qos,
-                std::bind(&FrontEmptyActionServer::topic_front_callback, this, std::placeholders::_1)
+                std::bind(&ComputeGoalHeadlandDriveActionServer::topic_front_callback, this, std::placeholders::_1)
             );
 
             subscription_back_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
                 back_cloud_topic,
                 qos,
-                std::bind(&FrontEmptyActionServer::topic_back_callback, this, std::placeholders::_1)
+                std::bind(&ComputeGoalHeadlandDriveActionServer::topic_back_callback, this, std::placeholders::_1)
             );
             
             action_server_ = rclcpp_action::create_server<ComputeGoalAction>(
                 this,
                 action_topic,
-                std::bind(&FrontEmptyActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
-                std::bind(&FrontEmptyActionServer::handle_cancel, this, std::placeholders::_1),
-                std::bind(&FrontEmptyActionServer::handle_accepted, this, std::placeholders::_1)
+                std::bind(&ComputeGoalHeadlandDriveActionServer::handle_goal, this, std::placeholders::_1, std::placeholders::_2),
+                std::bind(&ComputeGoalHeadlandDriveActionServer::handle_cancel, this, std::placeholders::_1),
+                std::bind(&ComputeGoalHeadlandDriveActionServer::handle_accepted, this, std::placeholders::_1)
             );
         }
 
@@ -95,7 +95,7 @@ class FrontEmptyActionServer : public rclcpp::Node
 
         void handle_accepted(const std::shared_ptr<GoalHandleComputeGoalAction> goal_handle)
         {
-            std::thread{std::bind(&FrontEmptyActionServer::execute, this, std::placeholders::_1), goal_handle}.detach();
+            std::thread{std::bind(&ComputeGoalHeadlandDriveActionServer::execute, this, std::placeholders::_1), goal_handle}.detach();
         }
 
         void execute(const std::shared_ptr<GoalHandleComputeGoalAction> goal_handle)
@@ -135,7 +135,7 @@ class FrontEmptyActionServer : public rclcpp::Node
 int main(int argc, char const *argv[])
 {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<FrontEmptyActionServer>());
+    rclcpp::spin(std::make_shared<ComputeGoalHeadlandDriveActionServer>());
     rclcpp::shutdown();
     return 0;
 }
