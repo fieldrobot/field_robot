@@ -171,6 +171,34 @@ ament_target_dependencies(new_goal_computable_server
 rosidl_target_interfaces(new_goal_computable_server
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
+## COMPUTE GOAL LEAVING ROW ACTION SERVER
+add_executable(compute_goal_leaving_row_server
+  src/navigation/action_servers/action/compute_goal_leaving_row_server.cpp)
+
+ament_target_dependencies(compute_goal_leaving_row_server
+  rclcpp
+  rclcpp_action
+  tf2_ros
+  tf2_geometry_msgs)
+
+rosidl_target_interfaces(compute_goal_leaving_row_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+## COMPUTE GOAL IN ROW ACTION SERVER
+add_executable(compute_goal_in_row_server
+  src/navigation/action_servers/action/compute_goal_in_row_server.cpp)
+
+ament_target_dependencies(compute_goal_in_row_server
+  rclcpp
+  rclcpp_action
+  sensor_msgs
+  tf2_ros
+  tf2_geometry_msgs
+  PCL)
+
+rosidl_target_interfaces(compute_goal_in_row_server
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
 
