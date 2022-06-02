@@ -133,16 +133,16 @@ def generate_launch_description():
 
         # image path finder AI    
         front_ai,
-        back_ai,
-        left_ai,
-        right_ai,
+        #back_ai,
+        #left_ai,
+        #right_ai,
 
         # point cloud generator,
-        point_cloud_generator_front,
-        point_cloud_generator_back,
-        point_cloud_generator_left,
-        point_cloud_generator_right,
+        #point_cloud_generator_front,
+        #point_cloud_generator_back,
+        #point_cloud_generator_left,
+        #point_cloud_generator_right,
 
         # point cloud fusion,
-        point_cloud_fusion,
+        #point_cloud_fusion,
     ])
