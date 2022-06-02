@@ -64,5 +64,5 @@ def generate_launch_description():
         # nodes & launch files
         robot_state_publisher,
         odometry,
-        #sensor_processing,
+        sensor_processing,
     ])
