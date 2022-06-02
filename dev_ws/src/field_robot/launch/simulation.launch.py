@@ -21,7 +21,7 @@ def generate_launch_description():
     
     world = DeclareLaunchArgument(
         'world_path',
-        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'reduced.world')
+        default_value=os.path.join(get_package_share_directory('field_robot'), 'worlds', 'main.world')
     )
 
     urdf_path = os.path.join(get_package_share_directory('field_robot'), 'models', 'robot', 'robot.urdf')
@@ -67,13 +67,17 @@ def generate_launch_description():
         ]
     )
 
-    '''rviz = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output={'both': 'log'},
-        arguments=['-d', default_rviz_config_path],
-    )'''
+    operating_services = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'operating_services.launch.py')),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'world': LaunchConfiguration('world_path'),
+            'gui': LaunchConfiguration('gui'),
+            'pause': LaunchConfiguration('pause'),
+            'debug': LaunchConfiguration('debug'),
+            'verbose': LaunchConfiguration('debug'),
+        }.items(),
+    )
 
     return LaunchDescription([
         # General Parameters
@@ -88,7 +92,7 @@ def generate_launch_description():
 
         # actual launch
         gazebo,
-        #rviz,
         robot,
+        operating_services,
     ])
 

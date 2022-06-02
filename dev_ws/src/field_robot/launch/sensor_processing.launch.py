@@ -18,20 +18,6 @@ def generate_launch_description():
         default_value='true'
     )
 
-    ### DEMO CAMERA SOURCE
-    '''image_path = os.path.join(get_package_share_directory('field_robot'), 'config/test_files/camera_front_ai.png')
-    demo_camera_source = Node(
-        package='field_robot',
-        executable='demo_image_publisher.py',
-        namespace='robot/camera_front',
-        name='camera_demo',
-        parameters=[
-            {'image_src': image_path},
-            {'sub_topic': 'image_raw'},
-            {'image_dst' : 'image_ai'},
-        ]
-    )'''
-
     ### AI PROCESSING
     front_ai = Node(
         package='field_robot',
@@ -78,18 +64,6 @@ def generate_launch_description():
     )
 
     ### POINT CLOUD GENERATOR
-    '''point_cloud_generator_demo = Node(
-        package='field_robot',
-        executable='point_cloud_generator',
-        namespace='robot/demo_camera',
-        name='point_cloud_generator_demo',
-        parameters=[
-            {'image_src' : 'image_ai'},
-            {'pc_dst' : 'point_cloud'},
-            {'border_image' : 'border_img'},
-        ]
-    )'''
-
     point_cloud_generator_front = Node(
         package='field_robot',
         executable='point_cloud_generator',
@@ -170,5 +144,5 @@ def generate_launch_description():
         point_cloud_generator_right,
 
         # point cloud fusion,
-        #point_cloud_fusion,
+        point_cloud_fusion,
     ])

@@ -57,20 +57,6 @@ def generate_launch_description():
         }.items(),
     )
 
-    '''navigation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'navigation.launch.py')),
-        launch_arguments={
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-        }.items(),
-    )
-
-    mapping = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_share, 'launch', 'mapping.launch.py')),
-        launch_arguments={
-            'use_sim_time': LaunchConfiguration('use_sim_time'),
-        }.items(),
-    )'''
-
     return LaunchDescription([
         # parameters
         use_sim_time,
