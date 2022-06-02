@@ -53,7 +53,8 @@ class ImageAIPathFinder(Node):
         self.time = self.get_clock().now()
 
         # convert msg to tensor
-        cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
+        cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='mono8')
+        cvImage = cv2.resize(cvImage, (160, 120))
         image_array = numpy.asarray(cvImage)
         #self.get_logger().info(str(image_array.shape))
         image_array = numpy.expand_dims(image_array, 0)
@@ -74,6 +75,7 @@ class ImageAIPathFinder(Node):
 
         # publish result
         self.publisher.publish(after)
+        self.get_logger().info("Wir sind einfach gut!!!")
 
 def main(args=None):
     # Start node
