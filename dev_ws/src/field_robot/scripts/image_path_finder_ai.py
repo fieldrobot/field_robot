@@ -5,6 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 
 import rclpy
 from rclpy.node import Node
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy, QoSHistoryPolicy, QoSDurabilityPolicy
 
 from sensor_msgs.msg import Image
 
@@ -22,6 +23,13 @@ class ImageAIPathFinder(Node):
         self.declare_parameter('image_dst')
         
         # ros publisher & subscriber
+        qos_profile = QoSProfile(
+            depth=10,
+            history=QoSHistoryPolicy.RMW_QOS_POLICY_HISTORY_KEEP_LAST,
+            durability=QoSDurabilityPolicy.RMW_QOS_POLICY_DURABILITY_TRANSIENT_LOCAL,
+            reliability=QoSReliabilityPolicy.RMW_QOS_POLICY_RELIABILITY_RELIABLE
+        )
+        
         self.subscription = self.create_subscription(
             Image,
             (self.get_parameter('image_src').get_parameter_value().string_value),
@@ -30,7 +38,7 @@ class ImageAIPathFinder(Node):
         self.publisher = self.create_publisher(
             Image,
             (self.get_parameter('image_dst').get_parameter_value().string_value),
-            10)
+            qos_profile)
         self.subscription
 
         # openCV setup
