@@ -93,7 +93,7 @@ class CompletedLeavingRowActionServer : public rclcpp::Node
                 tf2::convert((tf_buffer_->lookupTransform(base_frame, robot_frame, rclcpp::Time(0, 0), tf2::durationFromSec(0.0))).transform.rotation, current);
                 relative = original_quaternion * current.inverse();
 
-                if (relative.getAngle() <= 1,0472)
+                if (relative.getAngle() <= 1.0472)
                 {
                     result->success = true;
                     goal_handle->succeed(result);
