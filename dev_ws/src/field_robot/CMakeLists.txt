@@ -187,7 +187,6 @@ ${PROJECT_NAME} "rosidl_typesupport_cpp")
 ## COMPUTE GOAL IN ROW ACTION SERVER
 add_executable(compute_goal_in_row_server
   src/navigation/action_servers/action/compute_goal_in_row_server.cpp)
-
 ament_target_dependencies(compute_goal_in_row_server
   rclcpp
   rclcpp_action
@@ -195,7 +194,6 @@ ament_target_dependencies(compute_goal_in_row_server
   tf2_ros
   tf2_geometry_msgs
   PCL)
-
 rosidl_target_interfaces(compute_goal_in_row_server
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
@@ -224,6 +222,13 @@ install(TARGETS
   point_cloud_generator
   point_cloud_fusion
   navigation_bt
+  front_empty_server
+  completed_leaving_row_server
+  publish_turn_information_server
+  new_goal_computable_server
+  compute_goal_leaving_row_server
+  compute_goal_in_row_server
+  compute_goal_headland_drive_server
   DESTINATION lib/${PROJECT_NAME}
 )
 
