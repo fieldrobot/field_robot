@@ -103,9 +103,9 @@ class PointCloudGenerator : public rclcpp::Node
             // DO BASIC IMAGE PROCESSING HERE
             RCLCPP_INFO(this->get_logger(), "doing basic image processing");
             // making the image black and white
-            opencv_image = opencv_image > 130;
-            cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)), cv::Point(-1, -1), 16);
-            cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)), cv::Point(-1, -1), 15);
+            opencv_image = opencv_image > 80;
+            cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4,4)), cv::Point(-1, -1), 16);
+            cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(4,4)), cv::Point(-1, -1), 15);
             /* This section should filter AI noise. However, during testing no noise needs to be considered.
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4);
             cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 16);
