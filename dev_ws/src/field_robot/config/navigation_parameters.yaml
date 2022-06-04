@@ -29,4 +29,5 @@ navigation_bt:
     - compute_goals
     - compute_based_goals
     - new_goal_computable
+    - store_turn_information
     tick_frequency_ms: 500
