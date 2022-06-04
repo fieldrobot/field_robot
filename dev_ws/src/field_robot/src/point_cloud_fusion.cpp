@@ -16,19 +16,19 @@ class PointCloudFusion : public rclcpp::Node
         {
             // getting parameters
             // point_cloud_src_1 topic
-            this->declare_parameter("pc_src_1", "/camera_one/point_cloud");
+            this->declare_parameter("pc_src_1", "camera_one/point_cloud");
             this->get_parameter("pc_src_1", pc_src_1_);
             // point_cloud_src_2 topic
-            this->declare_parameter("pc_src_2", "/camera_two/point_cloud");
+            this->declare_parameter("pc_src_2", "camera_two/point_cloud");
             this->get_parameter("pc_src_2", pc_src_2_);
             // point_cloud_src_3 topic
-            this->declare_parameter("pc_src_3", "/camera_three/point_cloud");
+            this->declare_parameter("pc_src_3", "camera_three/point_cloud");
             this->get_parameter("pc_src_3", pc_src_3_);
             // point_cloud_src_4 topic
-            this->declare_parameter("pc_src_4", "/camera_four/point_cloud");
+            this->declare_parameter("pc_src_4", "camera_four/point_cloud");
             this->get_parameter("pc_src_4", pc_src_4_);
             // point_cloud_dst topic
-            this->declare_parameter("pc_dst", "/point_cloud");
+            this->declare_parameter("pc_dst", "point_cloud");
             this->get_parameter("pc_dst", pc_dst_);
 
             // setting quos
