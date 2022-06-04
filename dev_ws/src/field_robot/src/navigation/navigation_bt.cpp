@@ -1,3 +1,8 @@
+#include <string>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "behaviortree_cpp_v3/behavior_tree.h"
@@ -10,8 +15,12 @@ class NavigationBT : public rclcpp::Node
     public:
         NavigationBT() : Node("navigation_bt")
         {
+
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
             
             RCLCPP_INFO(this->get_logger(), "starting navigation bt node");
+            std::cout << "DAS GOAL WURDE GESETZT (2) !!!" << std::endl;
 
             // getting parameters
             // xml file path
@@ -35,7 +44,7 @@ class NavigationBT : public rclcpp::Node
 
             blackboard_ = BT::Blackboard::create();
             blackboard_->set<rclcpp::Node::SharedPtr>("node", std::make_shared<rclcpp::Node>("bt_client_node"));
-            blackboard_->set<std::chrono::milliseconds>("server_timeout", std::chrono::milliseconds(20));
+            blackboard_->set<std::chrono::milliseconds>("server_timeout", std::chrono::milliseconds(200000000));
 
             tree = factory.createTreeFromFile(xml_file_path_, blackboard_);
 
@@ -48,7 +57,7 @@ class NavigationBT : public rclcpp::Node
         void timer_callback()
         {
             RCLCPP_INFO(this->get_logger(), "calling timer callback, ticking the tree");
-            //tree.tickRoot();
+            tree.tickRoot();
         }
 
         rclcpp::TimerBase::SharedPtr timer_;
