@@ -58,7 +58,7 @@ def generate_launch_description():
 
     ###### CUSTOM NAVIGATION ACTION SERVERS ######
     action_servers = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'navigation_server.launch.py')),
+        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'navigation_servers.launch.py')),
         launch_arguments={
         }.items(),
     )
@@ -68,7 +68,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'navigation_nav2.launch.py')),
         launch_arguments={
             'use_sim_time': LaunchConfiguration('use_sim_time'),
-            'world': LaunchConfiguration('namespace'),
+            #'world': LaunchConfiguration('namespace'),
         }.items(),
     )
 
@@ -79,7 +79,7 @@ def generate_launch_description():
         use_sim_time,
 
         ###### custom navigation action servers ######
-        #action_servers,
+        action_servers,
 
         ###### NAV2 ######
         nav2,
