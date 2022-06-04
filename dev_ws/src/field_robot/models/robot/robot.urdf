@@ -470,7 +470,7 @@
         <argument>joint_states:=joint_states</argument>
       </ros>
       <joint_name>wheel_lf_joint</joint_name>
-      <joint_name>wheel_lr_joint</joint_name>
+      <joint_name>wheel_lb_joint</joint_name>
       <joint_name>wheel_rf_joint</joint_name>
       <joint_name>wheel_rb_joint</joint_name>
     </plugin>
