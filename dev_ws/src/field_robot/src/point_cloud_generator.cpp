@@ -47,7 +47,7 @@ class PointCloudGenerator : public rclcpp::Node
             this->declare_parameter("pc_dst", "/point_cloud");
             this->get_parameter("pc_dst", pc_dst_);
             // bord_image topic
-            this->declare_parameter("test_img", "/test_image");
+            this->declare_parameter("test_img", "test_image");
             this->get_parameter("test_img", test_img_);
             // camera_info topic
             this->declare_parameter("camera_info", "/camera_info");
@@ -98,12 +98,14 @@ class PointCloudGenerator : public rclcpp::Node
             RCLCPP_INFO(this->get_logger(), "converting the image to opencv");
             cv_bridge::CvImagePtr cv_bridge_image = cv_bridge::toCvCopy(msg, msg->encoding);
             cv::Mat opencv_image = cv_bridge_image->image;
-            cv::cvtColor(opencv_image, opencv_image, cv::COLOR_BGR2GRAY);
+            //cv::cvtColor(opencv_image, opencv_image, cv::COLOR_BGR2GRAY);
 
             // DO BASIC IMAGE PROCESSING HERE
             RCLCPP_INFO(this->get_logger(), "doing basic image processing");
             // making the image black and white
-            opencv_image = opencv_image > 180;
+            opencv_image = opencv_image > 130;
+            cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)), cv::Point(-1, -1), 16);
+            cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)), cv::Point(-1, -1), 15);
             /* This section should filter AI noise. However, during testing no noise needs to be considered.
             cv::erode(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 4);
             cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5)), cv::Point(-1, -1), 16);
@@ -188,7 +190,7 @@ class PointCloudGenerator : public rclcpp::Node
                     RCLCPP_INFO(this->get_logger(), "point to high");
                     break;
                 }
-                RCLCPP_INFO(this->get_logger(), "Factor: %f", factor);
+                //RCLCPP_INFO(this->get_logger(), "Factor: %f", factor);
                 ground_points[i].point.x = (points_camera_frame[i].vector.x * -factor)+transform.transform.translation.x;
                 ground_points[i].point.y = (points_camera_frame[i].vector.y * -factor)+transform.transform.translation.y;
                 ground_points[i].point.z = (points_camera_frame[i].vector.z * factor)-transform.transform.translation.z;
