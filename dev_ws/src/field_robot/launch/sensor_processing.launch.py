@@ -123,7 +123,7 @@ def generate_launch_description():
             {'pc_src_2' : 'camera_back/pc'},
             {'pc_src_3' : 'camera_left/pc'},
             {'pc_src_4' : 'camera_right/pc'},
-            {'pc_dst_5' : 'demo_camera/pc'},
+            #{'pc_dst_5' : 'demo_camera/pc'},
             {'dst_pc': 'pc'},
         ]
     )
@@ -144,5 +144,5 @@ def generate_launch_description():
         point_cloud_generator_right,
 
         # point cloud fusion,
-        #point_cloud_fusion,
+        point_cloud_fusion,
     ])
