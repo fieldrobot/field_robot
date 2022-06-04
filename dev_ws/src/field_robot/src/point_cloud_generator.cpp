@@ -29,6 +29,9 @@
 #include <pcl/common/distances.h>
 #include <pcl/impl/point_types.hpp>
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
 
 class PointCloudGenerator : public rclcpp::Node
 {
@@ -199,7 +202,8 @@ class PointCloudGenerator : public rclcpp::Node
 
             // creating pcl cloud
             //RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
-            pcl::PointCloud<pcl::PointXYZ> cloud;
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>());;
+            pcl::PointCloud<pcl::PointXYZ> filtered;
             for (int i = 0; i < amount_of_blobs; i++)
             {
                 pcl::PointXYZ point = pcl::PointXYZ(ground_points[i].point.x, ground_points[i].point.y, ground_points[i].point.z);
@@ -210,13 +214,18 @@ class PointCloudGenerator : public rclcpp::Node
                 //pcl::PointXYZ point = pcl::PointXYZ(vec.vector.x, vec.vector.y, vec.vector.z);
                 //blob_points.pop_front();
                 
-                cloud.push_back(point);
+                cloud->push_back(point);
             }
 
             // creating pc2
             //RCLCPP_INFO(this->get_logger(), "creating pc2");
             sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
-            pcl::toROSMsg(cloud, pc2_msg);
+            //cloud downsmampling
+            pcl::VoxelGrid<pcl::PointXYZ> sor;
+            sor.setInputCloud(cloud);
+            sor.setLeafSize (0.2f, 0.2f, 0.2f);
+            sor.filter(filtered);
+            pcl::toROSMsg(filtered, pc2_msg);
             pc2_msg.header.frame_id = base_frame_;
             //pc2_msg.header.frame_id = msg->header.frame_id;
             // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
