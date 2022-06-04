@@ -17,7 +17,8 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from nav2_common.launch import RewrittenYaml
@@ -37,8 +38,6 @@ def generate_launch_description():
             'use_sim_time', default_value='true',
             description='Use simulation (Gazebo) clock if true')
 
-    ###### CUSTOM NAVIGATION ACTION SERVERS ######
-
     ###### NAVIGATION BEHAVIOR TREE ######
 
     navigation_bt_params = RewrittenYaml(
@@ -57,102 +56,33 @@ def generate_launch_description():
         parameters=[navigation_bt_params],
     )
 
+    ###### CUSTOM NAVIGATION ACTION SERVERS ######
+    action_servers = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'navigation_server.launch.py')),
+        launch_arguments={
+        }.items(),
+    )
+
     ###### NAV2 CONFIGURATION ######
-
-    remappings = [('/robot/tf', '/tf'),
-                  ('/robot/tf_static', '/tf_static')]
-    
-    nav2_autostart = DeclareLaunchArgument(
-            'autostart', default_value='true',
-            description='Automatically startup the nav2 stack')
-    
-    nav2_params_file = DeclareLaunchArgument(
-            'params_file',
-            default_value=os.path.join(get_package_share_directory('field_robot'), 'config', 'nav2_parameters.yaml'),
-            description='Full path to the ROS2 parameters file to use')
-    
-    nav2_bt_file = DeclareLaunchArgument(
-            'default_bt_xml_filename',
-            default_value=os.path.join(get_package_share_directory('field_robot'), "config", 'nav2_bt_config.xml'),
-            description='Full path to the behavior tree xml file to use')
-    
-    nav2_transient_local = DeclareLaunchArgument(
-            'map_subscribe_transient_local', default_value='false',
-            description='Whether to set the map subscriber QoS to transient local')
-
-    # Create our own temporary YAML files that include substitutions
-    param_substitutions = {
-        'use_sim_time': LaunchConfiguration('use_sim_time'),
-        'default_bt_xml_filename': default_bt_xml_filename,
-        'autostart': autostart,
-        'map_subscribe_transient_local': map_subscribe_transient_local}
-
-    configured_params = RewrittenYaml(
-            source_file=LaunchConfiguration('params_file'),
-            root_key=LaunchConfiguration('namespace'),
-            param_rewrites=param_substitutions,
-            convert_types=True)
-    
-    ###### NAV2 DRIVE NODES ######
-
-    nav2_lifecycle_manager = Node(
-            package='nav2_lifecycle_manager',
-            executable='lifecycle_manager',
-            name='lifecycle_manager_navigation',
-            output='screen',
-            parameters=[{'use_sim_time': LaunchConfiguration('use_sim_time')},
-                        {'autostart': autostart},
-                        {'node_names': [
-                            'controller_server',
-                            'planner_server',
-                            'recoveries_server'
-                        ]}],
-            remappings=remappings,
-            namespace=LaunchConfiguration('namespace'))
-    nav2_controller = Node(
-            package='nav2_controller',
-            executable='controller_server',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings,
-            namespace=LaunchConfiguration('namespace'))
-    nav2_planner = Node(
-            package='nav2_planner',
-            executable='planner_server',
-            name='planner_server',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings,
-            namespace=LaunchConfiguration('namespace'))
-    nav2_recoveries = Node(
-            package='nav2_recoveries',
-            executable='recoveries_server',
-            name='recoveries_server',
-            output='screen',
-            parameters=[configured_params],
-            remappings=remappings,
-            namespace=LaunchConfiguration('namespace'))
+    nav2 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(get_package_share_directory('field_robot'), 'launch', 'navigation_nav2.launch.py')),
+        launch_arguments={
+            'use_sim_time': LaunchConfiguration('use_sim_time'),
+            'world': LaunchConfiguration('namespace'),
+        }.items(),
+    )
 
 
     return LaunchDescription([
-        # Set env var to print messages to stdout immediately
-        SetEnvironmentVariable('RCUTILS_LOGGING_BUFFERED_STREAM', '1'),
-
         ###### general configuration ######
         namespace,
         use_sim_time,
 
-        ###### nav2 configuration ######
-        #nav2_autostart,
-        #nav2_params_file,
-                #nav2_bt_file,
-        #nav2_transient_local,
+        ###### custom navigation action servers ######
+        #action_servers,
 
-        ###### nav2 nodes ######
-        #nav2_controller,
-        #nav2_planner,
-        #nav2_recoveries,
-        #nav2_lifecycle_manager,
+        ###### NAV2 ######
+        nav2,
 
         ###### navigation behavior tree ######
         behavior_tree,
