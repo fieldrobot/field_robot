@@ -1,5 +1,15 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
+    <!--<PipelineSequence>-->
+      <ComputeGoalInRow goal="{goal}"/>
+      <!--<ComputePathToPose goal="{goal}" path="{path}"/>
+      <FollowPath path="{path}"/>-->
+    <!--</PipelineSequence>-->
+  </BehaviorTree>
+</root>
+<!--
+<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
     <ContinuousSequence>
       <Fallback name="in_row">
         <FrontEmpty/>
@@ -33,3 +43,4 @@
     </ContinuousSequence>
   </BehaviorTree>
 </root>
+-->
