@@ -148,12 +148,12 @@
 #       IMU
 #       IMU
 
-        #imu0: imu/out
-        #imu0_config: [true, true, false,
-        #              true, true, false,
-        #              true, true, false,
-        #              true, true, false,
-        #              true, true, false]
+        imu0: imu/out
+        imu0_config: [true, true, false,
+                      true, true, false,
+                      true, true, false,
+                      true, true, false,
+                      true, true, false]
 
         #        [x_pos   , y_pos    , z_pos,
         #         roll    , pitch    , yaw,
