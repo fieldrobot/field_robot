@@ -56,15 +56,15 @@ class ImageAIPathFinder(Node):
 
     def image_callback(self, msg):
         # prints
-        self.get_logger().info("image callback called")
-        self.get_logger().info(str(((self.get_clock().now() - self.time).nanoseconds) / 1000000000))
+        #self.get_logger().info("image callback called")
+        #self.get_logger().info(str(((self.get_clock().now() - self.time).nanoseconds) / 1000000000))
         self.time = self.get_clock().now()
 
         # convert msg to tensor
         cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
         cvImage = cv2.resize(cvImage, (160, 120))
         image_array = numpy.asarray(cvImage)
-        self.get_logger().info("SHAPE::::::::      " + str(image_array.shape))
+        #self.get_logger().info("SHAPE::::::::      " + str(image_array.shape))
         image_array = numpy.expand_dims(image_array, 0)
         image_array = image_array/255.
         #self.get_logger().info(str(numpy.amax(image_array)))
@@ -84,7 +84,7 @@ class ImageAIPathFinder(Node):
 
         # publish result
         self.publisher.publish(after)
-        self.get_logger().info("Wir sind einfach gut!!!")
+        #self.get_logger().info("Wir sind einfach gut!!!")
 
 def main(args=None):
     # Start node
