@@ -3,3 +3,4 @@ dev_ws/install/
 dev_ws/log/
 *.DS_Store
 *.env
+dev_ws/src/virtual_maize_field/
