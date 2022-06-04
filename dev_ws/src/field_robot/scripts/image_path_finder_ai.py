@@ -61,10 +61,10 @@ class ImageAIPathFinder(Node):
         self.time = self.get_clock().now()
 
         # convert msg to tensor
-        cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='mono8')
+        cvImage = self.bridge.imgmsg_to_cv2(msg, desired_encoding='rgb8')
         cvImage = cv2.resize(cvImage, (160, 120))
         image_array = numpy.asarray(cvImage)
-        #self.get_logger().info(str(image_array.shape))
+        self.get_logger().info("SHAPE::::::::      " + str(image_array.shape))
         image_array = numpy.expand_dims(image_array, 0)
         image_array = image_array/255.
         #self.get_logger().info(str(numpy.amax(image_array)))
@@ -76,6 +76,7 @@ class ImageAIPathFinder(Node):
         predictionO = (prediction[0]*255.).astype(numpy.uint8)
         #self.get_logger().info("prediction0 shape" + str(predictionO.shape))
         #self.get_logger().info("prediction0" + str(predictionO))
+        predictionO = cv2.resize(predictionO, (640, 480))
 
         # convert result to msg
         after = self.bridge.cv2_to_imgmsg(predictionO, encoding='mono8')
