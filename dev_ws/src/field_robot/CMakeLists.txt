@@ -251,6 +251,8 @@ target_compile_definitions(continuous_sequence PRIVATE  BT_PLUGIN_EXPORT)
 ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
+rosidl_target_interfaces(continuous_sequence
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
 target_compile_definitions(simple_check_nodes PRIVATE  BT_PLUGIN_EXPORT)
@@ -258,6 +260,8 @@ ament_target_dependencies(simple_check_nodes
   behaviortree_cpp_v3
   nav2_behavior_tree)
 list(APPEND plugin_libs simple_check_nodes)
+rosidl_target_interfaces(simple_check_nodes
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 add_library(compute_goals SHARED src/navigation/bt_plugins/action/compute_goals.cpp)
 target_compile_definitions(compute_goals PRIVATE  BT_PLUGIN_EXPORT)
@@ -266,6 +270,8 @@ ament_target_dependencies(compute_goals
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs compute_goals)
+rosidl_target_interfaces(compute_goals
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 add_library(compute_based_goals SHARED src/navigation/bt_plugins/action/compute_based_goals.cpp)
 target_compile_definitions(compute_based_goals PRIVATE  BT_PLUGIN_EXPORT)
@@ -274,6 +280,8 @@ ament_target_dependencies(compute_based_goals
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs compute_based_goals)
+rosidl_target_interfaces(compute_based_goals
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 add_library(new_goal_computable SHARED src/navigation/bt_plugins/condition/new_goal_computable_headland_drive_node.cpp)
 target_compile_definitions(new_goal_computable PRIVATE  BT_PLUGIN_EXPORT)
@@ -282,27 +290,24 @@ ament_target_dependencies(new_goal_computable
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs new_goal_computable)
+rosidl_target_interfaces(new_goal_computable
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+add_library(store_turn_information SHARED src/navigation/bt_plugins/action/store_turn_information_node.cpp)
+target_compile_definitions(store_turn_information PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(store_turn_information
+  behaviortree_cpp_v3
+  nav2_behavior_tree
+  geometry_msgs)
+list(APPEND plugin_libs store_turn_information)
+rosidl_target_interfaces(store_turn_information
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 install(TARGETS ${plugin_libs}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
-
-rosidl_target_interfaces(compute_goals
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
-rosidl_target_interfaces(simple_check_nodes
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
-rosidl_target_interfaces(new_goal_computable
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
-rosidl_target_interfaces(compute_based_goals
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
-
-  rosidl_target_interfaces(new_goal_computable
-    ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 ############### ADDITIONAL FILES ###############
 
