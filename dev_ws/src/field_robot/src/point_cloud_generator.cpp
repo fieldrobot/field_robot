@@ -91,17 +91,17 @@ class PointCloudGenerator : public rclcpp::Node
         // this is the image callback which does the acutal reversed projection and point cloud generation
         void image_callback(const sensor_msgs::msg::Image::SharedPtr msg) const
         {
-            RCLCPP_INFO(this->get_logger(), "calling image callback");
+            //RCLCPP_INFO(this->get_logger(), "calling image callback");
             
             
             // CONVERTING IMAGE TO OPENCV FORMAT
-            RCLCPP_INFO(this->get_logger(), "converting the image to opencv");
+            //RCLCPP_INFO(this->get_logger(), "converting the image to opencv");
             cv_bridge::CvImagePtr cv_bridge_image = cv_bridge::toCvCopy(msg, msg->encoding);
             cv::Mat opencv_image = cv_bridge_image->image;
             //cv::cvtColor(opencv_image, opencv_image, cv::COLOR_BGR2GRAY);
 
             // DO BASIC IMAGE PROCESSING HERE
-            RCLCPP_INFO(this->get_logger(), "doing basic image processing");
+            //RCLCPP_INFO(this->get_logger(), "doing basic image processing");
             // making the image black and white
             opencv_image = opencv_image > 100;
             cv::dilate(opencv_image, opencv_image, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3,3)), cv::Point(-1, -1), 16);
@@ -113,13 +113,13 @@ class PointCloudGenerator : public rclcpp::Node
             */
 
             // RUN EDGE DETECTION
-            RCLCPP_INFO(this->get_logger(), "running edge detection");
+            //RCLCPP_INFO(this->get_logger(), "running edge detection");
             // the sobel algorithm anables one-axis edge detection and seems to run more reliably than the canny algorithm
             cv::Sobel(opencv_image, opencv_image, CV_8U, 0, 1, 3);
             //cv::Canny(opencv_image, save, 50, 150, 3, false);
 
             // PUBLISH BORDER IMAGE
-            RCLCPP_INFO(this->get_logger(), "publishing border image");
+            //RCLCPP_INFO(this->get_logger(), "publishing border image");
             // setting the border image in the opencv to to ros converter
             cv_bridge_image->image = opencv_image;
             // converting the image to ros format
@@ -130,7 +130,7 @@ class PointCloudGenerator : public rclcpp::Node
             border_image_publisher_->publish(border_image_msg);
 
             // IDENTIFY BLOBS
-            RCLCPP_INFO(this->get_logger(), "identifying blobs");
+            //RCLCPP_INFO(this->get_logger(), "identifying blobs");
             // creating a list in which the image points will be stored
             std::list<cv::Point> blob_points;
             // filter the black and white image to only consider white pixels
@@ -144,10 +144,10 @@ class PointCloudGenerator : public rclcpp::Node
             }
             // defining the amount of points to be considered from now on
             int amount_of_blobs = blob_points.size();
-            RCLCPP_INFO(this->get_logger(), "Found %d blobs", amount_of_blobs);
+            //RCLCPP_INFO(this->get_logger(), "Found %d blobs", amount_of_blobs);
             
             // TRANSFORM BLOBS TO POINTS & CHANGING REFERENCE FRAME
-            RCLCPP_INFO(this->get_logger(), "transforming blobs to points and changing reference frame");
+            //RCLCPP_INFO(this->get_logger(), "transforming blobs to points and changing reference frame");
             geometry_msgs::msg::Vector3Stamped points_camera_frame[amount_of_blobs];
             for (int i = 0; i < amount_of_blobs; i++)
             {
@@ -165,7 +165,7 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             // FIND GROUND POINTS IN CAMERA FRAME
-            RCLCPP_INFO(this->get_logger(), "finding ground points in camera frame");
+            //RCLCPP_INFO(this->get_logger(), "finding ground points in camera frame");
             geometry_msgs::msg::PointStamped ground_points[amount_of_blobs];
             geometry_msgs::msg::TransformStamped transform;
             try
@@ -179,7 +179,7 @@ class PointCloudGenerator : public rclcpp::Node
                 return;
             }
             
-            RCLCPP_INFO(this->get_logger(), "Hier: %d", sizeof(points_camera_frame));
+            //RCLCPP_INFO(this->get_logger(), "Hier: %d", sizeof(points_camera_frame));
             for (int i = 0; i < amount_of_blobs; i++)
             {
                 //RCLCPP_INFO(this->get_logger(), "nun: %d", i);
@@ -187,7 +187,7 @@ class PointCloudGenerator : public rclcpp::Node
                 float_t factor = (transform.transform.translation.z/(points_camera_frame[i].vector.z));
                 if (factor >= 0.0)
                 {
-                    RCLCPP_INFO(this->get_logger(), "point to high");
+                    //RCLCPP_INFO(this->get_logger(), "point to high");
                     break;
                 }
                 //RCLCPP_INFO(this->get_logger(), "Factor: %f", factor);
@@ -198,7 +198,7 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             // creating pcl cloud
-            RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
+            //RCLCPP_INFO(this->get_logger(), "creating pcl cloud");
             pcl::PointCloud<pcl::PointXYZ> cloud;
             for (int i = 0; i < amount_of_blobs; i++)
             {
@@ -214,7 +214,7 @@ class PointCloudGenerator : public rclcpp::Node
             }
 
             // creating pc2
-            RCLCPP_INFO(this->get_logger(), "creating pc2");
+            //RCLCPP_INFO(this->get_logger(), "creating pc2");
             sensor_msgs::msg::PointCloud2 pc2_msg = sensor_msgs::msg::PointCloud2();
             pcl::toROSMsg(cloud, pc2_msg);
             pc2_msg.header.frame_id = base_frame_;
@@ -225,14 +225,14 @@ class PointCloudGenerator : public rclcpp::Node
             // https://pointclouds.org/documentation/classpcl_1_1_point_cloud.html
 
             // publish pc2
-            RCLCPP_INFO(this->get_logger(), "publishing pointcloud2");
+            //RCLCPP_INFO(this->get_logger(), "publishing pointcloud2");
             pc_publisher_->publish(pc2_msg);
             
             //geometry_msgs::msg::TransformStamped transformStamped = getTransform();
             
 
 
-            RCLCPP_INFO(this->get_logger(), "Finished image callback");
+            //RCLCPP_INFO(this->get_logger(), "Finished image callback");
 
         }
 
