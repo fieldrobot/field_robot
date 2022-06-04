@@ -22,6 +22,8 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
         ComputeGoalInRowActionServer() : Node("compute_goal_in_row_action_server")
         {
 
+            RCLCPP_INFO(this->get_logger(), "running constructor of compute goal in row action server");
+
             this->declare_parameter("action_topic", "front_empty");
             this->get_parameter("action_topic", action_topic);
             this->declare_parameter("front_cloud_topic", "front_cloud");
@@ -34,7 +36,7 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
             qos.best_effort();
             qos.durability_volatile();
-            qos.lifespan(rclcpp::Duration(1, 0));
+            //qos.lifespan(rclcpp::Duration(1, 0));
 
             subscription_front_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
                 front_cloud_topic,
@@ -100,6 +102,8 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
 
         void execute(const std::shared_ptr<GoalHandleComputeGoalAction> goal_handle)
         {
+            RCLCPP_INFO(this->get_logger(), "compute goal in row action server is executing");
+            
             auto result = std::make_shared<ComputeGoalAction::Result>();
 
             //hier
@@ -114,9 +118,11 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             pcl::compute3DCentroid(point_cloud_front_, controid_front);
             pcl::compute3DCentroid(point_cloud_back_, controid_back);
 
+            RCLCPP_INFO(this->get_logger(), "compute goal in row action server: centroids computed");
+
             result->pose.pose.position.x = (controid_front[0] + (-1 * controid_back[0]))/2;
             result->pose.pose.position.y = (controid_front[1] + (-1 * controid_back[1]))/2;
-            result->pose.pose.position.z = (controid_front[2] + (-1 * controid_back[2]))/2;
+            result->pose.pose.position.z = 0.0;//(controid_front[2] + (-1 * controid_back[2]))/2;
             result->pose.pose.orientation.x = 0;
             result->pose.pose.orientation.y = 0;
             result->pose.pose.orientation.z = 0;
@@ -124,7 +130,10 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             result->pose.header.frame_id = robot_frame;
             result->pose.header.stamp = this->get_clock()->now();
 
+            RCLCPP_INFO(this->get_logger(), "compute goal in row action server: stored in result");
+
             goal_handle->succeed(result);
+            RCLCPP_INFO(this->get_logger(), "succeeded");
             return;
 
             while(!goal_handle->is_canceling()) {}
