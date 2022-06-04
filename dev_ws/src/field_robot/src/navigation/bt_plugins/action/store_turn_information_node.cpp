@@ -27,7 +27,7 @@ class StoreTurnInformation : public nav2_behavior_tree::BtActionNode<field_robot
         static BT::PortsList providedPorts()
         {
           return providedBasicPorts({
-            BT::OutputPort<int8>("remaining_rows"),
+            BT::OutputPort<int>("remaining_rows"),
             BT::OutputPort<geometry_msgs::msg::PoseStamped>("last_ron_pose"),
             BT::OutputPort<bool>("turn_direction"),
           });
