@@ -28,6 +28,8 @@ def generate_launch_description():
     autostart = LaunchConfiguration('autostart')
     default_bt_xml_filename = LaunchConfiguration('default_bt_xml_filename')
     map_subscribe_transient_local = LaunchConfiguration('map_subscribe_transient_local')
+    remappings = [('/robot/tf', '/tf'),
+                  ('/robot/tf_static', '/tf_static')]
 
     ###### GENERAL PARAMETERS ######
 
@@ -53,6 +55,7 @@ def generate_launch_description():
         executable='navigation_bt',
         namespace='robot',
         name='navigation_bt',
+        remappings=remappings,
         parameters=[navigation_bt_params],
     )
 
