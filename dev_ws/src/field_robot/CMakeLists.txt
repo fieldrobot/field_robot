@@ -247,6 +247,8 @@ install(PROGRAMS
   scripts/robot_spawner.py
   scripts/demo_image_publisher.py
   scripts/image_path_finder_ai.py
+  scripts/AI_data_generator.py
+  scripts/teleop.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
