@@ -10,6 +10,10 @@
 #include "behaviortree_cpp_v3/xml_parsing.h"
 #include "behaviortree_cpp_v3/utils/shared_library.h"
 
+#include "tf2_ros/transform_listener.h"
+#include "tf2_ros/create_timer_ros.h"
+#include <tf2_ros/buffer.h>
+
 class NavigationBT : public rclcpp::Node
 {
     public:
@@ -42,9 +46,27 @@ class NavigationBT : public rclcpp::Node
 
             RCLCPP_INFO(this->get_logger(), "loading the behavior tree from xml file");
 
+
+            std::shared_ptr<tf2_ros::Buffer> tf_;
+            std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+
+            /*tf_ = std::make_shared<tf2_ros::Buffer>(get_clock());
+            auto timer_interface = std::make_shared<tf2_ros::CreateTimerROS>(
+                get_node_base_interface(), get_node_timers_interface());
+            tf_->setCreateTimerInterface(timer_interface);
+            tf_->setUsingDedicatedThread(true);
+            tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_, this, false);
+
+            tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+            transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+            try {
+                auto hi = tf_buffer_->lookupTransform("odom", "base_footprint", rclcpp::Time(0, 0), tf2::durationFromSec(5.0));
+            } catch(const std::exception& e) {}*/
+
             blackboard_ = BT::Blackboard::create();
             blackboard_->set<rclcpp::Node::SharedPtr>("node", std::make_shared<rclcpp::Node>("bt_client_node"));
-            blackboard_->set<std::chrono::milliseconds>("server_timeout", std::chrono::milliseconds(200000000));
+            blackboard_->set<std::chrono::milliseconds>("server_timeout", std::chrono::milliseconds(1000));
+            //blackboard_->set<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer", tf_buffer_);
 
             tree = factory.createTreeFromFile(xml_file_path_, blackboard_);
 
@@ -54,6 +76,9 @@ class NavigationBT : public rclcpp::Node
         }
     
     private:
+        /*std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
+        std::shared_ptr<tf2_ros::Buffer> tf_buffer_;*/
+
         void timer_callback()
         {
             RCLCPP_INFO(this->get_logger(), "calling timer callback, ticking the tree");
