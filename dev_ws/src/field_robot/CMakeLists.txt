@@ -113,6 +113,7 @@ add_executable(navigation_bt
 
 ament_target_dependencies(navigation_bt
   rclcpp
+  tf2_ros
   behaviortree_cpp_v3)
 
 rosidl_target_interfaces(navigation_bt
@@ -191,6 +192,7 @@ ament_target_dependencies(compute_goal_in_row_server
   rclcpp
   rclcpp_action
   sensor_msgs
+  geometry_msgs
   tf2_ros
   tf2_geometry_msgs
   PCL)
