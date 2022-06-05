@@ -6,11 +6,20 @@
 #include <pcl/impl/point_types.hpp>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/common/centroid.h>
+#include <pcl/point_types.h>
+#include <pcl/filters/passthrough.h>
 
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
+#include <tf2/exceptions.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 #include "sensor_msgs/msg/point_cloud2.hpp"
+#include "geometry_msgs/msg/pose_stamped.hpp"
+#include "geometry_msgs/msg/transform_stamped.hpp"
 #include "field_robot/action/compute_goal_action.hpp"
 
 class ComputeGoalInRowActionServer : public rclcpp::Node
@@ -33,6 +42,9 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             this->declare_parameter("robot_frame", "base_footprint");
             this->get_parameter("robot_frame", robot_frame);
 
+            tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+            transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
             auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
             qos.best_effort();
             qos.durability_volatile();
@@ -50,6 +62,11 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
                 std::bind(&ComputeGoalInRowActionServer::topic_back_callback, this, std::placeholders::_1)
             );
             
+            publisher_ = this->create_publisher<geometry_msgs::msg::PoseStamped>(
+                "/goal_pose",
+                qos
+            );
+
             action_server_ = rclcpp_action::create_server<ComputeGoalAction>(
                 this,
                 action_topic,
@@ -63,6 +80,7 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
         rclcpp_action::Server<ComputeGoalAction>::SharedPtr action_server_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_front_;
         rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr subscription_back_;
+        rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr publisher_;
 
 
         std::string action_topic;
@@ -72,6 +90,9 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
 
         sensor_msgs::msg::PointCloud2 cloud_front_;
         sensor_msgs::msg::PointCloud2 cloud_back_;
+
+        std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
+        std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
 
         void topic_front_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
@@ -107,28 +128,54 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             auto result = std::make_shared<ComputeGoalAction::Result>();
 
             //hier
-            pcl::PointCloud<pcl::PointXYZ> point_cloud_front_;
-            pcl::PointCloud<pcl::PointXYZ> point_cloud_back_;
-            pcl::fromROSMsg(cloud_front_, point_cloud_front_);
-            pcl::fromROSMsg(cloud_back_, point_cloud_back_);
+            pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_front_ (new pcl::PointCloud<pcl::PointXYZ>);
+            pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_front_filtered_ (new pcl::PointCloud<pcl::PointXYZ>);
+            //pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_back_, point_cloud_back_filtered_;
+            pcl::fromROSMsg(cloud_front_, *point_cloud_front_);
+            //pcl::fromROSMsg(cloud_back_, *point_cloud_back_);
+
+            //filtering front
+            pcl::PassThrough<pcl::PointXYZ> pass;
+            pass.setInputCloud(point_cloud_front_);
+            pass.setFilterFieldName ("y");
+            pass.setFilterLimits (-0.6, 0.6);
+            pass.filter (*point_cloud_front_filtered_);
 
             Eigen::Vector4f controid_front;
-            Eigen::Vector4f controid_back;
+            //Eigen::Vector4f controid_back;
 
-            pcl::compute3DCentroid(point_cloud_front_, controid_front);
-            pcl::compute3DCentroid(point_cloud_back_, controid_back);
+            pcl::compute3DCentroid(*point_cloud_front_filtered_, controid_front);
+            //pcl::compute3DCentroid(*point_cloud_back_filtered_, controid_back);
 
             RCLCPP_INFO(this->get_logger(), "compute goal in row action server: centroids computed");
 
-            result->pose.pose.position.x = (controid_front[0] + (-1 * controid_back[0]))/2;
-            result->pose.pose.position.y = (controid_front[1] + (-1 * controid_back[1]))/2;
-            result->pose.pose.position.z = 0.0;//(controid_front[2] + (-1 * controid_back[2]))/2;
-            result->pose.pose.orientation.x = 0;
-            result->pose.pose.orientation.y = 0;
-            result->pose.pose.orientation.z = 0;
-            result->pose.pose.orientation.w = 1;
-            result->pose.header.frame_id = robot_frame;
-            result->pose.header.stamp = this->get_clock()->now();
+            geometry_msgs::msg::PoseStamped po;// = geometry_msgs::msg::PoseStamped();
+            geometry_msgs::msg::PoseStamped poa;// = geometry_msgs::msg::PoseStamped();
+            po.pose.position.x = controid_front[0];//(controid_front[0] + (-1 * controid_back[0]))/2;
+            po.pose.position.y = controid_front[1];//(controid_front[1] + (-1 * controid_back[1]))/2;
+            po.pose.position.z = 0.0;//(controid_front[2] + (-1 * controid_back[2]))/2;
+            po.pose.orientation.x = 0;
+            po.pose.orientation.y = 0;
+            po.pose.orientation.z = 0;
+            po.pose.orientation.w = 1;
+            po.header.frame_id = robot_frame;
+            po.header.stamp = cloud_front_.header.stamp;
+
+            geometry_msgs::msg::TransformStamped transform = tf_buffer_->lookupTransform("odom", "base_footprint", rclcpp::Time(0, 0), rclcpp::Duration(1, 0));
+            tf2::doTransform(po, po, transform);
+
+            /*try
+            {
+                tf_buffer_->transform<geometry_msgs::msg::PoseStamped>(po, poa, "odom", tf2::durationFromSec(2.0));
+            }
+            catch(const std::exception& e)
+            {
+                RCLCPP_INFO(this->get_logger(), "Could not transform !!!");
+                //return;
+            }*/
+
+            result->pose = po;
+            publisher_->publish(po);
 
             RCLCPP_INFO(this->get_logger(), "compute goal in row action server: stored in result");
 
