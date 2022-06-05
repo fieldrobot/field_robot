@@ -1,10 +1,16 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
-    <!--<PipelineSequence>-->
-      <ComputeGoalInRow goal="{goal}"/>
-      <!--<ComputePathToPose goal="{goal}" path="{path}"/>
-      <FollowPath path="{path}"/>-->
-    <!--</PipelineSequence>-->
+    <PipelineSequence>
+      <RateController hz="10.0">
+        <SequenceStar>
+          <ComputeGoalInRow goal="{goal}"/>
+          <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+            <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
+          </GoalUpdater>
+        </SequenceStar>
+      </RateController>
+      <FollowPath path="{path}"/>
+    </PipelineSequence>
   </BehaviorTree>
 </root>
 <!--
