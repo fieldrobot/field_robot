@@ -1,6 +1,7 @@
 navigation_bt:
   ros__parameters:
-    xml_file_path: "adöfjalsdfjaslf"
+    use_sim_time: true
+    xml_file_path: "rewritten in launch file"
     plugin_lib_names:
     - nav2_compute_path_to_pose_action_bt_node
     - nav2_follow_path_action_bt_node
@@ -30,4 +31,4 @@ navigation_bt:
     - compute_based_goals
     - new_goal_computable
     - store_turn_information
-    tick_frequency_ms: 500
+    tick_frequency_ms: 50
