@@ -25,6 +25,9 @@ from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
+    remappings = [('/robot/tf', '/tf'),
+                  ('/robot/tf_static', '/tf_static')]
+
     ###### GENERAL PARAMETERS ######
     namespace = DeclareLaunchArgument(
             'namespace', default_value='/robot',
@@ -39,6 +42,7 @@ def generate_launch_description():
         executable='compute_goal_in_row_server',
         namespace='robot',
         name='compute_goal_in_row_server',
+        remappings=remappings,
         parameters=[
             {'action_topic': 'navigation/compute_goal_in_row'},
             {'front_cloud_topic': 'camera_front/pc'},
