@@ -34,9 +34,9 @@ def main():
     request.robot_namespace = 'robot'
     pose = Pose()
     position = Point()
-    position.x = -4.713934
-    position.y = -6.547766
-    position.z = 0.3
+    position.x = -0.658723
+    position.y = 0.817456
+    position.z = 0.264861
     orientation = Quaternion()
     orientation.x = 0.0
     orientation.y = 0.0
