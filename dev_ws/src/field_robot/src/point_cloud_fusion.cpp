@@ -1,6 +1,7 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+//#include <time.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/point_cloud2.hpp"
@@ -62,31 +63,39 @@ class PointCloudFusion : public rclcpp::Node
 
             pcl::toROSMsg(fin, fused_point_cloud);
             fused_point_cloud.header.frame_id = frame_;
+            fused_point_cloud.header.stamp = tim;
 
             point_cloud_publisher_->publish(fused_point_cloud);
         }
 
         void point_cloud_one_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
+            tim = msg->header.stamp;
             pcl::fromROSMsg(*msg, point_cloud_one_);
             frame_ = msg->header.frame_id;
         }
 
         void point_cloud_two_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
+            tim = msg->header.stamp;
             pcl::fromROSMsg(*msg, point_cloud_two_);
         }
 
         void point_cloud_three_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
+            tim = msg->header.stamp;
             pcl::fromROSMsg(*msg, point_cloud_three_);
         }
 
         void point_cloud_four_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
+            tim = msg->header.stamp;
             pcl::fromROSMsg(*msg, point_cloud_four_);
         }
 
+        //latest stamp
+        rclcpp::Time tim;
+        
         // frame
         std:: string frame_ = "base_footprint";
         

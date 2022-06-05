@@ -226,6 +226,7 @@ class PointCloudGenerator : public rclcpp::Node
             sor.setLeafSize (0.2f, 0.2f, 0.2f);
             sor.filter(filtered);
             pcl::toROSMsg(filtered, pc2_msg);
+            pc2_msg.header.stamp = msg->header.stamp;
             pc2_msg.header.frame_id = base_frame_;
             //pc2_msg.header.frame_id = msg->header.frame_id;
             // https://answers.ros.org/question/312587/generate-and-publish-pointcloud2-in-ros2/
