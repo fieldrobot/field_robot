@@ -126,6 +126,7 @@ add_executable(front_empty_server
 ament_target_dependencies(front_empty_server
   rclcpp
   rclcpp_action
+  PCL
   sensor_msgs)
 
 rosidl_target_interfaces(front_empty_server
