@@ -476,7 +476,7 @@
     </plugin>
 
     <plugin name="field_robot_diff_drive_controller" filename="libgazebo_ros_diff_drive.so">
-      <update_rate>100</update_rate>
+      <update_rate>50</update_rate>
 
       <ros>
         <namespace>robot</namespace>
@@ -503,8 +503,12 @@
       <left_joint>wheel_lb_joint</left_joint>
       <right_joint>wheel_rb_joint</right_joint>
 
-      <wheel_separation>0.31</wheel_separation>
-      <wheel_separation>0.32</wheel_separation>
+      <wheel_separation>0.475</wheel_separation>
+      <wheel_separation>0.5</wheel_separation>
+      <!--<wheel_separation>0.42</wheel_separation>
+      <wheel_separation>0.44</wheel_separation>-->
+      <!--<wheel_separation>0.31</wheel_separation>
+      <wheel_separation>0.32</wheel_separation>-->
 
       <wheel_diameter>0.24669</wheel_diameter>
       <wheel_diameter>0.24669</wheel_diameter>
