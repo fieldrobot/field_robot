@@ -51,6 +51,19 @@ def generate_launch_description():
         ],
     )
 
+    front_empty_server = Node(
+        package='field_robot',
+        executable='front_empty_server',
+        namespace='robot',
+        name='front_empty_server',
+        remappings=remappings,
+        parameters=[
+            {'action_topic': 'navigation/front_empty'},
+            {'left_cloud_topic': 'camera_left/pc'},
+            {'right_cloud_topic': 'camera_right/pc'},
+        ],
+    )
+
 
     return LaunchDescription([
         ###### general configuration ######
@@ -59,5 +72,6 @@ def generate_launch_description():
 
         ###### custom navigation action servers ######
         compute_goal_in_row_server,
+        front_empty_server,
 
     ])
