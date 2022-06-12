@@ -69,14 +69,19 @@ class FrontEmptyActionServer : public rclcpp::Node
         sensor_msgs::msg::PointCloud2 left_cloud_;
         sensor_msgs::msg::PointCloud2 right_cloud_;
 
+        bool lef = false;
+        bool rig = false;
+
         void topic_callback_left(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
             left_cloud_ = *msg;
+            lef = true;
         }
 
         void topic_callback_right(const sensor_msgs::msg::PointCloud2::SharedPtr msg)
         {
             right_cloud_ = *msg;
+            rig = true;
         }
         
         rclcpp_action::GoalResponse handle_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const ConditionAction::Goal> goal)
@@ -107,36 +112,58 @@ class FrontEmptyActionServer : public rclcpp::Node
             pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_left_filtered_b (new pcl::PointCloud<pcl::PointXYZ>);
             pcl::PointCloud<pcl::PointXYZ>::Ptr point_cloud_right_filtered_b (new pcl::PointCloud<pcl::PointXYZ>);
 
+            int j = 0;
+            
             while(!goal_handle->is_canceling())
             {
 
+                if ((lef==false)||(rig==false))
+                {
+                    continue;
+                }
+                lef = false;
+                rig = false;
+                
                 pcl::fromROSMsg(left_cloud_, *point_cloud_left_);
                 pcl::fromROSMsg(right_cloud_, *point_cloud_right_);
 
                 pcl::PassThrough<pcl::PointXYZ> pass_left_a;
                 pass_left_a.setInputCloud(point_cloud_left_);
                 pass_left_a.setFilterFieldName ("x");
-                pass_left_a.setFilterLimits (-1.0, 0.0);
+                pass_left_a.setFilterLimits (-0.2, 0.2);
                 pass_left_a.filter(*point_cloud_left_filtered_a);
                 pcl::PassThrough<pcl::PointXYZ> pass_left_b;
                 pass_left_b.setInputCloud(point_cloud_left_filtered_a);
                 pass_left_b.setFilterFieldName ("y");
-                pass_left_b.setFilterLimits (-0.5, 0.5);
+                pass_left_b.setFilterLimits (0.0, 1.0);
                 pass_left_b.filter(*point_cloud_left_filtered_b);
 
                 pcl::PassThrough<pcl::PointXYZ> pass_right_a;
                 pass_right_a.setInputCloud(point_cloud_right_);
                 pass_right_a.setFilterFieldName ("x");
-                pass_right_a.setFilterLimits (0.0, 1.0);
+                pass_right_a.setFilterLimits (-0.2, 0.2);
                 pass_right_a.filter(*point_cloud_right_filtered_a);
                 pcl::PassThrough<pcl::PointXYZ> pass_right_b;
                 pass_right_b.setInputCloud(point_cloud_right_filtered_a);
                 pass_right_b.setFilterFieldName ("y");
-                pass_right_b.setFilterLimits (-0.5, 0.5);
+                pass_right_b.setFilterLimits (-1.0, 0.0);
                 pass_right_b.filter(*point_cloud_right_filtered_b);
 
-                if ((point_cloud_right_filtered_b->size() == 0) && (point_cloud_left_filtered_b->size() == 0))
+                //RCLCPP_INFO(this->get_logger(), std::to_string(point_cloud_right_filtered_b->size()));
+                //RCLCPP_INFO(this->get_logger(), std::to_string(point_cloud_left_filtered_b->size()));
+
+                if ((point_cloud_right_filtered_b->size() < 1) && (point_cloud_left_filtered_b->size() < 1))
                 {
+                    j = j + 1;
+                    /*RCLCPP_INFO(this->get_logger(), "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                    RCLCPP_INFO(this->get_logger(), "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                    RCLCPP_INFO(this->get_logger(), "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");*/
+                }else{
+                    j = 0;
+                }
+
+                if (j>10) {
+                    //RCLCPP_INFO(this->get_logger(), "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
                     result->success = true;
                     goal_handle->succeed(result);
                     return;
