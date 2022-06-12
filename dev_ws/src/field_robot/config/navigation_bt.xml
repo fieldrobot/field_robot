@@ -1,20 +1,56 @@
 <root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
-    <PipelineSequence>
-      <RateController hz="10.0">
-        <SequenceStar>
-          <ComputeGoalInRow goal="{goal}"/>
-          <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
-            <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
-          </GoalUpdater>
-        </SequenceStar>
-      </RateController>
-      <FollowPath path="{path}"/>
-    </PipelineSequence>
+    <ContinuousSequence>
+      <ParallelCheck success_threshold="1" failure_threshold="2">
+        <FrontEmpty/>
+        <PipelineSequence>
+          <RateController hz="10.0">
+            <Sequence>
+              <ComputeGoalInRow goal="{goal}"/>
+              <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+                <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
+              </GoalUpdater>
+            </Sequence>
+          </RateController>
+          <FollowPath path="{path}"/>
+        </PipelineSequence>
+      </ParallelCheck>
+      <SequenceStar>
+        <ComputeGoalHeadland goal="{goal}"/>
+        <PipelineSequence>
+          <RateController hz="10.0">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+          </RateController>
+          <FollowPath path="{path}"/>
+        </PipelineSequence>
+        <ComputeGoalHeadlandFollow goal="{goal}"/>
+        <PipelineSequence>
+          <RateController hz="10.0">
+            <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+          </RateController>
+          <FollowPath path="{path}"/>
+        </PipelineSequence>
+      </SequenceStar>
+      <Sequence>
+        <ComputeGoalInRow goal="{goal}"/>
+        <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+          <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
+        </GoalUpdater>
+      </Sequence>
+    </ContinuousSequence>
+                          <!--<IndefiniteRepeat>
+                            <PipelineSequence>
+                              <RateController hz="10.0">
+                                <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+                                  <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
+                                </GoalUpdater>
+                              </RateController>
+                              <FollowPath path="{path}"/>
+                            </PipelineSequence>
+                          </IndefiniteRepeat>-->
   </BehaviorTree>
 </root>
-<!--
-<root main_tree_to_execute="MainTree">
+<!--<root main_tree_to_execute="MainTree">
   <BehaviorTree ID="MainTree">
     <ContinuousSequence>
       <Fallback name="in_row">
@@ -48,5 +84,44 @@
       </ContinuousSequence>
     </ContinuousSequence>
   </BehaviorTree>
-</root>
--->
+</root>-->
+<!--<root main_tree_to_execute="MainTree">
+  <BehaviorTree ID="MainTree">
+    <ParallelCheck success_threshold="1" failure_threshold="2">
+      <ContinuousSequence>
+        <ParallelCheck success_threshold="2" failure_threshold="2">
+          <FrontEmpty/>
+          <RateController hz="10.0">
+            <ComputeGoalInRow goal="{goal}"/>
+          </RateController>
+        </ParallelCheck>
+        <SequenceStar>
+          <ComputeGoalHeadland goal="{goal}"/>
+          <PipelineSequence>
+            <RateController hz="10.0">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            </RateController>
+            <FollowPath path="{path}"/>
+          </PipelineSequence>
+          <ComputeGoalHeadlandFollow goal="{goal}"/>
+          <PipelineSequence>
+            <RateController hz="10.0">
+              <ComputePathToPose goal="{goal}" path="{path}" planner_id="GridBased"/>
+            </RateController>
+            <FollowPath path="{path}"/>
+          </PipelineSequence>
+        </SequenceStar>
+      </ContinuousSequence>
+      <IndefiniteRepeat>
+        <PipelineSequence>
+          <RateController hz="10.0">
+            <GoalUpdater input_goal="{goal}" output_goal="{updated_goal}">
+              <ComputePathToPose goal="{updated_goal}" path="{path}" planner_id="GridBased"/>
+            </GoalUpdater>
+          </RateController>
+          <FollowPath path="{path}"/>
+        </PipelineSequence>
+      </IndefiniteRepeat>
+    </ParallelCheck>
+  </BehaviorTree>
+</root>-->
