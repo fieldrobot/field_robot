@@ -135,7 +135,7 @@ class FrontEmptyActionServer : public rclcpp::Node
                 pcl::PassThrough<pcl::PointXYZ> pass_left_b;
                 pass_left_b.setInputCloud(point_cloud_left_filtered_a);
                 pass_left_b.setFilterFieldName ("y");
-                pass_left_b.setFilterLimits (0.0, 1.0);
+                pass_left_b.setFilterLimits (0.01, 1.0);
                 pass_left_b.filter(*point_cloud_left_filtered_b);
 
                 pcl::PassThrough<pcl::PointXYZ> pass_right_a;
@@ -146,7 +146,7 @@ class FrontEmptyActionServer : public rclcpp::Node
                 pcl::PassThrough<pcl::PointXYZ> pass_right_b;
                 pass_right_b.setInputCloud(point_cloud_right_filtered_a);
                 pass_right_b.setFilterFieldName ("y");
-                pass_right_b.setFilterLimits (-1.0, 0.0);
+                pass_right_b.setFilterLimits (-1.0, -0.01);
                 pass_right_b.filter(*point_cloud_right_filtered_b);
 
                 //RCLCPP_INFO(this->get_logger(), std::to_string(point_cloud_right_filtered_b->size()));
