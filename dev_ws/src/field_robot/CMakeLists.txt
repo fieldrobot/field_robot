@@ -200,6 +200,20 @@ ament_target_dependencies(compute_goal_in_row_server
 rosidl_target_interfaces(compute_goal_in_row_server
 ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
+## COMPUTE GOAL HEADLAND
+add_executable(compute_goal_headland
+  src/navigation/action_servers/action/compute_goal_headland.cpp)
+ament_target_dependencies(compute_goal_headland
+  rclcpp
+  rclcpp_action
+  sensor_msgs
+  geometry_msgs
+  tf2_ros
+  tf2_geometry_msgs
+  PCL)
+rosidl_target_interfaces(compute_goal_headland
+${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 ## COMPUTE GOAL HEADLAND DRIVE ACTION SERVER
 add_executable(compute_goal_headland_drive_server
   src/navigation/action_servers/action/compute_goal_headland_drive_server.cpp)
@@ -232,6 +246,7 @@ install(TARGETS
   compute_goal_leaving_row_server
   compute_goal_in_row_server
   compute_goal_headland_drive_server
+  compute_goal_headland
   DESTINATION lib/${PROJECT_NAME}
 )
 
@@ -262,6 +277,14 @@ ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
 rosidl_target_interfaces(continuous_sequence
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+add_library(parallel_check SHARED src/navigation/bt_plugins/control/parallel_check_node.cpp)
+target_compile_definitions(parallel_check PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(parallel_check
+  behaviortree_cpp_v3)
+list(APPEND plugin_libs parallel_check)
+rosidl_target_interfaces(parallel_check
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
@@ -311,6 +334,15 @@ ament_target_dependencies(store_turn_information
   geometry_msgs)
 list(APPEND plugin_libs store_turn_information)
 rosidl_target_interfaces(store_turn_information
+  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+add_library(indefinete_repeat SHARED src/navigation/bt_plugins/control/indefinete_repeat_node.cpp)
+target_compile_definitions(indefinete_repeat PRIVATE  BT_PLUGIN_EXPORT)
+ament_target_dependencies(indefinete_repeat
+  behaviortree_cpp_v3
+  nav2_behavior_tree)
+list(APPEND plugin_libs indefinete_repeat)
+rosidl_target_interfaces(indefinete_repeat
   ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
 install(TARGETS ${plugin_libs}
