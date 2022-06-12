@@ -31,4 +31,6 @@ navigation_bt:
     - compute_based_goals
     - new_goal_computable
     - store_turn_information
+    - parallel_check
+    - indefinete_repeat
     tick_frequency_ms: 50
