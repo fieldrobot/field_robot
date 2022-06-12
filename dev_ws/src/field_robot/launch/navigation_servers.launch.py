@@ -44,9 +44,24 @@ def generate_launch_description():
         name='compute_goal_in_row_server',
         remappings=remappings,
         parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
             {'action_topic': 'navigation/compute_goal_in_row'},
             {'front_cloud_topic': 'camera_front/pc'},
             {'back_cloud_topic': 'camera_back/pc'},
+            {'robot_frame': 'base_footprint'},
+        ],
+    )
+
+    compute_goal_headland = Node(
+        package='field_robot',
+        executable='compute_goal_headland',
+        namespace='robot',
+        name='compute_goal_headland',
+        remappings=remappings,
+        parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
+            {'action_topic': 'navigation/compute_goal_headland'},
+            {'action_topic_follow': 'navigation/compute_goal_headland_follow'},
             {'robot_frame': 'base_footprint'},
         ],
     )
@@ -58,6 +73,7 @@ def generate_launch_description():
         name='front_empty_server',
         remappings=remappings,
         parameters=[
+            {'use_sim_time': LaunchConfiguration('use_sim_time')},
             {'action_topic': 'navigation/front_empty'},
             {'left_cloud_topic': 'camera_left/pc'},
             {'right_cloud_topic': 'camera_right/pc'},
@@ -73,5 +89,6 @@ def generate_launch_description():
         ###### custom navigation action servers ######
         compute_goal_in_row_server,
         front_empty_server,
+        compute_goal_headland,
 
     ])
