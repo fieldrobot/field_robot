@@ -43,7 +43,7 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
 
             //auto kevin = std::chrono::nanoseconds(500000000);
             //auto adf = kevin * 5;
-            uint64_t wte = 6*uint64_t(1000000000);
+            uint64_t wte = 8*uint64_t(1000000000);
             tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock(), std::chrono::nanoseconds(wte));
             transform_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
@@ -129,7 +129,7 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
 
             geometry_msgs::msg::PoseStamped po;// = geometry_msgs::msg::PoseStamped();
             poa.pose.position.x = 0.0;
-            poa.pose.position.y = 1.2;
+            poa.pose.position.y = 2*1.2;
             poa.pose.position.z = 0.0;
             poa.pose.orientation.x = 0;
             poa.pose.orientation.y = 0;
@@ -138,8 +138,8 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
             poa.header.frame_id = robot_frame;
             poa.header.stamp = this->get_clock()->now();
 
-            po.pose.position.x = 1.0;
-            po.pose.position.y = 1.2;
+            po.pose.position.x = 1.5;
+            po.pose.position.y = 2*1.2;
             po.pose.position.z = 0.0;
             po.pose.orientation.x = 0;
             po.pose.orientation.y = 0;
@@ -149,7 +149,7 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
             po.header.stamp = this->get_clock()->now();
 
             auto ni = this->get_clock()->now();
-            rclcpp::Time no = ni-rclcpp::Duration(5, 0);
+            rclcpp::Time no = ni-rclcpp::Duration(7, 0);
 
             geometry_msgs::msg::TransformStamped transform = tf_buffer_->lookupTransform("odom", "base_footprint", no, rclcpp::Duration(1, 0));
             tf2::doTransform(po, po, transform);
