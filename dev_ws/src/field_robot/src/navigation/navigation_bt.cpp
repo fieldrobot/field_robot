@@ -81,7 +81,7 @@ class NavigationBT : public rclcpp::Node
 
         void timer_callback()
         {
-            RCLCPP_INFO(this->get_logger(), "calling timer callback, ticking the tree");
+            //RCLCPP_INFO(this->get_logger(), "calling timer callback, ticking the tree");
             tree.tickRoot();
         }
 

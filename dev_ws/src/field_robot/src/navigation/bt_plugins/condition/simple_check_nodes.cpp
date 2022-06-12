@@ -12,11 +12,12 @@ class SimpleCheckNode : public nav2_behavior_tree::BtActionNode<field_robot::act
     
         void on_tick() override
         {
-
+          RCLCPP_WARN(node_->get_logger(), "FRONT EMPTY CALLED!");
         }
 
         BT::NodeStatus on_success()
         {
+          RCLCPP_WARN(node_->get_logger(), "FRONT EMPTY RETURNED EMPTY!");
           return BT::NodeStatus::SUCCESS;
         }
 

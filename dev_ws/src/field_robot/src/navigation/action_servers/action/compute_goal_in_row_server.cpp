@@ -123,7 +123,7 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
 
         void execute(const std::shared_ptr<GoalHandleComputeGoalAction> goal_handle)
         {
-            RCLCPP_INFO(this->get_logger(), "compute goal in row action server is executing");
+            //RCLCPP_INFO(this->get_logger(), "compute goal in row action server is executing");
             
             auto result = std::make_shared<ComputeGoalAction::Result>();
 
@@ -166,10 +166,10 @@ class ComputeGoalInRowActionServer : public rclcpp::Node
             result->pose = po;
             publisher_->publish(po);
 
-            RCLCPP_INFO(this->get_logger(), "compute goal in row action server: stored in result");
+            //RCLCPP_INFO(this->get_logger(), "compute goal in row action server: stored in result");
 
             goal_handle->succeed(result);
-            RCLCPP_INFO(this->get_logger(), "succeeded");
+            //RCLCPP_INFO(this->get_logger(), "succeeded");
             return;
 
             while(!goal_handle->is_canceling()) {}
