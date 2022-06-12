@@ -38,19 +38,21 @@ class ContinuousSequence : public BT::ControlNode
                     {
                         haltChild(current_child_idx_);
                         current_child_idx_++;
+                        break;
                     }
-                    break;
                     case BT::NodeStatus::FAILURE:
                     {
-                        throw BT::LogicError("A continuous sequence does not expect failure returns.");
+                        break;
+                        //throw BT::LogicError("A continuous sequence does not expect failure returns.");
                     }
                     case BT::NodeStatus::IDLE:
                     {
-                        throw BT::LogicError("A child node must never return IDLE");
+                        break;
+                        //throw BT::LogicError("A child node must never return IDLE");
                     }
                 }
 
-                if(current_child_idx_ >= children_count)
+                if(current_child_idx_ == (children_count))
                 {
                     current_child_idx_ = 0;
                 }
