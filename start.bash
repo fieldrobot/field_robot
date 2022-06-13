@@ -1,0 +1,2 @@
+robot.bash &
+bridge.bash &
