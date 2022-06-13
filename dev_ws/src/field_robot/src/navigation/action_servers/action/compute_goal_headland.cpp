@@ -2,6 +2,9 @@
 #include <memory>
 #include <thread>
 #include <chrono>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #include <pcl/common/distances.h>
 #include <pcl/impl/point_types.hpp>
@@ -71,6 +74,8 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
                 std::bind(&ComputeGoalInHeadlandActionServer::handle_cancel_follow, this, std::placeholders::_1),
                 std::bind(&ComputeGoalInHeadlandActionServer::handle_accepted_follow, this, std::placeholders::_1)
             );
+
+            this->read_file();
         }
 
     private:
@@ -86,6 +91,8 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
 
         std::shared_ptr<tf2_ros::TransformListener> transform_listener_{nullptr};
         std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+
+        std::list<int> turns;
         
         rclcpp_action::GoalResponse handle_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const ComputeGoalAction::Goal> goal)
         {
@@ -127,9 +134,11 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
             
             auto result = std::make_shared<ComputeGoalAction::Result>();
 
+            int n = this->next_turn();
+
             geometry_msgs::msg::PoseStamped po;// = geometry_msgs::msg::PoseStamped();
             poa.pose.position.x = 0.0;
-            poa.pose.position.y = 2*1.2;
+            poa.pose.position.y = n*1.2;
             poa.pose.position.z = 0.0;
             poa.pose.orientation.x = 0;
             poa.pose.orientation.y = 0;
@@ -139,7 +148,7 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
             poa.header.stamp = this->get_clock()->now();
 
             po.pose.position.x = 1.5;
-            po.pose.position.y = 2*1.2;
+            po.pose.position.y = n*1.2;
             po.pose.position.z = 0.0;
             po.pose.orientation.x = 0;
             po.pose.orientation.y = 0;
@@ -174,6 +183,48 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
             publisher_->publish(poa);
             goal_handle->succeed(result);
             return;
+        }
+
+        void read_file()
+        {
+            //RCLCPP_INFO(this->get_logger(), "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+            std::fstream newfile;
+            newfile.open("/catkin/src/virtual_maize_field/map/driving_pattern.txt", std::ios::in);
+            //newfile.open("/driving_pattern.txt", std::ios::in);
+            std::string line;
+            std::getline(newfile, line);
+
+            int n;
+            this->turns = std::list<int>();
+
+            for (int i = 0; i < line.length(); i++)
+            {
+                if (line[i] == '0' || line[i] == '1' || line[i] == '2' || line[i] == '3' || line[i] == '4' || line[i] == '5' || line[i] == '6' || line[i] == '7' || line[i] == '8' || line[i] == '9')
+                {
+                    n = (line[i]-48);
+                }
+                if (line[i] == 'L')
+                {
+                    this->turns.insert(this->turns.end(), n);
+                }
+                else if (line[i] == 'R')
+                {
+                    this->turns.insert(this->turns.end(), (n*(-1)));
+                }
+                
+            }
+
+            newfile.close();
+            
+            //std::istringstream iss(line);
+            //std::vector<std::string> results((std::istream_iterator<std::string>(iss)), std::istream_iterator<std::string>());
+        }
+
+        int next_turn()
+        {
+            int g = this->turns.front();
+            this->turns.pop_front();
+            return g;
         }
 
 };
