@@ -5,7 +5,7 @@ controller_server:
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
-    failure_tolerance: 0.4
+    failure_tolerance: 0.5
     odom_topic: odometry/filtered
     progress_checker_plugin: "progress_checker"
     goal_checker_plugins: "goal_checker" # "precise_goal_checker"
@@ -25,8 +25,8 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.2
-      yaw_goal_tolerance: 0.5
+      xy_goal_tolerance: 0.45
+      yaw_goal_tolerance: 0.7
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
@@ -54,7 +54,7 @@ controller_server:
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.2
+      xy_goal_tolerance: 0.45
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
