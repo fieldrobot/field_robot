@@ -21,7 +21,7 @@ class NavigationBT : public rclcpp::Node
         {
 
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+            //std::this_thread::sleep_for(std::chrono::milliseconds(10000));
             
             RCLCPP_INFO(this->get_logger(), "starting navigation bt node");
             std::cout << "DAS GOAL WURDE GESETZT (2) !!!" << std::endl;
@@ -47,8 +47,8 @@ class NavigationBT : public rclcpp::Node
             RCLCPP_INFO(this->get_logger(), "loading the behavior tree from xml file");
 
 
-            std::shared_ptr<tf2_ros::Buffer> tf_;
-            std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
+            /*std::shared_ptr<tf2_ros::Buffer> tf_;
+            std::shared_ptr<tf2_ros::TransformListener> tf_listener_;*/
 
             /*tf_ = std::make_shared<tf2_ros::Buffer>(get_clock());
             auto timer_interface = std::make_shared<tf2_ros::CreateTimerROS>(
