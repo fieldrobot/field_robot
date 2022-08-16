@@ -214,6 +214,13 @@ class ComputeGoalInHeadlandActionServer : public rclcpp::Node
                 
             }
 
+            this->turns.push_back(-1);
+            this->turns.push_back(1);
+            this->turns.push_back(-1);
+            this->turns.push_back(1);
+            this->turns.push_back(-1);
+            this->turns.push_back(1);
+
             newfile.close();
             
             //std::istringstream iss(line);
