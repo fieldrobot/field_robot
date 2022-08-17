@@ -75,6 +75,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   DEPENDENCIES geometry_msgs
 )
 
+# making the gernerated interfaces available to the project
+rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
+
 ############### CPP ###############
 
 ## POINT CLOUD GENERATOR
@@ -91,8 +94,9 @@ ament_target_dependencies(point_cloud_generator
   PCL
   cv_bridge)
 
-rosidl_target_interfaces(point_cloud_generator
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(point_cloud_generator
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(point_cloud_generator "${cpp_typesupport_target}")
 
 ## POINT CLOUD FUSION
 add_executable(point_cloud_fusion
@@ -104,8 +108,9 @@ ament_target_dependencies(point_cloud_fusion
   geometry_msgs
   sensor_msgs)
 
-rosidl_target_interfaces(point_cloud_fusion
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(point_cloud_fusion
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(point_cloud_fusion "${cpp_typesupport_target}")
 
 ## NAVIGATION_BT
 add_executable(navigation_bt
@@ -116,8 +121,9 @@ ament_target_dependencies(navigation_bt
   tf2_ros
   behaviortree_cpp_v3)
 
-rosidl_target_interfaces(navigation_bt
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(navigation_bt
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(navigation_bt "${cpp_typesupport_target}")
 
 ## FRONT EMPTY ACTION SERVER
 add_executable(front_empty_server
@@ -129,8 +135,9 @@ ament_target_dependencies(front_empty_server
   PCL
   sensor_msgs)
 
-rosidl_target_interfaces(front_empty_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(front_empty_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(front_empty_server "${cpp_typesupport_target}")
 
 ## COMPLETED LEAVING ROW ACTION SERVER
 add_executable(completed_leaving_row_server
@@ -144,8 +151,9 @@ ament_target_dependencies(completed_leaving_row_server
   tf2_ros
   tf2_geometry_msgs)
 
-rosidl_target_interfaces(completed_leaving_row_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(completed_leaving_row_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(completed_leaving_row_server "${cpp_typesupport_target}")
 
 ## PUBLISH TURN INFORMATION ACTION SERVER
 add_executable(publish_turn_information_server
@@ -155,8 +163,9 @@ ament_target_dependencies(publish_turn_information_server
   rclcpp
   rclcpp_action)
 
-rosidl_target_interfaces(publish_turn_information_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(publish_turn_information_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(publish_turn_information_server "${cpp_typesupport_target}")
 
 ## NEW GOAL COMPUTABLE ACTION SERVER
 add_executable(new_goal_computable_server
@@ -170,8 +179,9 @@ ament_target_dependencies(new_goal_computable_server
   tf2_geometry_msgs
   PCL)
 
-rosidl_target_interfaces(new_goal_computable_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(new_goal_computable_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(new_goal_computable_server "${cpp_typesupport_target}")
 
 ## COMPUTE GOAL LEAVING ROW ACTION SERVER
 add_executable(compute_goal_leaving_row_server
@@ -183,8 +193,9 @@ ament_target_dependencies(compute_goal_leaving_row_server
   tf2_ros
   tf2_geometry_msgs)
 
-rosidl_target_interfaces(compute_goal_leaving_row_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_goal_leaving_row_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_goal_leaving_row_server "${cpp_typesupport_target}")
 
 ## COMPUTE GOAL IN ROW ACTION SERVER
 add_executable(compute_goal_in_row_server
@@ -197,8 +208,9 @@ ament_target_dependencies(compute_goal_in_row_server
   tf2_ros
   tf2_geometry_msgs
   PCL)
-rosidl_target_interfaces(compute_goal_in_row_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_goal_in_row_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_goal_in_row_server "${cpp_typesupport_target}")
 
 ## COMPUTE GOAL HEADLAND
 add_executable(compute_goal_headland
@@ -211,8 +223,9 @@ ament_target_dependencies(compute_goal_headland
   tf2_ros
   tf2_geometry_msgs
   PCL)
-rosidl_target_interfaces(compute_goal_headland
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_goal_headland
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_goal_headland "${cpp_typesupport_target}")
 
 ## COMPUTE GOAL HEADLAND DRIVE ACTION SERVER
 add_executable(compute_goal_headland_drive_server
@@ -228,8 +241,9 @@ ament_target_dependencies(compute_goal_headland_drive_server
   tf2_geometry_msgs
   PCL)
 
-rosidl_target_interfaces(compute_goal_headland_drive_server
-${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_goal_headland_drive_server
+#${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_goal_headland_drive_server "${cpp_typesupport_target}")
 
 ## including cpp "include" directory for cpp header files definitions
 include_directories(include)
@@ -276,16 +290,18 @@ target_compile_definitions(continuous_sequence PRIVATE  BT_PLUGIN_EXPORT)
 ament_target_dependencies(continuous_sequence
   behaviortree_cpp_v3)
 list(APPEND plugin_libs continuous_sequence)
-rosidl_target_interfaces(continuous_sequence
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(continuous_sequence
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(continuous_sequence "${cpp_typesupport_target}")
 
 add_library(parallel_check SHARED src/navigation/bt_plugins/control/parallel_check_node.cpp)
 target_compile_definitions(parallel_check PRIVATE  BT_PLUGIN_EXPORT)
 ament_target_dependencies(parallel_check
   behaviortree_cpp_v3)
 list(APPEND plugin_libs parallel_check)
-rosidl_target_interfaces(parallel_check
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(parallel_check
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(parallel_check "${cpp_typesupport_target}")
 
 add_library(simple_check_nodes SHARED src/navigation/bt_plugins/condition/simple_check_nodes.cpp)
 target_compile_definitions(simple_check_nodes PRIVATE  BT_PLUGIN_EXPORT)
@@ -293,8 +309,9 @@ ament_target_dependencies(simple_check_nodes
   behaviortree_cpp_v3
   nav2_behavior_tree)
 list(APPEND plugin_libs simple_check_nodes)
-rosidl_target_interfaces(simple_check_nodes
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(simple_check_nodes
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(simple_check_nodes "${cpp_typesupport_target}")
 
 add_library(compute_goals SHARED src/navigation/bt_plugins/action/compute_goals.cpp)
 target_compile_definitions(compute_goals PRIVATE  BT_PLUGIN_EXPORT)
@@ -303,8 +320,9 @@ ament_target_dependencies(compute_goals
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs compute_goals)
-rosidl_target_interfaces(compute_goals
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_goals
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_goals "${cpp_typesupport_target}")
 
 add_library(compute_based_goals SHARED src/navigation/bt_plugins/action/compute_based_goals.cpp)
 target_compile_definitions(compute_based_goals PRIVATE  BT_PLUGIN_EXPORT)
@@ -313,8 +331,9 @@ ament_target_dependencies(compute_based_goals
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs compute_based_goals)
-rosidl_target_interfaces(compute_based_goals
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(compute_based_goals
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(compute_based_goals "${cpp_typesupport_target}")
 
 add_library(new_goal_computable SHARED src/navigation/bt_plugins/condition/new_goal_computable_headland_drive_node.cpp)
 target_compile_definitions(new_goal_computable PRIVATE  BT_PLUGIN_EXPORT)
@@ -323,8 +342,9 @@ ament_target_dependencies(new_goal_computable
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs new_goal_computable)
-rosidl_target_interfaces(new_goal_computable
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(new_goal_computable
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(new_goal_computable "${cpp_typesupport_target}")
 
 add_library(store_turn_information SHARED src/navigation/bt_plugins/action/store_turn_information_node.cpp)
 target_compile_definitions(store_turn_information PRIVATE  BT_PLUGIN_EXPORT)
@@ -333,8 +353,9 @@ ament_target_dependencies(store_turn_information
   nav2_behavior_tree
   geometry_msgs)
 list(APPEND plugin_libs store_turn_information)
-rosidl_target_interfaces(store_turn_information
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(store_turn_information
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(store_turn_information "${cpp_typesupport_target}")
 
 add_library(indefinete_repeat SHARED src/navigation/bt_plugins/control/indefinete_repeat_node.cpp)
 target_compile_definitions(indefinete_repeat PRIVATE  BT_PLUGIN_EXPORT)
@@ -342,8 +363,9 @@ ament_target_dependencies(indefinete_repeat
   behaviortree_cpp_v3
   nav2_behavior_tree)
 list(APPEND plugin_libs indefinete_repeat)
-rosidl_target_interfaces(indefinete_repeat
-  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+#rosidl_target_interfaces(indefinete_repeat
+#  ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(indefinete_repeat "${cpp_typesupport_target}")
 
 install(TARGETS ${plugin_libs}
   ARCHIVE DESTINATION lib
