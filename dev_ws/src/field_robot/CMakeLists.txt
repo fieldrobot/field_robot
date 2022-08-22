@@ -267,20 +267,20 @@ install(TARGETS
 ############### PYTHON ###############
 
 ## installing python modules
-ament_python_install_package(${PROJECT_NAME})
+#ament_python_install_package(${PROJECT_NAME})
 
 ## exporting custom ROS communication formats
-ament_export_dependencies(rosidl_default_runtime)
+#ament_export_dependencies(rosidl_default_runtime)
 
 ## installing python executables
-install(PROGRAMS
-  scripts/robot_spawner.py
-  scripts/demo_image_publisher.py
-  scripts/image_path_finder_ai.py
-  scripts/AI_data_generator.py
-  scripts/teleop.py
-  DESTINATION lib/${PROJECT_NAME}
-)
+#install(PROGRAMS
+#  scripts/robot_spawner.py
+#  scripts/demo_image_publisher.py
+#  scripts/image_path_finder_ai.py
+#  scripts/AI_data_generator.py
+#  scripts/teleop.py
+#  DESTINATION lib/${PROJECT_NAME}
+#)
 
 ############### BT PLUGINS ###############
 
